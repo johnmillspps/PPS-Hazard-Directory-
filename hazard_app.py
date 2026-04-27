@@ -470,6 +470,9 @@ def find_signal_boxes_for_mileage(elr_from, elr_to, from_ch, to_ch, sba_df, sign
             (sba_df['mileage_from_ch'] <= to_ch) &
             (sba_df['mileage_to_ch'] >= from_ch)
         ]
+        # Fallback: if no mileage overlap found, show all signal boxes on this ELR
+        if matches.empty:
+            matches = sba_df[sba_df['elr'] == elr_q]
         for _, row in matches.iterrows():
             box_name = str(row['signal_box_name']).strip()
             if box_name in seen_names or len(box_name) < 3:
