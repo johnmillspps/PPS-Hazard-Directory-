@@ -210,6 +210,20 @@ def mileage_to_decimal(s):
     return None
 
 
+def decimal_to_miles_chains(dec):
+    """Convert decimal miles.yards (182.0259) to 'Xm Ych' display format."""
+    if dec is None or dec == '':
+        return ''
+    try:
+        dec = float(dec)
+        miles = int(dec)
+        yards = round((abs(dec) - abs(miles)) * 10000)
+        chains = round(yards / 22)
+        return f"{miles}m {chains:02d}ch"
+    except (ValueError, TypeError):
+        return str(dec)
+
+
 # ── Auto-load hazard CSVs ────────────────────────────────────────────────────
 @st.cache_data
 def load_all_hazard_csvs():
@@ -692,6 +706,12 @@ else:
                             'Free Text': 'Details',
                         }
                         display_df = filtered_ap.rename(columns=display_rename)
+
+                        # Convert mileage to miles and chains
+                        display_df['Mileage'] = display_df['Mileage'].apply(decimal_to_miles_chains)
+
+                        # Also convert in filtered_ap for PDF
+                        filtered_ap['Mileage  From'] = filtered_ap['Mileage  From'].apply(decimal_to_miles_chains)
 
                         st.markdown('<hr class="pps-divider">', unsafe_allow_html=True)
 
