@@ -439,7 +439,7 @@ def enrich_access_points_with_coords(access_pts_df, ap_coords_df):
             lon = closest['longitude']
             lats.append(f"{lat:.5f}")
             lons.append(f"{lon:.5f}")
-            links.append(f"https://www.google.com/maps/search/{lat}+{lon}")
+            links.append(f"https://maps.google.com/?q={lat:.4f},{lon:.4f}")
         else:
             lats.append('')
             lons.append('')
@@ -665,6 +665,11 @@ def generate_pdf(filtered_df, elr, from_mil, to_mil, col_config, pdf_title='NWR 
         wordWrap='CJK',
     )
 
+    link_style = ParagraphStyle(
+        'LinkCell', fontName='Helvetica', fontSize=6,
+        textColor=HexColor("#0000EE"), leading=7.5, alignment=TA_LEFT,
+    )
+
     doc = HazardDocTemplate(
         buf, pagesize=landscape(A4),
         leftMargin=margins, rightMargin=margins,
@@ -682,10 +687,13 @@ def generate_pdf(filtered_df, elr, from_mil, to_mil, col_config, pdf_title='NWR 
     table_data = [header_row]
 
     for _, row in filtered_df.iterrows():
-        data_row = [
-            Paragraph(str(row.get(c['field'], '')).replace('\n', '<br/>'), cell_style)
-            for c in col_config
-        ]
+        data_row = []
+        for c in col_config:
+            val = str(row.get(c['field'], '')).replace('\n', '<br/>')
+            if val.startswith('https://'):
+                data_row.append(Paragraph(f'<a href="{val}" color="blue"><u>Map Link</u></a>', link_style))
+            else:
+                data_row.append(Paragraph(val, cell_style))
         table_data.append(data_row)
 
     table = Table(table_data, colWidths=col_widths, repeatRows=1)
