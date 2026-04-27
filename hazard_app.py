@@ -284,6 +284,121 @@ def load_signal_box_contacts():
         return None
 
 
+# ── Auto-load A&E departments ────────────────────────────────────────────────
+@st.cache_data
+def load_ae_departments():
+    """Load Type 1 A&E departments CSV from the data subfolder."""
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    csv_path = os.path.join(data_dir, 'ae_departments_type1.csv')
+    if not os.path.exists(csv_path):
+        return None
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8-sig')
+        return df
+    except Exception:
+        return None
+
+
+def find_nearest_ae(lat, lon, ae_df, n=3):
+    """Find the n nearest Type 1 A&E departments to a given lat/lon using haversine."""
+    import math
+    R = 3959  # miles
+
+    def haversine(lat1, lon1, lat2, lon2):
+        dlat = math.radians(lat2 - lat1)
+        dlon = math.radians(lon2 - lon1)
+        a = (math.sin(dlat / 2) ** 2 +
+             math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
+             math.sin(dlon / 2) ** 2)
+        return R * 2 * math.asin(math.sqrt(a))
+
+    results = []
+    for _, row in ae_df.iterrows():
+        try:
+            d = haversine(lat, lon, float(row['latitude']), float(row['longitude']))
+            results.append({
+                'Hospital': row['hospital_name'],
+                'Trust': row['trust_name'],
+                'Address': row['address'],
+                'Postcode': row['postcode'],
+                'Distance (miles)': round(d, 1),
+            })
+        except (ValueError, TypeError):
+            pass
+    results.sort(key=lambda x: x['Distance (miles)'])
+    return results[:n]
+
+
+# Approximate UK postcode coordinates for common railway areas
+# Used when access point postcodes are found in search results
+POSTCODE_AREA_COORDS = {
+    'AB': (57.15, -2.11), 'AL': (51.75, -0.34), 'B': (52.48, -1.89),
+    'BA': (51.38, -2.36), 'BB': (53.75, -2.48), 'BD': (53.80, -1.76),
+    'BH': (50.72, -1.88), 'BL': (53.58, -2.43), 'BN': (50.83, -0.14),
+    'BR': (51.39, 0.05), 'BS': (51.45, -2.59), 'CA': (54.89, -2.93),
+    'CB': (52.20, 0.12), 'CF': (51.48, -3.18), 'CH': (53.19, -2.89),
+    'CM': (51.73, 0.47), 'CO': (51.89, 0.90), 'CR': (51.37, -0.10),
+    'CT': (51.28, 1.08), 'CV': (52.41, -1.51), 'CW': (53.10, -2.44),
+    'DA': (51.44, 0.21), 'DD': (56.46, -2.97), 'DE': (52.92, -1.47),
+    'DH': (54.78, -1.57), 'DL': (54.52, -1.55), 'DN': (53.52, -1.13),
+    'DT': (50.71, -2.44), 'DY': (52.51, -2.08), 'E': (51.55, -0.06),
+    'EC': (51.52, -0.09), 'EH': (55.95, -3.19), 'EN': (51.65, -0.08),
+    'EX': (50.72, -3.53), 'FK': (56.00, -3.78), 'FY': (53.82, -3.05),
+    'G': (55.86, -4.25), 'GL': (51.86, -2.24), 'GU': (51.24, -0.77),
+    'HA': (51.58, -0.34), 'HD': (53.65, -1.78), 'HG': (54.00, -1.54),
+    'HP': (51.75, -0.74), 'HR': (52.06, -2.72), 'HU': (53.74, -0.33),
+    'HX': (53.73, -1.86), 'IG': (51.56, 0.08), 'IP': (52.06, 1.16),
+    'KT': (51.38, -0.30), 'KY': (56.20, -3.15), 'L': (53.41, -2.98),
+    'LA': (54.05, -2.80), 'LD': (52.25, -3.38), 'LE': (52.63, -1.13),
+    'LL': (53.23, -3.83), 'LN': (53.23, -0.54), 'LS': (53.80, -1.55),
+    'LU': (51.88, -0.42), 'M': (53.48, -2.24), 'ME': (51.39, 0.54),
+    'MK': (52.04, -0.76), 'ML': (55.77, -3.99), 'N': (51.57, -0.10),
+    'NE': (55.00, -1.60), 'NG': (52.95, -1.15), 'NN': (52.24, -0.90),
+    'NP': (51.59, -3.00), 'NR': (52.63, 1.30), 'NW': (51.55, -0.17),
+    'OL': (53.54, -2.10), 'OX': (51.75, -1.26), 'PA': (55.85, -4.44),
+    'PE': (52.57, -0.24), 'PL': (50.37, -4.14), 'PO': (50.80, -1.09),
+    'PR': (53.76, -2.70), 'RG': (51.45, -1.00), 'RH': (51.17, -0.19),
+    'RM': (51.57, 0.18), 'S': (53.38, -1.47), 'SA': (51.65, -3.94),
+    'SE': (51.48, -0.06), 'SG': (51.90, -0.20), 'SK': (53.39, -2.16),
+    'SL': (51.51, -0.60), 'SM': (51.37, -0.17), 'SN': (51.56, -1.78),
+    'SO': (50.93, -1.40), 'SP': (51.07, -1.80), 'SR': (54.89, -1.38),
+    'SS': (51.54, 0.71), 'ST': (52.98, -2.18), 'SW': (51.46, -0.17),
+    'SY': (52.71, -2.75), 'TA': (51.01, -3.10), 'TD': (55.60, -2.43),
+    'TF': (52.68, -2.49), 'TN': (51.13, 0.26), 'TQ': (50.47, -3.53),
+    'TR': (50.26, -5.05), 'TS': (54.57, -1.23), 'TW': (51.45, -0.34),
+    'UB': (51.53, -0.44), 'W': (51.51, -0.18), 'WA': (53.39, -2.60),
+    'WC': (51.52, -0.12), 'WD': (51.66, -0.40), 'WF': (53.68, -1.50),
+    'WN': (53.55, -2.63), 'WR': (52.19, -2.22), 'WS': (52.58, -1.97),
+    'WV': (52.59, -2.13), 'YO': (53.96, -1.08),
+}
+
+
+def extract_postcode_from_text(text):
+    """Extract a UK postcode from free text. Returns (outward_code, full_postcode) or (None, None)."""
+    if not text or not isinstance(text, str):
+        return None, None
+    # Full postcode pattern
+    m = re.search(r'([A-Z]{1,2}\d{1,2}[A-Z]?)\s*(\d[A-Z]{2})', text.upper())
+    if m:
+        return m.group(1).rstrip(), f"{m.group(1)} {m.group(2)}"
+    return None, None
+
+
+def get_coords_from_postcode_area(postcode):
+    """Get approximate lat/lon from a postcode's area code."""
+    if not postcode:
+        return None, None
+    pc = postcode.upper().strip()
+    # Try 2-letter area first, then 1-letter
+    area2 = re.match(r'^([A-Z]{2})', pc)
+    area1 = re.match(r'^([A-Z])', pc)
+    if area2 and area2.group(1) in POSTCODE_AREA_COORDS:
+        return POSTCODE_AREA_COORDS[area2.group(1)]
+    if area1 and area1.group(1) in POSTCODE_AREA_COORDS:
+        return POSTCODE_AREA_COORDS[area1.group(1)]
+    return None, None
+
+
 # ── Filter helpers ───────────────────────────────────────────────────────────
 def filter_access_points(df):
     """Filter DataFrame to only access point rows."""
@@ -501,7 +616,7 @@ st.markdown(f"""
     <div style="font-family: Barlow Condensed, sans-serif; font-size: 1.6rem; font-weight: 700; color: white; letter-spacing: 0.05em;">
       Worksite Intelligence</div>
     <div style="font-size: 0.8rem; color: {COLOURS['muted']}; letter-spacing: 0.1em; text-transform: uppercase;">
-      Hazards &bull; Access Points &bull; Signal Box Contacts</div>
+      Hazards &bull; Access Points &bull; Signal Box Contacts &bull; Nearest A&amp;E</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -509,6 +624,7 @@ st.markdown(f"""
 # ── Load data ────────────────────────────────────────────────────────────────
 hazard_df, loaded_files, total_files = load_all_hazard_csvs()
 signalbox_df = load_signal_box_contacts()
+ae_df = load_ae_departments()
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -517,6 +633,7 @@ with st.sidebar:
         n_elrs = hazard_df['ELR'].nunique()
         n_access = len(filter_access_points(hazard_df))
         n_sb = len(signalbox_df) if signalbox_df is not None else 0
+        n_ae = len(ae_df) if ae_df is not None else 0
 
         st.markdown("### Data Loaded")
         st.markdown(f"""
@@ -537,6 +654,10 @@ with st.sidebar:
         <div class="metric-box" style="margin-bottom:0.5rem">
           <div class="metric-num" style="color:{COLOURS['text']}">{n_sb:,}</div>
           <div class="metric-lbl">Signal Boxes</div>
+        </div>
+        <div class="metric-box" style="margin-bottom:0.5rem">
+          <div class="metric-num" style="color:{COLOURS['red']}">{n_ae:,}</div>
+          <div class="metric-lbl">A&amp;E Depts</div>
         </div>
         <div class="metric-box">
           <div class="metric-num" style="color:{COLOURS['text']}">{n_elrs:,}</div>
@@ -791,3 +912,97 @@ else:
                                 "⬇  Download Contacts PDF", data=pdf_buf,
                                 file_name=f"Signal_Box_Contacts_{search_desc}_{timestamp}.pdf",
                                 mime="application/pdf", key="sb_pdf")
+
+                # ─── SECTION 4: NEAREST A&E ──────────────────────────────
+                st.markdown(f'<div class="section-header">🏥  NEAREST A&amp;E — 24hr Type 1 Emergency Departments</div>',
+                            unsafe_allow_html=True)
+
+                if ae_df is None or ae_df.empty:
+                    st.markdown(f"""
+                    <div class="pps-card pps-card-grey">
+                      <span class="badge badge-grey">Not available</span>
+                      <span style="margin-left:1rem;font-size:0.85rem">
+                        Place <b>ae_departments_type1.csv</b> in the data subfolder.
+                      </span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    # Try to auto-detect location from access point postcodes
+                    auto_lat, auto_lon = None, None
+                    auto_source = None
+
+                    if not access_pts.empty and 'Free Text' in access_pts.columns:
+                        for _, ap_row in access_pts.iterrows():
+                            outward, full_pc = extract_postcode_from_text(str(ap_row.get('Free Text', '')))
+                            if outward:
+                                auto_lat, auto_lon = get_coords_from_postcode_area(outward)
+                                if auto_lat:
+                                    auto_source = full_pc
+                                    break
+
+                    if auto_lat and auto_lon:
+                        nearest = find_nearest_ae(auto_lat, auto_lon, ae_df, n=3)
+                        st.markdown(f"""
+                        <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
+                          Auto-detected from access point postcode: <b>{auto_source}</b>
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                        for i, hosp in enumerate(nearest):
+                            border_col = COLOURS['green'] if i == 0 else COLOURS['border']
+                            label = 'NEAREST' if i == 0 else f'#{i+1}'
+                            badge_class = 'badge-green' if i == 0 else 'badge-grey'
+                            st.markdown(f"""
+                            <div class="pps-card" style="border-left:3px solid {border_col}">
+                              <span class="badge {badge_class}">{label} — {hosp['Distance (miles)']} miles</span>
+                              <div style="margin-top:0.5rem;font-size:1rem;color:{COLOURS['white']};font-weight:600">
+                                {hosp['Hospital']}</div>
+                              <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-top:0.2rem">
+                                {hosp['Address']}, {hosp['Postcode']}</div>
+                              <div style="font-size:0.78rem;color:{COLOURS['muted']};margin-top:0.1rem">
+                                {hosp['Trust']}</div>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"""
+                        <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
+                          No postcode found in access points — search by town or postcode to find nearest A&amp;E.
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                    # Manual search fallback / override
+                    ae_search = st.text_input("Search A&E by town, hospital name or postcode",
+                                              placeholder="e.g. Derby, Reading, LS1",
+                                              key="ae_search")
+
+                    if ae_search:
+                        search_upper = ae_search.upper().strip()
+                        # Check if it looks like a postcode area
+                        pc_lat, pc_lon = get_coords_from_postcode_area(search_upper)
+
+                        if pc_lat and pc_lon:
+                            nearest = find_nearest_ae(pc_lat, pc_lon, ae_df, n=5)
+                            ae_results = pd.DataFrame(nearest)
+                            st.dataframe(ae_results, use_container_width=True, hide_index=True)
+                        else:
+                            # Text search on hospital name, address, trust
+                            matches = ae_df[
+                                ae_df['hospital_name'].str.contains(ae_search, case=False, na=False) |
+                                ae_df['address'].str.contains(ae_search, case=False, na=False) |
+                                ae_df['trust_name'].str.contains(ae_search, case=False, na=False) |
+                                ae_df['postcode'].str.contains(search_upper, na=False)
+                            ].copy()
+
+                            if matches.empty:
+                                st.markdown(f"""
+                                <div class="pps-card pps-card-amber">
+                                  <span class="badge badge-amber">No results</span>
+                                  <span style="margin-left:1rem;font-size:0.85rem">
+                                    Try a different town name or postcode area.
+                                  </span>
+                                </div>
+                                """, unsafe_allow_html=True)
+                            else:
+                                display_ae = matches[['hospital_name', 'address', 'postcode', 'trust_name']].copy()
+                                display_ae.columns = ['Hospital', 'Address', 'Postcode', 'Trust']
+                                st.dataframe(display_ae, use_container_width=True, hide_index=True)
