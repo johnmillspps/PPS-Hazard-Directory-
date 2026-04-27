@@ -258,6 +258,21 @@ def load_all_hazard_csvs():
     return combined, loaded_files, len(csv_files)
 
 
+# ── Auto-load signal box contacts ────────────────────────────────────────────
+@st.cache_data
+def load_signal_box_contacts():
+    """Load signal box contacts CSV from the data subfolder."""
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    csv_path = os.path.join(data_dir, 'signal_box_contacts.csv')
+    if not os.path.exists(csv_path):
+        return None
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8-sig')
+        return df
+    except Exception:
+        return None
+
+
 # ── PDF generation ───────────────────────────────────────────────────────────
 NWR_BLUE_PDF = HexColor("#003366")
 ALT_ROW_PDF = HexColor("#EEF2F7")
@@ -456,6 +471,7 @@ st.markdown(f"""
 
 # ── Load data ────────────────────────────────────────────────────────────────
 hazard_df, loaded_files, total_files = load_all_hazard_csvs()
+signalbox_df = load_signal_box_contacts()
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -479,6 +495,10 @@ with st.sidebar:
         <div class="metric-box" style="margin-bottom:0.5rem">
           <div class="metric-num" style="color:{COLOURS['amber']}">{n_access:,}</div>
           <div class="metric-lbl">Access Points</div>
+        </div>
+        <div class="metric-box" style="margin-bottom:0.5rem">
+          <div class="metric-num" style="color:{COLOURS['text']}">{len(signalbox_df) if signalbox_df is not None else 0:,}</div>
+          <div class="metric-lbl">Signal Boxes</div>
         </div>
         <div class="metric-box">
           <div class="metric-num" style="color:{COLOURS['text']}">{n_elrs:,}</div>
@@ -530,7 +550,7 @@ if hazard_df is None or hazard_df.empty:
     """, unsafe_allow_html=True)
 else:
     # ── Tabs ─────────────────────────────────────────────────────────────
-    tab1, tab2 = st.tabs(["⚠️  HAZARD DIRECTORY", "🚪  ACCESS POINTS"])
+    tab1, tab2, tab3 = st.tabs(["⚠️  HAZARD DIRECTORY", "🚪  ACCESS POINTS", "📞  SIGNAL BOX CONTACTS"])
 
     # ═══════════════════════════════════════════════════════════════════
     # TAB 1 — HAZARD DIRECTORY
@@ -538,19 +558,25 @@ else:
     with tab1:
         st.markdown("#### Extract hazards for a mileage range")
 
-        c1, c2, c3 = st.columns([2, 2, 2])
+        c1, c2, c3, c4 = st.columns([2, 2, 2, 2])
         with c1:
-            hz_elr = st.text_input("ELR", placeholder="e.g. CGJ3", key="hz_elr").upper()
+            hz_elr_from = st.text_input("ELR FROM", placeholder="e.g. CGJ3", key="hz_elr_from").upper()
         with c2:
             hz_from = st.text_input("Mileage FROM", placeholder="e.g. 182m 10ch", key="hz_from")
         with c3:
+            hz_elr_to = st.text_input("ELR TO", placeholder="e.g. CGJ3 (or different)", key="hz_elr_to").upper()
+        with c4:
             hz_to = st.text_input("Mileage TO", placeholder="e.g. 182m 30ch", key="hz_to")
+
+        # Default ELR TO to ELR FROM if left blank
+        if not hz_elr_to and hz_elr_from:
+            hz_elr_to = hz_elr_from
 
         hz_search = st.button("🔍  EXTRACT HAZARDS", key="hz_btn")
 
         if hz_search:
-            if not hz_elr:
-                st.warning("Please enter an ELR.")
+            if not hz_elr_from:
+                st.warning("Please enter an ELR FROM.")
             elif not hz_from or not hz_to:
                 st.warning("Please enter mileage FROM and TO.")
             else:
@@ -560,27 +586,46 @@ else:
                 if from_dec is None or to_dec is None:
                     st.error("Invalid mileage format. Use e.g. 182m 10ch")
                 else:
-                    elr_data = hazard_df[hazard_df['ELR'] == hz_elr].copy()
+                    # Query both ELRs
+                    elrs_to_query = [hz_elr_from]
+                    if hz_elr_to and hz_elr_to != hz_elr_from:
+                        elrs_to_query.append(hz_elr_to)
 
-                    if elr_data.empty:
+                    frames = []
+                    for elr_q in elrs_to_query:
+                        elr_data = hazard_df[hazard_df['ELR'] == elr_q].copy()
+                        if not elr_data.empty:
+                            elr_data['mile_from'] = pd.to_numeric(
+                                elr_data['Mileage  From'], errors='coerce')
+                            elr_data['mile_to'] = pd.to_numeric(
+                                elr_data['Mileage To'], errors='coerce')
+
+                            if elr_q == hz_elr_from and elr_q == hz_elr_to:
+                                # Same ELR — normal overlap filter
+                                filt = elr_data[
+                                    ~(elr_data['mile_to'] < from_dec) &
+                                    ~(elr_data['mile_from'] > to_dec)
+                                ]
+                            elif elr_q == hz_elr_from:
+                                # FROM ELR — everything from mileage FROM onwards
+                                filt = elr_data[elr_data['mile_from'] >= from_dec]
+                            else:
+                                # TO ELR — everything up to mileage TO
+                                filt = elr_data[elr_data['mile_to'] <= to_dec]
+
+                            frames.append(filt)
+
+                    if not frames:
                         st.markdown(f"""
                         <div class="pps-card pps-card-amber">
                           <span class="badge badge-amber">No results</span>
                           <span style="margin-left:1rem;font-size:0.85rem">
-                            ELR <b>{hz_elr}</b> not found in loaded data.
+                            ELR(s) not found in loaded data.
                           </span>
                         </div>
                         """, unsafe_allow_html=True)
                     else:
-                        elr_data['mile_from'] = pd.to_numeric(
-                            elr_data['Mileage  From'], errors='coerce')
-                        elr_data['mile_to'] = pd.to_numeric(
-                            elr_data['Mileage To'], errors='coerce')
-
-                        filtered = elr_data[
-                            ~(elr_data['mile_to'] < from_dec) &
-                            ~(elr_data['mile_from'] > to_dec)
-                        ].copy()
+                        filtered = pd.concat(frames, ignore_index=True)
 
                         display_cols = ['ELR', 'ELR Name', 'Mileage  From',
                                         'Mileage To', 'Hazard Description',
@@ -589,6 +634,8 @@ else:
                             [c for c in display_cols if c in filtered.columns]
                         ].fillna('')
 
+                        elr_label = hz_elr_from if hz_elr_from == hz_elr_to else f"{hz_elr_from} to {hz_elr_to}"
+
                         st.markdown('<hr class="pps-divider">', unsafe_allow_html=True)
 
                         if filtered.empty:
@@ -596,7 +643,7 @@ else:
                             <div class="pps-card pps-card-green">
                               <span class="badge badge-green">✓ Clear</span>
                               <span style="margin-left:1rem;font-size:0.85rem">
-                                No hazards found for <b>{hz_elr}</b>
+                                No hazards found for <b>{elr_label}</b>
                                 {hz_from} — {hz_to}
                               </span>
                             </div>
@@ -622,21 +669,21 @@ else:
                             with mc3:
                                 st.markdown(f"""
                                 <div class="metric-box">
-                                  <div class="metric-num" style="color:{COLOURS['green']}">{hz_elr}</div>
+                                  <div class="metric-num" style="color:{COLOURS['green']}">{elr_label}</div>
                                   <div class="metric-lbl">ELR</div>
                                 </div>""", unsafe_allow_html=True)
 
-                            st.markdown(f"**Hazards for {hz_elr} — {hz_from} to {hz_to}:**")
+                            st.markdown(f"**Hazards for {elr_label} — {hz_from} to {hz_to}:**")
                             st.dataframe(filtered, use_container_width=True,
                                          hide_index=True)
 
-                            pdf_buf = generate_pdf(filtered, hz_elr, hz_from, hz_to,
+                            pdf_buf = generate_pdf(filtered, elr_label, hz_from, hz_to,
                                                    HAZARD_COLS, 'NWR Hazard Directory')
                             timestamp = datetime.now().strftime("%Y%m%d_%H%M")
                             st.download_button(
                                 "⬇  Download Hazard PDF",
                                 data=pdf_buf,
-                                file_name=f"NWR_Hazard_Directory_{hz_elr}_{timestamp}.pdf",
+                                file_name=f"NWR_Hazard_Directory_{hz_elr_from}_{timestamp}.pdf",
                                 mime="application/pdf",
                                 key="hz_pdf")
 
@@ -646,19 +693,25 @@ else:
     with tab2:
         st.markdown("#### Find access points for a mileage range")
 
-        ac1, ac2, ac3 = st.columns([2, 2, 2])
+        ac1, ac2, ac3, ac4 = st.columns([2, 2, 2, 2])
         with ac1:
-            ap_elr = st.text_input("ELR", placeholder="e.g. CGJ3", key="ap_elr").upper()
+            ap_elr_from = st.text_input("ELR FROM", placeholder="e.g. CGJ3", key="ap_elr_from").upper()
         with ac2:
             ap_from = st.text_input("Mileage FROM", placeholder="e.g. 182m 10ch", key="ap_from")
         with ac3:
+            ap_elr_to = st.text_input("ELR TO", placeholder="e.g. CGJ3 (or different)", key="ap_elr_to").upper()
+        with ac4:
             ap_to = st.text_input("Mileage TO", placeholder="e.g. 182m 30ch", key="ap_to")
+
+        # Default ELR TO to ELR FROM if left blank
+        if not ap_elr_to and ap_elr_from:
+            ap_elr_to = ap_elr_from
 
         ap_search = st.button("🔍  FIND ACCESS POINTS", key="ap_btn")
 
         if ap_search:
-            if not ap_elr:
-                st.warning("Please enter an ELR.")
+            if not ap_elr_from:
+                st.warning("Please enter an ELR FROM.")
             elif not ap_from or not ap_to:
                 st.warning("Please enter mileage FROM and TO.")
             else:
@@ -668,29 +721,48 @@ else:
                 if from_dec is None or to_dec is None:
                     st.error("Invalid mileage format. Use e.g. 182m 10ch")
                 else:
-                    # Filter to access points only, then by ELR
-                    ap_data = filter_access_points(hazard_df)
-                    ap_data = ap_data[ap_data['ELR'] == ap_elr].copy()
+                    # Filter to access points first
+                    all_ap = filter_access_points(hazard_df)
 
-                    if ap_data.empty:
+                    # Query both ELRs
+                    elrs_to_query = [ap_elr_from]
+                    if ap_elr_to and ap_elr_to != ap_elr_from:
+                        elrs_to_query.append(ap_elr_to)
+
+                    frames = []
+                    for elr_q in elrs_to_query:
+                        ap_data = all_ap[all_ap['ELR'] == elr_q].copy()
+                        if not ap_data.empty:
+                            ap_data['mile_from'] = pd.to_numeric(
+                                ap_data['Mileage  From'], errors='coerce')
+                            ap_data['mile_to'] = pd.to_numeric(
+                                ap_data['Mileage To'], errors='coerce')
+
+                            if elr_q == ap_elr_from and elr_q == ap_elr_to:
+                                filt = ap_data[
+                                    ~(ap_data['mile_to'] < from_dec) &
+                                    ~(ap_data['mile_from'] > to_dec)
+                                ]
+                            elif elr_q == ap_elr_from:
+                                filt = ap_data[ap_data['mile_from'] >= from_dec]
+                            else:
+                                filt = ap_data[ap_data['mile_to'] <= to_dec]
+
+                            frames.append(filt)
+
+                    elr_label = ap_elr_from if ap_elr_from == ap_elr_to else f"{ap_elr_from} to {ap_elr_to}"
+
+                    if not frames:
                         st.markdown(f"""
                         <div class="pps-card pps-card-amber">
                           <span class="badge badge-amber">No results</span>
                           <span style="margin-left:1rem;font-size:0.85rem">
-                            No access points found for ELR <b>{ap_elr}</b>.
+                            No access points found for ELR(s) <b>{elr_label}</b>.
                           </span>
                         </div>
                         """, unsafe_allow_html=True)
                     else:
-                        ap_data['mile_from'] = pd.to_numeric(
-                            ap_data['Mileage  From'], errors='coerce')
-                        ap_data['mile_to'] = pd.to_numeric(
-                            ap_data['Mileage To'], errors='coerce')
-
-                        filtered_ap = ap_data[
-                            ~(ap_data['mile_to'] < from_dec) &
-                            ~(ap_data['mile_from'] > to_dec)
-                        ].copy()
+                        filtered_ap = pd.concat(frames, ignore_index=True)
 
                         display_cols_ap = ['ELR', 'ELR Name', 'Mileage  From',
                                            'Hazard Description', 'Local Name',
@@ -720,7 +792,7 @@ else:
                             <div class="pps-card pps-card-amber">
                               <span class="badge badge-amber">No access points</span>
                               <span style="margin-left:1rem;font-size:0.85rem">
-                                No access points found for <b>{ap_elr}</b>
+                                No access points found for <b>{elr_label}</b>
                                 {ap_from} — {ap_to}
                               </span>
                             </div>
@@ -760,16 +832,106 @@ else:
                                   <div class="metric-lbl">Road-Rail</div>
                                 </div>""", unsafe_allow_html=True)
 
-                            st.markdown(f"**Access points for {ap_elr} — {ap_from} to {ap_to}:**")
+                            st.markdown(f"**Access points for {elr_label} — {ap_from} to {ap_to}:**")
                             st.dataframe(display_df, use_container_width=True,
                                          hide_index=True)
 
-                            pdf_buf = generate_pdf(filtered_ap, ap_elr, ap_from, ap_to,
+                            pdf_buf = generate_pdf(filtered_ap, elr_label, ap_from, ap_to,
                                                    ACCESS_COLS, 'Access Points')
                             timestamp = datetime.now().strftime("%Y%m%d_%H%M")
                             st.download_button(
                                 "⬇  Download Access Points PDF",
                                 data=pdf_buf,
-                                file_name=f"Access_Points_{ap_elr}_{timestamp}.pdf",
+                                file_name=f"Access_Points_{ap_elr_from}_{timestamp}.pdf",
                                 mime="application/pdf",
                                 key="ap_pdf")
+
+    # ═══════════════════════════════════════════════════════════════════
+    # TAB 3 — SIGNAL BOX CONTACTS
+    # ═══════════════════════════════════════════════════════════════════
+    with tab3:
+        st.markdown("#### Look up signal box / ECO contact details")
+
+        if signalbox_df is None or signalbox_df.empty:
+            st.markdown(f"""
+            <div class="pps-card pps-card-amber">
+              <span class="badge badge-amber">No data</span>
+              <span style="margin-left:1rem;font-size:0.85rem">
+                Place <b>signal_box_contacts.csv</b> in the <b>data</b> subfolder.
+              </span>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            sb1, sb2 = st.columns([3, 3])
+            with sb1:
+                sb_name = st.text_input("Search by name", placeholder="e.g. Rugby, Colwich, Crewe", key="sb_name")
+            with sb2:
+                sb_prefix = st.text_input("Search by signal prefix", placeholder="e.g. CE, SW, AJ", key="sb_prefix").upper()
+
+            sb_route = st.selectbox("Filter by route (optional)",
+                                    ["All routes"] + sorted(signalbox_df['Source'].dropna().unique().tolist()),
+                                    key="sb_route")
+
+            sb_search = st.button("🔍  SEARCH CONTACTS", key="sb_btn")
+
+            if sb_search:
+                results = signalbox_df.copy()
+
+                # Filter by route
+                if sb_route != "All routes":
+                    results = results[results['Source'] == sb_route]
+
+                # Filter by name
+                if sb_name:
+                    results = results[results['Signal Box'].str.contains(sb_name, case=False, na=False)]
+
+                # Filter by prefix
+                if sb_prefix:
+                    results = results[results['Signal Prefix'].str.upper().eq(sb_prefix)]
+
+                if not sb_name and not sb_prefix:
+                    st.warning("Please enter a name or signal prefix to search.")
+                elif results.empty:
+                    st.markdown(f"""
+                    <div class="pps-card pps-card-amber">
+                      <span class="badge badge-amber">No results</span>
+                      <span style="margin-left:1rem;font-size:0.85rem">
+                        No signal boxes found matching your search.
+                      </span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown('<hr class="pps-divider">', unsafe_allow_html=True)
+
+                    n_sb = len(results)
+                    st.markdown(f"""
+                    <div class="metric-box" style="margin-bottom:1rem;max-width:200px">
+                      <div class="metric-num" style="color:{COLOURS['green']}">{n_sb}</div>
+                      <div class="metric-lbl">Results</div>
+                    </div>""", unsafe_allow_html=True)
+
+                    # Clean display
+                    display_sb = results[['Signal Box', 'External Telephone', 'Signal Prefix', 'Source']].copy()
+                    display_sb = display_sb.fillna('')
+                    display_sb = display_sb.rename(columns={'Signal Box': 'Name', 'External Telephone': 'Phone', 'Signal Prefix': 'Prefix', 'Source': 'Route'})
+
+                    st.dataframe(display_sb, use_container_width=True, hide_index=True)
+
+                    # PDF download
+                    SIGNALBOX_COLS = [
+                        {'header': 'Signal Box / Panel / Workstation', 'field': 'Signal Box', 'width_pct': 0.40},
+                        {'header': 'External Telephone', 'field': 'External Telephone', 'width_pct': 0.25},
+                        {'header': 'Signal Prefix', 'field': 'Signal Prefix', 'width_pct': 0.15},
+                        {'header': 'Route', 'field': 'Source', 'width_pct': 0.20},
+                    ]
+
+                    search_desc = sb_name or sb_prefix or 'All'
+                    pdf_buf = generate_pdf(results, search_desc, '', '',
+                                           SIGNALBOX_COLS, 'Signal Box Contacts')
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+                    st.download_button(
+                        "⬇  Download Contacts PDF",
+                        data=pdf_buf,
+                        file_name=f"Signal_Box_Contacts_{search_desc}_{timestamp}.pdf",
+                        mime="application/pdf",
+                        key="sb_pdf")
