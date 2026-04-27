@@ -717,7 +717,21 @@ else:
 
     search = st.button("🔍  SEARCH WORKSITE")
 
+    # Persist search state so A&E text input doesn't reset results
     if search:
+        st.session_state['ws_search'] = True
+        st.session_state['ws_elr_from'] = elr_from
+        st.session_state['ws_elr_to'] = elr_to
+        st.session_state['ws_mil_from'] = mil_from
+        st.session_state['ws_mil_to'] = mil_to
+
+    if st.session_state.get('ws_search'):
+        # Use stored values so results persist when A&E search triggers rerun
+        elr_from = st.session_state.get('ws_elr_from', elr_from)
+        elr_to = st.session_state.get('ws_elr_to', elr_to)
+        mil_from = st.session_state.get('ws_mil_from', mil_from)
+        mil_to = st.session_state.get('ws_mil_to', mil_to)
+
         if not elr_from:
             st.warning("Please enter an ELR FROM.")
         elif not mil_from or not mil_to:
