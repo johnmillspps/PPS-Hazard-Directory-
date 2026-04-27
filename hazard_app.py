@@ -439,7 +439,7 @@ def enrich_access_points_with_coords(access_pts_df, ap_coords_df):
             lon = closest['longitude']
             lats.append(f"{lat:.5f}")
             lons.append(f"{lon:.5f}")
-            links.append(f"https://www.google.com/maps?q={lat},{lon}")
+            links.append(f"https://www.google.com/maps/search/{lat}+{lon}")
         else:
             lats.append('')
             lons.append('')
