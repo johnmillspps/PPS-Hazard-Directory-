@@ -376,6 +376,52 @@ def find_worksite_coords(elr_from, elr_to, from_dec, to_dec, ap_coords_df):
     return None, None, None
 
 
+def enrich_access_points_with_coords(access_pts_df, ap_coords_df):
+    """Add lat/lon and Google Maps link to access points by matching ELR + mileage."""
+    if ap_coords_df is None or ap_coords_df.empty or access_pts_df.empty:
+        return access_pts_df
+
+    lats, lons, links = [], [], []
+
+    for _, row in access_pts_df.iterrows():
+        elr = row.get('ELR', '')
+        mil_dec = pd.to_numeric(row.get('Mileage  From', None), errors='coerce')
+
+        if pd.isna(mil_dec) or not elr:
+            lats.append('')
+            lons.append('')
+            links.append('')
+            continue
+
+        matches = ap_coords_df[ap_coords_df['elr'] == elr].copy()
+        if matches.empty:
+            lats.append('')
+            lons.append('')
+            links.append('')
+            continue
+
+        matches['dist'] = (matches['mileage_decimal'] - mil_dec).abs()
+        closest = matches.nsmallest(1, 'dist').iloc[0]
+
+        # Only match if within ~0.5 decimal miles (about 0.5 miles)
+        if closest['dist'] < 0.5:
+            lat = closest['latitude']
+            lon = closest['longitude']
+            lats.append(f"{lat:.5f}")
+            lons.append(f"{lon:.5f}")
+            links.append(f"https://www.google.com/maps?q={lat},{lon}")
+        else:
+            lats.append('')
+            lons.append('')
+            links.append('')
+
+    result = access_pts_df.copy()
+    result['Lat'] = lats
+    result['Lon'] = lons
+    result['Google Maps'] = links
+    return result
+
+
 # ── Filter helpers ───────────────────────────────────────────────────────────
 def filter_access_points(df):
     """Filter DataFrame to only access point rows."""
@@ -552,13 +598,14 @@ HAZARD_COLS = [
 ]
 
 ACCESS_COLS = [
-    {'header': 'ELR',         'field': 'ELR',                'width_pct': 0.07},
-    {'header': 'ELR Name',    'field': 'ELR Name',           'width_pct': 0.18},
-    {'header': 'Mileage',     'field': 'Mileage  From',      'width_pct': 0.08},
-    {'header': 'Type',        'field': 'Hazard Description', 'width_pct': 0.18},
-    {'header': 'Local Name',  'field': 'Local Name',         'width_pct': 0.18},
-    {'header': 'Track',       'field': 'Track',              'width_pct': 0.10},
-    {'header': 'Details',     'field': 'Free Text',          'width_pct': 0.21},
+    {'header': 'ELR',         'field': 'ELR',                'width_pct': 0.06},
+    {'header': 'ELR Name',    'field': 'ELR Name',           'width_pct': 0.15},
+    {'header': 'Mileage',     'field': 'Mileage  From',      'width_pct': 0.07},
+    {'header': 'Type',        'field': 'Hazard Description', 'width_pct': 0.14},
+    {'header': 'Local Name',  'field': 'Local Name',         'width_pct': 0.14},
+    {'header': 'Track',       'field': 'Track',              'width_pct': 0.08},
+    {'header': 'Details',     'field': 'Free Text',          'width_pct': 0.18},
+    {'header': 'Google Maps', 'field': 'Google Maps',        'width_pct': 0.18},
 ]
 
 SIGNALBOX_COLS = [
@@ -785,6 +832,9 @@ else:
                         [c for c in display_cols_ap if c in access_pts.columns]
                     ].fillna('')
 
+                    # Enrich with coordinates and Google Maps links
+                    ap_display = enrich_access_points_with_coords(ap_display, ap_coords_df)
+
                     ap_show = ap_display.rename(columns={
                         'Mileage  From': 'Mileage',
                         'Hazard Description': 'Type',
@@ -792,14 +842,15 @@ else:
                     })
                     ap_show['Mileage'] = ap_show['Mileage'].apply(decimal_to_miles_chains)
 
-                    # Also convert for PDF
+                    # Also convert mileage for PDF
                     ap_display['Mileage  From'] = ap_display['Mileage  From'].apply(decimal_to_miles_chains)
 
                     n_ped = len(access_pts[access_pts['Hazard Description'].str.contains('Pedestrian', na=False)])
                     n_veh = len(access_pts[access_pts['Hazard Description'].str.contains('Vehicle', na=False)])
                     n_rr = len(access_pts[access_pts['Hazard Description'].str.contains('Road-Rail|Machines', na=False)])
+                    n_coords = len(ap_display[ap_display['Google Maps'] != ''])
 
-                    mc1, mc2, mc3, mc4 = st.columns(4)
+                    mc1, mc2, mc3, mc4, mc5 = st.columns(5)
                     with mc1:
                         st.markdown(f"""
                         <div class="metric-box">
@@ -824,8 +875,22 @@ else:
                           <div class="metric-num" style="color:{COLOURS['red']}">{n_rr}</div>
                           <div class="metric-lbl">Road-Rail</div>
                         </div>""", unsafe_allow_html=True)
+                    with mc5:
+                        st.markdown(f"""
+                        <div class="metric-box">
+                          <div class="metric-num" style="color:{COLOURS['nwr_blue']}">{n_coords}</div>
+                          <div class="metric-lbl">Map Links</div>
+                        </div>""", unsafe_allow_html=True)
 
-                    st.dataframe(ap_show, use_container_width=True, hide_index=True)
+                    # On-screen: show clickable Google Maps links
+                    ap_screen = ap_show.copy()
+                    if 'Google Maps' in ap_screen.columns:
+                        ap_screen['Location'] = ap_screen['Google Maps'].apply(
+                            lambda x: f'[Map]({x})' if x else '')
+                        ap_screen = ap_screen.drop(columns=['Google Maps', 'Lat', 'Lon'])
+
+                    st.dataframe(ap_screen, use_container_width=True, hide_index=True,
+                                 column_config={'Location': st.column_config.LinkColumn('Location', display_text='📍 Map')})
 
                     pdf_buf = generate_pdf(ap_display, elr_label, mil_from, mil_to,
                                            ACCESS_COLS, 'Access Points')
