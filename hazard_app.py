@@ -314,6 +314,36 @@ def load_access_points_coords():
         return None
 
 
+# ── Auto-load signal box areas ───────────────────────────────────────────────
+@st.cache_data
+def load_signal_box_areas():
+    """Load signal box areas CSV from the data subfolder."""
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    csv_path = os.path.join(data_dir, 'signal_box_areas.csv')
+    if not os.path.exists(csv_path):
+        return None
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8-sig')
+        return df
+    except Exception:
+        return None
+
+
+# ── Auto-load line names ─────────────────────────────────────────────────────
+@st.cache_data
+def load_line_names():
+    """Load line names CSV from the data subfolder."""
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    csv_path = os.path.join(data_dir, 'line_names.csv')
+    if not os.path.exists(csv_path):
+        return None
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8-sig')
+        return df
+    except Exception:
+        return None
+
+
 def find_nearest_ae(lat, lon, ae_df, n=3):
     """Find the n nearest Type 1 A&E departments to a given lat/lon using haversine."""
     import math
@@ -420,6 +450,103 @@ def enrich_access_points_with_coords(access_pts_df, ap_coords_df):
     result['Lon'] = lons
     result['Google Maps'] = links
     return result
+
+
+def find_signal_boxes_for_mileage(elr_from, elr_to, from_ch, to_ch, sba_df, signalbox_df):
+    """Find signal boxes covering a mileage range and match with contact details."""
+    if sba_df is None or sba_df.empty:
+        return []
+
+    elrs = [elr_from]
+    if elr_to and elr_to != elr_from:
+        elrs.append(elr_to)
+
+    found_boxes = []
+    seen_names = set()
+
+    for elr_q in elrs:
+        matches = sba_df[
+            (sba_df['elr'] == elr_q) &
+            (sba_df['mileage_from_ch'] <= to_ch) &
+            (sba_df['mileage_to_ch'] >= from_ch)
+        ]
+        for _, row in matches.iterrows():
+            box_name = str(row['signal_box_name']).strip()
+            if box_name in seen_names or len(box_name) < 3:
+                continue
+            seen_names.add(box_name)
+
+            phone = ''
+            prefix = str(row.get('signal_prefix', '')).strip()
+            if prefix == 'nan':
+                prefix = ''
+            eco_name = str(row.get('eco_name', '')).strip()
+            if eco_name == 'nan':
+                eco_name = ''
+            eco_type = str(row.get('eco_type', '')).strip()
+            if eco_type == 'nan':
+                eco_type = ''
+
+            if signalbox_df is not None and not signalbox_df.empty and box_name:
+                first_word = box_name.split()[0] if box_name else ''
+                contact_match = signalbox_df[
+                    signalbox_df['Signal Box'].str.contains(first_word, case=False, na=False)
+                ]
+                if not contact_match.empty:
+                    phone = str(contact_match.iloc[0].get('External Telephone', '')).strip()
+                if (not phone or phone == 'nan') and prefix:
+                    prefix_match = signalbox_df[
+                        signalbox_df['Signal Prefix'].str.upper().eq(prefix.upper())
+                    ]
+                    if not prefix_match.empty:
+                        phone = str(prefix_match.iloc[0].get('External Telephone', '')).strip()
+            if phone == 'nan':
+                phone = ''
+
+            eco_str = f"{eco_name} {eco_type}".strip()
+
+            found_boxes.append({
+                'Signal Box': box_name,
+                'Prefix': prefix,
+                'Phone': phone,
+                'ECO': eco_str,
+                'ELR': elr_q,
+                'Coverage': f"{row.get('mileage_from_raw', '')} to {row.get('mileage_to_raw', '')}",
+            })
+
+    return found_boxes
+
+
+def find_line_names_for_mileage(elr_from, elr_to, from_ch, to_ch, ln_df):
+    """Find line names covering a mileage range."""
+    if ln_df is None or ln_df.empty:
+        return []
+
+    elrs = [elr_from]
+    if elr_to and elr_to != elr_from:
+        elrs.append(elr_to)
+
+    found_lines = []
+    seen = set()
+
+    for elr_q in elrs:
+        matches = ln_df[
+            (ln_df['elr'] == elr_q) &
+            (ln_df['mileage_from_ch'] <= to_ch) &
+            (ln_df['mileage_to_ch'] >= from_ch)
+        ]
+        for _, row in matches.iterrows():
+            abbr = str(row['abbreviation']).strip()
+            full = str(row['full_name']).strip()
+            key = f"{abbr}_{full}"
+            if key not in seen:
+                seen.add(key)
+                found_lines.append({
+                    'Abbreviation': abbr,
+                    'Line Name': full,
+                })
+
+    return found_lines
 
 
 # ── Filter helpers ───────────────────────────────────────────────────────────
@@ -640,7 +767,7 @@ st.markdown(f"""
     <div style="font-family: Barlow Condensed, sans-serif; font-size: 1.6rem; font-weight: 700; color: white; letter-spacing: 0.05em;">
       Worksite Intelligence</div>
     <div style="font-size: 0.8rem; color: {COLOURS['muted']}; letter-spacing: 0.1em; text-transform: uppercase;">
-      Hazards &bull; Access Points &bull; Signal Box Contacts &bull; Nearest A&amp;E</div>
+      Hazards &bull; Access Points &bull; Signal Boxes &bull; Lines &bull; Nearest A&amp;E</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -650,6 +777,8 @@ hazard_df, loaded_files, total_files = load_all_hazard_csvs()
 signalbox_df = load_signal_box_contacts()
 ae_df = load_ae_departments()
 ap_coords_df = load_access_points_coords()
+sba_df = load_signal_box_areas()
+ln_df = load_line_names()
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -899,8 +1028,8 @@ else:
                         file_name=f"Access_Points_{elr_from}_{timestamp}.pdf",
                         mime="application/pdf", key="ap_pdf")
 
-                # ─── SECTION 3: SIGNAL BOX CONTACTS ──────────────────────
-                st.markdown(f'<div class="section-header">📞  SIGNAL BOX CONTACTS</div>',
+                # ─── SECTION 3: SIGNAL BOX CONTACTS & LINE NAMES ─────────
+                st.markdown(f'<div class="section-header">📞  SIGNAL BOX CONTACTS — {elr_label} {mil_from} to {mil_to}</div>',
                             unsafe_allow_html=True)
 
                 if signalbox_df is None or signalbox_df.empty:
@@ -913,14 +1042,41 @@ else:
                     </div>
                     """, unsafe_allow_html=True)
                 else:
-                    # Find signal boxes by searching for signal prefixes
-                    # that appear in the hazards/access points results
-                    st.markdown(f"""
-                    <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
-                      Search by signal box name or signal prefix to find contact details for this area.
-                    </div>
-                    """, unsafe_allow_html=True)
+                    # Convert mileage to chains for signal box lookup
+                    from_ch = int(from_dec) * 80 + round((from_dec - int(from_dec)) * 10000 / 22)
+                    to_ch = int(to_dec) * 80 + round((to_dec - int(to_dec)) * 10000 / 22)
 
+                    # Auto-detect signal boxes from mileage
+                    auto_boxes = find_signal_boxes_for_mileage(
+                        elr_from, elr_to, from_ch, to_ch, sba_df, signalbox_df)
+
+                    if auto_boxes:
+                        st.markdown(f"""
+                        <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
+                          <div class="metric-num" style="color:{COLOURS['green']}">{len(auto_boxes)}</div>
+                          <div class="metric-lbl">Signal boxes found</div>
+                        </div>""", unsafe_allow_html=True)
+
+                        for box in auto_boxes:
+                            phone_display = f" — <b>{box['Phone']}</b>" if box['Phone'] else ""
+                            eco_display = f"<br/><span style='font-size:0.78rem'>ECO: {box['ECO']}</span>" if box['ECO'] else ""
+                            prefix_display = f" ({box['Prefix']})" if box['Prefix'] else ""
+                            st.markdown(f"""
+                            <div class="pps-card pps-card-green">
+                              <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600">
+                                {box['Signal Box']}{prefix_display}{phone_display}</div>
+                              <div style="font-size:0.82rem;color:{COLOURS['muted']};margin-top:0.2rem">
+                                {box['ELR']} {box['Coverage']}{eco_display}</div>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"""
+                        <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
+                          No signal box areas found for this ELR/mileage — use manual search below.
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                    # Manual search fallback
                     sb1, sb2 = st.columns([3, 3])
                     with sb1:
                         sb_name = st.text_input("Search by name", placeholder="e.g. Rugby, Colwich, Crewe", key="sb_name")
@@ -954,12 +1110,6 @@ else:
                                 'Source': 'Route',
                             })
 
-                            st.markdown(f"""
-                            <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
-                              <div class="metric-num" style="color:{COLOURS['green']}">{len(results)}</div>
-                              <div class="metric-lbl">Contacts found</div>
-                            </div>""", unsafe_allow_html=True)
-
                             st.dataframe(display_sb, use_container_width=True, hide_index=True)
 
                             search_desc = sb_name or sb_prefix
@@ -969,6 +1119,26 @@ else:
                                 "⬇  Download Contacts PDF", data=pdf_buf,
                                 file_name=f"Signal_Box_Contacts_{search_desc}_{timestamp}.pdf",
                                 mime="application/pdf", key="sb_pdf")
+
+                # ─── SECTION 3b: LINE NAMES ──────────────────────────────
+                auto_lines = find_line_names_for_mileage(
+                    elr_from, elr_to,
+                    int(from_dec) * 80 + round((from_dec - int(from_dec)) * 10000 / 22),
+                    int(to_dec) * 80 + round((to_dec - int(to_dec)) * 10000 / 22),
+                    ln_df)
+
+                if auto_lines:
+                    st.markdown(f'<div class="section-header">🚂  LINES AT SITE — {elr_label} {mil_from} to {mil_to}</div>',
+                                unsafe_allow_html=True)
+
+                    st.markdown(f"""
+                    <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
+                      <div class="metric-num" style="color:{COLOURS['text']}">{len(auto_lines)}</div>
+                      <div class="metric-lbl">Lines</div>
+                    </div>""", unsafe_allow_html=True)
+
+                    lines_df = pd.DataFrame(auto_lines)
+                    st.dataframe(lines_df, use_container_width=True, hide_index=True)
 
                 # ─── SECTION 4: NEAREST A&E ──────────────────────────────
                 st.markdown(f'<div class="section-header">🏥  NEAREST A&amp;E — 24hr Type 1 Emergency Departments</div>',
