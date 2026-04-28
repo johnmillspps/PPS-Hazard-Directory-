@@ -211,6 +211,25 @@ st.markdown(f"""
   .stSelectbox [data-baseweb="select"] * {{
     color: black !important;
   }}
+  .stSelectbox [data-baseweb="popover"] * {{
+    color: black !important;
+    background-color: white !important;
+  }}
+  .stSelectbox [data-baseweb="menu"] * {{
+    color: black !important;
+  }}
+  [data-baseweb="popover"] {{
+    background-color: white !important;
+  }}
+  [data-baseweb="popover"] li {{
+    color: black !important;
+  }}
+  [data-baseweb="menu"] {{
+    background-color: white !important;
+  }}
+  [data-baseweb="menu"] li {{
+    color: black !important;
+  }}
   .stMultiSelect [data-baseweb="select"] {{
     background-color: white !important;
   }}
@@ -224,6 +243,10 @@ st.markdown(f"""
     color: white !important;
   }}
   .stTextArea textarea {{
+    background-color: white !important;
+    color: black !important;
+  }}
+  .stTextInput input {{
     background-color: white !important;
     color: black !important;
   }}
@@ -1841,16 +1864,24 @@ else:
             # ── Hazards Summary ──
             st.markdown(f'<div class="section-header" style="font-size:0.95rem">⚠️  Hazards from Directory ({len(swp_hazards_df)})</div>', unsafe_allow_html=True)
             if not swp_hazards_df.empty:
-                display_cols = [c for c in ['ELR', 'Mileage  From', 'Mileage To', 'Hazard Description', 'Local Name', 'Free Text'] if c in swp_hazards_df.columns]
-                st.dataframe(swp_hazards_df[display_cols].fillna(''), use_container_width=True, hide_index=True, height=200)
+                swp_haz_display = swp_hazards_df.copy()
+                if 'Mileage  From' in swp_haz_display.columns:
+                    swp_haz_display['Mileage  From'] = swp_haz_display['Mileage  From'].apply(decimal_to_miles_chains)
+                if 'Mileage To' in swp_haz_display.columns:
+                    swp_haz_display['Mileage To'] = swp_haz_display['Mileage To'].apply(decimal_to_miles_chains)
+                display_cols = [c for c in ['ELR', 'Mileage  From', 'Mileage To', 'Hazard Description', 'Local Name', 'Free Text'] if c in swp_haz_display.columns]
+                st.dataframe(swp_haz_display[display_cols].fillna(''), use_container_width=True, hide_index=True, height=200)
             else:
                 st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No hazards found.</div>", unsafe_allow_html=True)
 
             # ── Access Points Summary ──
             st.markdown(f'<div class="section-header" style="font-size:0.95rem">🚪  Access Points ({len(swp_access_df)})</div>', unsafe_allow_html=True)
             if not swp_access_df.empty:
-                display_cols = [c for c in ['ELR', 'Mileage  From', 'Hazard Description', 'Local Name', 'Free Text', 'Google Maps'] if c in swp_access_df.columns]
-                st.dataframe(swp_access_df[display_cols].fillna(''), use_container_width=True, hide_index=True, height=200)
+                swp_ap_display = swp_access_df.copy()
+                if 'Mileage  From' in swp_ap_display.columns:
+                    swp_ap_display['Mileage  From'] = swp_ap_display['Mileage  From'].apply(decimal_to_miles_chains)
+                display_cols = [c for c in ['ELR', 'Mileage  From', 'Hazard Description', 'Local Name', 'Free Text', 'Google Maps'] if c in swp_ap_display.columns]
+                st.dataframe(swp_ap_display[display_cols].fillna(''), use_container_width=True, hide_index=True, height=200)
             else:
                 st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No access points found.</div>", unsafe_allow_html=True)
 
