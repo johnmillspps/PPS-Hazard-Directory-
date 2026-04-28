@@ -452,6 +452,28 @@ def enrich_access_points_with_coords(access_pts_df, ap_coords_df):
     return result
 
 
+def format_phone_numbers(raw_phone):
+    """Format phone numbers that may be concatenated into separate lines.
+
+    Splits strings like '033 085 41095 (emergency only) 033 085 41096 01270 255 582'
+    into individual numbers, each on its own line.
+    """
+    if not raw_phone or raw_phone == 'nan':
+        return ''
+    raw_phone = str(raw_phone).strip()
+    if not raw_phone:
+        return ''
+
+    # Find all UK phone numbers: start with 0, then digits/spaces totalling 10-11 digits
+    # Optionally followed by a parenthetical note like '(emergency only)'
+    numbers = re.findall(
+        r'(0(?:\d[\s]?){9,10}(?:\s*\([^)]+\))?)', raw_phone
+    )
+    if len(numbers) <= 1:
+        return raw_phone
+    return '<br/>'.join(n.strip() for n in numbers)
+
+
 def find_signal_boxes_for_mileage(elr_from, elr_to, from_ch, to_ch, sba_df, signalbox_df):
     """Find signal boxes covering a mileage range and match with contact details."""
     if sba_df is None or sba_df.empty:
@@ -506,7 +528,7 @@ def find_signal_boxes_for_mileage(elr_from, elr_to, from_ch, to_ch, sba_df, sign
             if phone == 'nan':
                 phone = ''
 
-            eco_str = f"{eco_name} {eco_type}".strip()
+            eco_str = f"{eco_name.rstrip('. ')} {eco_type}".strip()
 
             # Look up ECR phone number from contacts
             eco_phone = ''
@@ -561,6 +583,9 @@ def find_line_names_for_mileage(elr_from, elr_to, from_ch, to_ch, ln_df):
             (ln_df['mileage_from_ch'] <= to_ch) &
             (ln_df['mileage_to_ch'] >= from_ch)
         ]
+        # Fallback: if no mileage overlap found, show all line names on this ELR
+        if matches.empty:
+            matches = ln_df[ln_df['elr'] == elr_q]
         for _, row in matches.iterrows():
             abbr = str(row['abbreviation']).strip()
             full = str(row['full_name']).strip()
@@ -1098,7 +1123,7 @@ else:
                             eco_parts = []
                             if box.get('ECO'):
                                 eco_label = box['ECO']
-                                eco_phone = box.get('ECO Phone', '')
+                                eco_phone = format_phone_numbers(box.get('ECO Phone', ''))
                                 if eco_phone:
                                     eco_parts.append(f"ECR: {eco_label} — <b>{eco_phone}</b>")
                                 else:
@@ -1182,6 +1207,14 @@ else:
 
                     lines_df = pd.DataFrame(auto_lines)
                     st.dataframe(lines_df, use_container_width=True, hide_index=True)
+                else:
+                    st.markdown(f'<div class="section-header">🚂  LINES AT SITE — {elr_label} {mil_from} to {mil_to}</div>',
+                                unsafe_allow_html=True)
+                    st.markdown(f"""
+                    <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
+                      No line name data found for this ELR/mileage.
+                    </div>
+                    """, unsafe_allow_html=True)
 
                 # ─── SECTION 4: NEAREST A&E ──────────────────────────────
                 st.markdown(f'<div class="section-header">🏥  NEAREST A&amp;E — 24hr Type 1 Emergency Departments</div>',
