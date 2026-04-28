@@ -217,6 +217,12 @@ st.markdown(f"""
   .stMultiSelect [data-baseweb="select"] * {{
     color: black !important;
   }}
+  .stMultiSelect [data-baseweb="tag"] {{
+    background-color: {COLOURS['green']} !important;
+  }}
+  .stMultiSelect [data-baseweb="tag"] * {{
+    color: white !important;
+  }}
   .stTextArea textarea {{
     background-color: white !important;
     color: black !important;
