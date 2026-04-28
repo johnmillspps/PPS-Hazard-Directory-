@@ -204,6 +204,23 @@ st.markdown(f"""
   .stDataFrame {{
     color: {COLOURS['white']} !important;
   }}
+
+  .stSelectbox [data-baseweb="select"] {{
+    background-color: white !important;
+  }}
+  .stSelectbox [data-baseweb="select"] * {{
+    color: black !important;
+  }}
+  .stMultiSelect [data-baseweb="select"] {{
+    background-color: white !important;
+  }}
+  .stMultiSelect [data-baseweb="select"] * {{
+    color: black !important;
+  }}
+  .stTextArea textarea {{
+    background-color: white !important;
+    color: black !important;
+  }}
 </style>
 """, unsafe_allow_html=True)
 
