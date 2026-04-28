@@ -508,11 +508,34 @@ def find_signal_boxes_for_mileage(elr_from, elr_to, from_ch, to_ch, sba_df, sign
 
             eco_str = f"{eco_name} {eco_type}".strip()
 
+            # Look up ECR phone number from contacts
+            eco_phone = ''
+            if eco_name and signalbox_df is not None and not signalbox_df.empty:
+                # Search for ECR/ECO entry matching the eco_name
+                eco_search = eco_name.split()[0] if eco_name else ''
+                if eco_search:
+                    ecr_match = signalbox_df[
+                        signalbox_df['Signal Box'].str.contains(eco_search, case=False, na=False) &
+                        signalbox_df['Signal Box'].str.contains('ECR|ECO|Electrical', case=False, na=False, regex=True)
+                    ]
+                    if not ecr_match.empty:
+                        eco_phone = str(ecr_match.iloc[0].get('External Telephone', '')).strip()
+                    if not eco_phone or eco_phone == 'nan':
+                        # Try matching just the location name + ECR
+                        ecr_match2 = signalbox_df[
+                            signalbox_df['Signal Box'].str.contains(f'{eco_search}.*ECR', case=False, na=False, regex=True)
+                        ]
+                        if not ecr_match2.empty:
+                            eco_phone = str(ecr_match2.iloc[0].get('External Telephone', '')).strip()
+                if eco_phone == 'nan':
+                    eco_phone = ''
+
             found_boxes.append({
                 'Signal Box': box_name,
                 'Prefix': prefix,
                 'Phone': phone,
                 'ECO': eco_str,
+                'ECO Phone': eco_phone,
                 'ELR': elr_q,
                 'Coverage': f"{row.get('mileage_from_raw', '')} to {row.get('mileage_to_raw', '')}",
             })
@@ -1070,8 +1093,17 @@ else:
 
                         for box in auto_boxes:
                             phone_display = f" — <b>{box['Phone']}</b>" if box['Phone'] else ""
-                            eco_display = f"<br/><span style='font-size:0.78rem'>ECO: {box['ECO']}</span>" if box['ECO'] else ""
                             prefix_display = f" ({box['Prefix']})" if box['Prefix'] else ""
+                            # Build ECR display with phone if available
+                            eco_parts = []
+                            if box.get('ECO'):
+                                eco_label = box['ECO']
+                                eco_phone = box.get('ECO Phone', '')
+                                if eco_phone:
+                                    eco_parts.append(f"ECR: {eco_label} — <b>{eco_phone}</b>")
+                                else:
+                                    eco_parts.append(f"ECR: {eco_label}")
+                            eco_display = f"<br/><span style='font-size:0.78rem'>{'<br/>'.join(eco_parts)}</span>" if eco_parts else ""
                             st.markdown(f"""
                             <div class="pps-card pps-card-green">
                               <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600">
