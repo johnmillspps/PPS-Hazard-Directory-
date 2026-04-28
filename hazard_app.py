@@ -2041,10 +2041,13 @@ else:
                     return er + 1
 
                 def footer(r):
-                    ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=12)
+                    ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=8)
                     ws.cell(row=r, column=1, value="Issue 7 Dec 2025").font = fn_ft
-                    ws.merge_cells(start_row=r, start_column=13, end_row=r, end_column=25)
-                    ws.cell(row=r, column=13, value="Amended to Issue 13 019 Standard").font = fn_ft
+                    ws.merge_cells(start_row=r, start_column=9, end_row=r, end_column=18)
+                    ws.cell(row=r, column=9, value="Amended to Issue 13 019 Standard").font = fn_ft
+                    ws.merge_cells(start_row=r, start_column=19, end_row=r, end_column=25)
+                    ws.cell(row=r, column=19, value=swp_ref).font = fn_ft
+                    ws.cell(row=r, column=19).alignment = Alignment(horizontal='right')
                     return r + 1
 
                 def PB(r):
@@ -2065,15 +2068,20 @@ else:
                                os.path.join(app_dir, 'data', 'PPS_rail_logo.jpg')]:
                         if os.path.exists(lp):
                             img = XlImage(lp)
-                            img.width = 150; img.height = 42
+                            img.width = 220; img.height = 60
                             ws.add_image(img, 'S1')
                             break
                 except Exception:
                     pass
 
-                ws.row_dimensions[1].height = 24
+                ws.row_dimensions[1].height = 32
                 row = 2
-                row = MC(row, 1, 25, "SAFE WORK PACK", fn_t, None, cc, 30)
+                # Title — no border, just centred text
+                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=25)
+                ws.cell(row=row, column=1, value="SAFE WORK PACK").font = fn_t
+                ws.cell(row=row, column=1).alignment = cc
+                ws.row_dimensions[row].height = 34
+                row += 1
                 row += 1  # blank row
 
                 # Job details — FULL WIDTH col 1-25
