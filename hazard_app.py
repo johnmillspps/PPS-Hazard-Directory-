@@ -826,7 +826,7 @@ st.markdown(f"""
     <div style="font-family: Barlow Condensed, sans-serif; font-size: 1.6rem; font-weight: 700; color: white; letter-spacing: 0.05em;">
       Worksite Intelligence</div>
     <div style="font-size: 0.8rem; color: {COLOURS['muted']}; letter-spacing: 0.1em; text-transform: uppercase;">
-      Hazards &bull; Access Points &bull; Signal Boxes &bull; Lines &bull; Nearest A&amp;E</div>
+      Hazards &bull; Access Points &bull; Signal Boxes &bull; Lines &bull; Nearest A&amp;E &bull; SWP Builder</div>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -912,336 +912,590 @@ if hazard_df is None or hazard_df.empty:
     </div>
     """, unsafe_allow_html=True)
 else:
-    st.markdown("#### Enter your worksite mileage range")
+    tab_ws, tab_swp = st.tabs(["🔍  Worksite Intelligence", "📋  SWP Builder"])
 
-    c1, c2, c3, c4 = st.columns([2, 2, 2, 2])
-    with c1:
-        elr_from = st.text_input("ELR FROM", placeholder="e.g. CGJ3").upper()
-    with c2:
-        mil_from = st.text_input("Mileage FROM", placeholder="e.g. 182m 10ch")
-    with c3:
-        elr_to = st.text_input("ELR TO", placeholder="e.g. CGJ3 (or different)").upper()
-    with c4:
-        mil_to = st.text_input("Mileage TO", placeholder="e.g. 182m 30ch")
+    with tab_ws:
+        st.markdown("#### Enter your worksite mileage range")
 
-    # Default ELR TO to ELR FROM if left blank
-    if not elr_to and elr_from:
-        elr_to = elr_from
+        c1, c2, c3, c4 = st.columns([2, 2, 2, 2])
+        with c1:
+            elr_from = st.text_input("ELR FROM", placeholder="e.g. CGJ3").upper()
+        with c2:
+            mil_from = st.text_input("Mileage FROM", placeholder="e.g. 182m 10ch")
+        with c3:
+            elr_to = st.text_input("ELR TO", placeholder="e.g. CGJ3 (or different)").upper()
+        with c4:
+            mil_to = st.text_input("Mileage TO", placeholder="e.g. 182m 30ch")
 
-    search = st.button("🔍  SEARCH WORKSITE")
+        # Default ELR TO to ELR FROM if left blank
+        if not elr_to and elr_from:
+            elr_to = elr_from
 
-    # Persist search state so A&E text input doesn't reset results
-    if search:
-        st.session_state['ws_search'] = True
-        st.session_state['ws_elr_from'] = elr_from
-        st.session_state['ws_elr_to'] = elr_to
-        st.session_state['ws_mil_from'] = mil_from
-        st.session_state['ws_mil_to'] = mil_to
+        search = st.button("🔍  SEARCH WORKSITE")
 
-    if st.session_state.get('ws_search'):
-        # Use stored values so results persist when A&E search triggers rerun
-        elr_from = st.session_state.get('ws_elr_from', elr_from)
-        elr_to = st.session_state.get('ws_elr_to', elr_to)
-        mil_from = st.session_state.get('ws_mil_from', mil_from)
-        mil_to = st.session_state.get('ws_mil_to', mil_to)
+        # Persist search state so A&E text input doesn't reset results
+        if search:
+            st.session_state['ws_search'] = True
+            st.session_state['ws_elr_from'] = elr_from
+            st.session_state['ws_elr_to'] = elr_to
+            st.session_state['ws_mil_from'] = mil_from
+            st.session_state['ws_mil_to'] = mil_to
 
-        if not elr_from:
-            st.warning("Please enter an ELR FROM.")
-        elif not mil_from or not mil_to:
-            st.warning("Please enter mileage FROM and TO.")
-        else:
-            from_dec = mileage_to_decimal(mil_from)
-            to_dec = mileage_to_decimal(mil_to)
+        if st.session_state.get('ws_search'):
+            # Use stored values so results persist when A&E search triggers rerun
+            elr_from = st.session_state.get('ws_elr_from', elr_from)
+            elr_to = st.session_state.get('ws_elr_to', elr_to)
+            mil_from = st.session_state.get('ws_mil_from', mil_from)
+            mil_to = st.session_state.get('ws_mil_to', mil_to)
 
-            if from_dec is None or to_dec is None:
-                st.error("Invalid mileage format. Use e.g. 182m 10ch")
+            if not elr_from:
+                st.warning("Please enter an ELR FROM.")
+            elif not mil_from or not mil_to:
+                st.warning("Please enter mileage FROM and TO.")
             else:
-                elr_label = elr_from if elr_from == elr_to else f"{elr_from} to {elr_to}"
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+                from_dec = mileage_to_decimal(mil_from)
+                to_dec = mileage_to_decimal(mil_to)
 
-                # ─── SECTION 1: HAZARDS ──────────────────────────────────
-                st.markdown(f'<div class="section-header">⚠️  HAZARDS — {elr_label} {mil_from} to {mil_to}</div>',
-                            unsafe_allow_html=True)
-
-                all_in_range = query_by_elr_mileage(hazard_df, elr_from, elr_to, from_dec, to_dec)
-                hazards = filter_hazards_only(all_in_range) if not all_in_range.empty else pd.DataFrame()
-
-                if hazards.empty:
-                    st.markdown(f"""
-                    <div class="pps-card pps-card-green">
-                      <span class="badge badge-green">&#10003; Clear</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">No hazards found</span>
-                    </div>
-                    """, unsafe_allow_html=True)
+                if from_dec is None or to_dec is None:
+                    st.error("Invalid mileage format. Use e.g. 182m 10ch")
                 else:
-                    display_cols = ['ELR', 'ELR Name', 'Mileage  From',
-                                    'Mileage To', 'Hazard Description',
-                                    'Local Name', 'Track', 'Free Text']
-                    hz_display = hazards[
-                        [c for c in display_cols if c in hazards.columns]
-                    ].fillna('')
+                    elr_label = elr_from if elr_from == elr_to else f"{elr_from} to {elr_to}"
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
 
-                    mc1, mc2 = st.columns([1, 5])
-                    with mc1:
+                    # ─── SECTION 1: HAZARDS ──────────────────────────────────
+                    st.markdown(f'<div class="section-header">⚠️  HAZARDS — {elr_label} {mil_from} to {mil_to}</div>',
+                                unsafe_allow_html=True)
+
+                    all_in_range = query_by_elr_mileage(hazard_df, elr_from, elr_to, from_dec, to_dec)
+                    hazards = filter_hazards_only(all_in_range) if not all_in_range.empty else pd.DataFrame()
+
+                    if hazards.empty:
                         st.markdown(f"""
-                        <div class="metric-box">
-                          <div class="metric-num" style="color:{COLOURS['amber']}">{len(hz_display)}</div>
-                          <div class="metric-lbl">Hazards</div>
-                        </div>""", unsafe_allow_html=True)
+                        <div class="pps-card pps-card-green">
+                          <span class="badge badge-green">&#10003; Clear</span>
+                          <span style="margin-left:1rem;font-size:0.85rem">No hazards found</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        display_cols = ['ELR', 'ELR Name', 'Mileage  From',
+                                        'Mileage To', 'Hazard Description',
+                                        'Local Name', 'Track', 'Free Text']
+                        hz_display = hazards[
+                            [c for c in display_cols if c in hazards.columns]
+                        ].fillna('')
 
-                    st.dataframe(hz_display, use_container_width=True, hide_index=True)
+                        mc1, mc2 = st.columns([1, 5])
+                        with mc1:
+                            st.markdown(f"""
+                            <div class="metric-box">
+                              <div class="metric-num" style="color:{COLOURS['amber']}">{len(hz_display)}</div>
+                              <div class="metric-lbl">Hazards</div>
+                            </div>""", unsafe_allow_html=True)
 
-                    pdf_buf = generate_pdf(hz_display, elr_label, mil_from, mil_to,
-                                           HAZARD_COLS, 'NWR Hazard Directory')
-                    st.download_button(
-                        "⬇  Download Hazard PDF", data=pdf_buf,
-                        file_name=f"Hazards_{elr_from}_{timestamp}.pdf",
-                        mime="application/pdf", key="hz_pdf")
+                        st.dataframe(hz_display, use_container_width=True, hide_index=True)
 
-                # ─── SECTION 2: ACCESS POINTS ────────────────────────────
-                st.markdown(f'<div class="section-header">🚪  ACCESS POINTS — {elr_label} {mil_from} to {mil_to}</div>',
-                            unsafe_allow_html=True)
+                        pdf_buf = generate_pdf(hz_display, elr_label, mil_from, mil_to,
+                                               HAZARD_COLS, 'NWR Hazard Directory')
+                        st.download_button(
+                            "⬇  Download Hazard PDF", data=pdf_buf,
+                            file_name=f"Hazards_{elr_from}_{timestamp}.pdf",
+                            mime="application/pdf", key="hz_pdf")
 
-                ap_all = filter_access_points(hazard_df)
-                access_pts = query_by_elr_mileage(ap_all, elr_from, elr_to, from_dec, to_dec) if not ap_all.empty else pd.DataFrame()
+                    # ─── SECTION 2: ACCESS POINTS ────────────────────────────
+                    st.markdown(f'<div class="section-header">🚪  ACCESS POINTS — {elr_label} {mil_from} to {mil_to}</div>',
+                                unsafe_allow_html=True)
 
-                if access_pts.empty:
-                    st.markdown(f"""
-                    <div class="pps-card pps-card-amber">
-                      <span class="badge badge-amber">No access points</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">No access points found in range</span>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    display_cols_ap = ['ELR', 'ELR Name', 'Mileage  From',
-                                       'Hazard Description', 'Local Name',
-                                       'Track', 'Free Text']
-                    ap_display = access_pts[
-                        [c for c in display_cols_ap if c in access_pts.columns]
-                    ].fillna('')
+                    ap_all = filter_access_points(hazard_df)
+                    access_pts = query_by_elr_mileage(ap_all, elr_from, elr_to, from_dec, to_dec) if not ap_all.empty else pd.DataFrame()
 
-                    # Enrich with coordinates and Google Maps links
-                    ap_display = enrich_access_points_with_coords(ap_display, ap_coords_df)
-
-                    ap_show = ap_display.rename(columns={
-                        'Mileage  From': 'Mileage',
-                        'Hazard Description': 'Type',
-                        'Free Text': 'Details',
-                    })
-                    ap_show['Mileage'] = ap_show['Mileage'].apply(decimal_to_miles_chains)
-
-                    # Also convert mileage for PDF
-                    ap_display['Mileage  From'] = ap_display['Mileage  From'].apply(decimal_to_miles_chains)
-
-                    n_ped = len(access_pts[access_pts['Hazard Description'].str.contains('Pedestrian', na=False)])
-                    n_veh = len(access_pts[access_pts['Hazard Description'].str.contains('Vehicle', na=False)])
-                    n_rr = len(access_pts[access_pts['Hazard Description'].str.contains('Road-Rail|Machines', na=False)])
-                    n_coords = len(ap_display[ap_display['Google Maps'] != ''])
-
-                    mc1, mc2, mc3, mc4, mc5 = st.columns(5)
-                    with mc1:
+                    if access_pts.empty:
                         st.markdown(f"""
-                        <div class="metric-box">
-                          <div class="metric-num" style="color:{COLOURS['green']}">{len(access_pts)}</div>
-                          <div class="metric-lbl">Total</div>
-                        </div>""", unsafe_allow_html=True)
-                    with mc2:
+                        <div class="pps-card pps-card-amber">
+                          <span class="badge badge-amber">No access points</span>
+                          <span style="margin-left:1rem;font-size:0.85rem">No access points found in range</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        display_cols_ap = ['ELR', 'ELR Name', 'Mileage  From',
+                                           'Hazard Description', 'Local Name',
+                                           'Track', 'Free Text']
+                        ap_display = access_pts[
+                            [c for c in display_cols_ap if c in access_pts.columns]
+                        ].fillna('')
+
+                        # Enrich with coordinates and Google Maps links
+                        ap_display = enrich_access_points_with_coords(ap_display, ap_coords_df)
+
+                        ap_show = ap_display.rename(columns={
+                            'Mileage  From': 'Mileage',
+                            'Hazard Description': 'Type',
+                            'Free Text': 'Details',
+                        })
+                        ap_show['Mileage'] = ap_show['Mileage'].apply(decimal_to_miles_chains)
+
+                        # Also convert mileage for PDF
+                        ap_display['Mileage  From'] = ap_display['Mileage  From'].apply(decimal_to_miles_chains)
+
+                        n_ped = len(access_pts[access_pts['Hazard Description'].str.contains('Pedestrian', na=False)])
+                        n_veh = len(access_pts[access_pts['Hazard Description'].str.contains('Vehicle', na=False)])
+                        n_rr = len(access_pts[access_pts['Hazard Description'].str.contains('Road-Rail|Machines', na=False)])
+                        n_coords = len(ap_display[ap_display['Google Maps'] != ''])
+
+                        mc1, mc2, mc3, mc4, mc5 = st.columns(5)
+                        with mc1:
+                            st.markdown(f"""
+                            <div class="metric-box">
+                              <div class="metric-num" style="color:{COLOURS['green']}">{len(access_pts)}</div>
+                              <div class="metric-lbl">Total</div>
+                            </div>""", unsafe_allow_html=True)
+                        with mc2:
+                            st.markdown(f"""
+                            <div class="metric-box">
+                              <div class="metric-num" style="color:{COLOURS['text']}">{n_ped}</div>
+                              <div class="metric-lbl">Pedestrian</div>
+                            </div>""", unsafe_allow_html=True)
+                        with mc3:
+                            st.markdown(f"""
+                            <div class="metric-box">
+                              <div class="metric-num" style="color:{COLOURS['amber']}">{n_veh}</div>
+                              <div class="metric-lbl">Vehicle</div>
+                            </div>""", unsafe_allow_html=True)
+                        with mc4:
+                            st.markdown(f"""
+                            <div class="metric-box">
+                              <div class="metric-num" style="color:{COLOURS['red']}">{n_rr}</div>
+                              <div class="metric-lbl">Road-Rail</div>
+                            </div>""", unsafe_allow_html=True)
+                        with mc5:
+                            st.markdown(f"""
+                            <div class="metric-box">
+                              <div class="metric-num" style="color:{COLOURS['nwr_blue']}">{n_coords}</div>
+                              <div class="metric-lbl">Map Links</div>
+                            </div>""", unsafe_allow_html=True)
+
+                        # On-screen: show clickable Google Maps links
+                        ap_screen = ap_show.copy()
+                        if 'Google Maps' in ap_screen.columns:
+                            ap_screen['Location'] = ap_screen['Google Maps'].apply(
+                                lambda x: f'[Map]({x})' if x else '')
+                            ap_screen = ap_screen.drop(columns=['Google Maps', 'Lat', 'Lon'])
+
+                        st.dataframe(ap_screen, use_container_width=True, hide_index=True,
+                                     column_config={'Location': st.column_config.LinkColumn('Location', display_text='📍 Map')})
+
+                        pdf_buf = generate_pdf(ap_display, elr_label, mil_from, mil_to,
+                                               ACCESS_COLS, 'Access Points')
+                        st.download_button(
+                            "⬇  Download Access Points PDF", data=pdf_buf,
+                            file_name=f"Access_Points_{elr_from}_{timestamp}.pdf",
+                            mime="application/pdf", key="ap_pdf")
+
+                    # ─── SECTION 3: SIGNAL BOX CONTACTS & LINE NAMES ─────────
+                    st.markdown(f'<div class="section-header">📞  SIGNAL BOX CONTACTS — {elr_label} {mil_from} to {mil_to}</div>',
+                                unsafe_allow_html=True)
+
+                    if signalbox_df is None or signalbox_df.empty:
                         st.markdown(f"""
-                        <div class="metric-box">
-                          <div class="metric-num" style="color:{COLOURS['text']}">{n_ped}</div>
-                          <div class="metric-lbl">Pedestrian</div>
-                        </div>""", unsafe_allow_html=True)
-                    with mc3:
-                        st.markdown(f"""
-                        <div class="metric-box">
-                          <div class="metric-num" style="color:{COLOURS['amber']}">{n_veh}</div>
-                          <div class="metric-lbl">Vehicle</div>
-                        </div>""", unsafe_allow_html=True)
-                    with mc4:
-                        st.markdown(f"""
-                        <div class="metric-box">
-                          <div class="metric-num" style="color:{COLOURS['red']}">{n_rr}</div>
-                          <div class="metric-lbl">Road-Rail</div>
-                        </div>""", unsafe_allow_html=True)
-                    with mc5:
-                        st.markdown(f"""
-                        <div class="metric-box">
-                          <div class="metric-num" style="color:{COLOURS['nwr_blue']}">{n_coords}</div>
-                          <div class="metric-lbl">Map Links</div>
-                        </div>""", unsafe_allow_html=True)
+                        <div class="pps-card pps-card-grey">
+                          <span class="badge badge-grey">Not available</span>
+                          <span style="margin-left:1rem;font-size:0.85rem">
+                            Place <b>signal_box_contacts.csv</b> in the data subfolder.
+                          </span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        # Convert mileage to chains for signal box lookup
+                        from_ch = int(from_dec) * 80 + round((from_dec - int(from_dec)) * 10000 / 22)
+                        to_ch = int(to_dec) * 80 + round((to_dec - int(to_dec)) * 10000 / 22)
 
-                    # On-screen: show clickable Google Maps links
-                    ap_screen = ap_show.copy()
-                    if 'Google Maps' in ap_screen.columns:
-                        ap_screen['Location'] = ap_screen['Google Maps'].apply(
-                            lambda x: f'[Map]({x})' if x else '')
-                        ap_screen = ap_screen.drop(columns=['Google Maps', 'Lat', 'Lon'])
+                        # Auto-detect signal boxes from mileage
+                        auto_boxes = find_signal_boxes_for_mileage(
+                            elr_from, elr_to, from_ch, to_ch, sba_df, signalbox_df)
 
-                    st.dataframe(ap_screen, use_container_width=True, hide_index=True,
-                                 column_config={'Location': st.column_config.LinkColumn('Location', display_text='📍 Map')})
+                        if auto_boxes:
+                            st.markdown(f"""
+                            <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
+                              <div class="metric-num" style="color:{COLOURS['green']}">{len(auto_boxes)}</div>
+                              <div class="metric-lbl">Signal boxes found</div>
+                            </div>""", unsafe_allow_html=True)
 
-                    pdf_buf = generate_pdf(ap_display, elr_label, mil_from, mil_to,
-                                           ACCESS_COLS, 'Access Points')
-                    st.download_button(
-                        "⬇  Download Access Points PDF", data=pdf_buf,
-                        file_name=f"Access_Points_{elr_from}_{timestamp}.pdf",
-                        mime="application/pdf", key="ap_pdf")
+                            for box in auto_boxes:
+                                phone_display = f" — <b>{box['Phone']}</b>" if box['Phone'] else ""
+                                prefix_display = f" ({box['Prefix']})" if box['Prefix'] else ""
+                                # Build ECR display with phone if available
+                                eco_parts = []
+                                if box.get('ECO'):
+                                    eco_label = box['ECO']
+                                    eco_phone = format_phone_numbers(box.get('ECO Phone', ''))
+                                    if eco_phone:
+                                        eco_parts.append(f"ECR: {eco_label} — <b>{eco_phone}</b>")
+                                    else:
+                                        eco_parts.append(f"ECR: {eco_label}")
+                                eco_display = f"<br/><span style='font-size:0.78rem'>{'<br/>'.join(eco_parts)}</span>" if eco_parts else ""
+                                st.markdown(f"""
+                                <div class="pps-card pps-card-green">
+                                  <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600">
+                                    {box['Signal Box']}{prefix_display}{phone_display}</div>
+                                  <div style="font-size:0.82rem;color:{COLOURS['muted']};margin-top:0.2rem">
+                                    {box['ELR']} {box['Coverage']}{eco_display}</div>
+                                </div>
+                                """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                            <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
+                              No signal box areas found for this ELR/mileage — use manual search below.
+                            </div>
+                            """, unsafe_allow_html=True)
 
-                # ─── SECTION 3: SIGNAL BOX CONTACTS & LINE NAMES ─────────
-                st.markdown(f'<div class="section-header">📞  SIGNAL BOX CONTACTS — {elr_label} {mil_from} to {mil_to}</div>',
-                            unsafe_allow_html=True)
+                        # Manual search fallback
+                        sb1, sb2 = st.columns([3, 3])
+                        with sb1:
+                            sb_name = st.text_input("Search by name", placeholder="e.g. Rugby, Colwich, Crewe", key="sb_name")
+                        with sb2:
+                            sb_prefix = st.text_input("Search by signal prefix", placeholder="e.g. CE, SW, AJ", key="sb_prefix").upper()
 
-                if signalbox_df is None or signalbox_df.empty:
-                    st.markdown(f"""
-                    <div class="pps-card pps-card-grey">
-                      <span class="badge badge-grey">Not available</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">
-                        Place <b>signal_box_contacts.csv</b> in the data subfolder.
-                      </span>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    # Convert mileage to chains for signal box lookup
-                    from_ch = int(from_dec) * 80 + round((from_dec - int(from_dec)) * 10000 / 22)
-                    to_ch = int(to_dec) * 80 + round((to_dec - int(to_dec)) * 10000 / 22)
+                        if sb_name or sb_prefix:
+                            results = signalbox_df.copy()
 
-                    # Auto-detect signal boxes from mileage
-                    auto_boxes = find_signal_boxes_for_mileage(
-                        elr_from, elr_to, from_ch, to_ch, sba_df, signalbox_df)
+                            if sb_name:
+                                results = results[results['Signal Box'].str.contains(sb_name, case=False, na=False)]
+                            if sb_prefix:
+                                results = results[results['Signal Prefix'].str.upper().eq(sb_prefix)]
 
-                    if auto_boxes:
+                            if results.empty:
+                                st.markdown(f"""
+                                <div class="pps-card pps-card-amber">
+                                  <span class="badge badge-amber">No results</span>
+                                  <span style="margin-left:1rem;font-size:0.85rem">
+                                    No signal boxes found matching your search.
+                                  </span>
+                                </div>
+                                """, unsafe_allow_html=True)
+                            else:
+                                display_sb = results[['Signal Box', 'External Telephone', 'Signal Prefix', 'Source']].copy()
+                                display_sb = display_sb.fillna('')
+                                display_sb = display_sb.rename(columns={
+                                    'Signal Box': 'Name',
+                                    'External Telephone': 'Phone',
+                                    'Signal Prefix': 'Prefix',
+                                    'Source': 'Route',
+                                })
+
+                                st.dataframe(display_sb, use_container_width=True, hide_index=True)
+
+                                search_desc = sb_name or sb_prefix
+                                pdf_buf = generate_pdf(results, search_desc, '', '',
+                                                       SIGNALBOX_COLS, 'Signal Box Contacts')
+                                st.download_button(
+                                    "⬇  Download Contacts PDF", data=pdf_buf,
+                                    file_name=f"Signal_Box_Contacts_{search_desc}_{timestamp}.pdf",
+                                    mime="application/pdf", key="sb_pdf")
+
+                    # ─── SECTION 3b: LINE NAMES ──────────────────────────────
+                    auto_lines = find_line_names_for_mileage(
+                        elr_from, elr_to,
+                        int(from_dec) * 80 + round((from_dec - int(from_dec)) * 10000 / 22),
+                        int(to_dec) * 80 + round((to_dec - int(to_dec)) * 10000 / 22),
+                        ln_df)
+
+                    if auto_lines:
+                        st.markdown(f'<div class="section-header">🚂  LINES AT SITE — {elr_label} {mil_from} to {mil_to}</div>',
+                                    unsafe_allow_html=True)
+
                         st.markdown(f"""
                         <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
-                          <div class="metric-num" style="color:{COLOURS['green']}">{len(auto_boxes)}</div>
-                          <div class="metric-lbl">Signal boxes found</div>
+                          <div class="metric-num" style="color:{COLOURS['text']}">{len(auto_lines)}</div>
+                          <div class="metric-lbl">Lines</div>
                         </div>""", unsafe_allow_html=True)
 
-                        for box in auto_boxes:
-                            phone_display = f" — <b>{box['Phone']}</b>" if box['Phone'] else ""
-                            prefix_display = f" ({box['Prefix']})" if box['Prefix'] else ""
-                            # Build ECR display with phone if available
-                            eco_parts = []
-                            if box.get('ECO'):
-                                eco_label = box['ECO']
-                                eco_phone = format_phone_numbers(box.get('ECO Phone', ''))
-                                if eco_phone:
-                                    eco_parts.append(f"ECR: {eco_label} — <b>{eco_phone}</b>")
-                                else:
-                                    eco_parts.append(f"ECR: {eco_label}")
-                            eco_display = f"<br/><span style='font-size:0.78rem'>{'<br/>'.join(eco_parts)}</span>" if eco_parts else ""
-                            st.markdown(f"""
-                            <div class="pps-card pps-card-green">
-                              <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600">
-                                {box['Signal Box']}{prefix_display}{phone_display}</div>
-                              <div style="font-size:0.82rem;color:{COLOURS['muted']};margin-top:0.2rem">
-                                {box['ELR']} {box['Coverage']}{eco_display}</div>
-                            </div>
-                            """, unsafe_allow_html=True)
+                        lines_df = pd.DataFrame(auto_lines)
+                        st.dataframe(lines_df, use_container_width=True, hide_index=True)
                     else:
+                        st.markdown(f'<div class="section-header">🚂  LINES AT SITE — {elr_label} {mil_from} to {mil_to}</div>',
+                                    unsafe_allow_html=True)
                         st.markdown(f"""
                         <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
-                          No signal box areas found for this ELR/mileage — use manual search below.
+                          No line name data found for this ELR/mileage.
                         </div>
                         """, unsafe_allow_html=True)
 
-                    # Manual search fallback
-                    sb1, sb2 = st.columns([3, 3])
-                    with sb1:
-                        sb_name = st.text_input("Search by name", placeholder="e.g. Rugby, Colwich, Crewe", key="sb_name")
-                    with sb2:
-                        sb_prefix = st.text_input("Search by signal prefix", placeholder="e.g. CE, SW, AJ", key="sb_prefix").upper()
-
-                    if sb_name or sb_prefix:
-                        results = signalbox_df.copy()
-
-                        if sb_name:
-                            results = results[results['Signal Box'].str.contains(sb_name, case=False, na=False)]
-                        if sb_prefix:
-                            results = results[results['Signal Prefix'].str.upper().eq(sb_prefix)]
-
-                        if results.empty:
-                            st.markdown(f"""
-                            <div class="pps-card pps-card-amber">
-                              <span class="badge badge-amber">No results</span>
-                              <span style="margin-left:1rem;font-size:0.85rem">
-                                No signal boxes found matching your search.
-                              </span>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            display_sb = results[['Signal Box', 'External Telephone', 'Signal Prefix', 'Source']].copy()
-                            display_sb = display_sb.fillna('')
-                            display_sb = display_sb.rename(columns={
-                                'Signal Box': 'Name',
-                                'External Telephone': 'Phone',
-                                'Signal Prefix': 'Prefix',
-                                'Source': 'Route',
-                            })
-
-                            st.dataframe(display_sb, use_container_width=True, hide_index=True)
-
-                            search_desc = sb_name or sb_prefix
-                            pdf_buf = generate_pdf(results, search_desc, '', '',
-                                                   SIGNALBOX_COLS, 'Signal Box Contacts')
-                            st.download_button(
-                                "⬇  Download Contacts PDF", data=pdf_buf,
-                                file_name=f"Signal_Box_Contacts_{search_desc}_{timestamp}.pdf",
-                                mime="application/pdf", key="sb_pdf")
-
-                # ─── SECTION 3b: LINE NAMES ──────────────────────────────
-                auto_lines = find_line_names_for_mileage(
-                    elr_from, elr_to,
-                    int(from_dec) * 80 + round((from_dec - int(from_dec)) * 10000 / 22),
-                    int(to_dec) * 80 + round((to_dec - int(to_dec)) * 10000 / 22),
-                    ln_df)
-
-                if auto_lines:
-                    st.markdown(f'<div class="section-header">🚂  LINES AT SITE — {elr_label} {mil_from} to {mil_to}</div>',
+                    # ─── SECTION 4: NEAREST A&E ──────────────────────────────
+                    st.markdown(f'<div class="section-header">🏥  NEAREST A&amp;E — 24hr Type 1 Emergency Departments</div>',
                                 unsafe_allow_html=True)
 
-                    st.markdown(f"""
-                    <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
-                      <div class="metric-num" style="color:{COLOURS['text']}">{len(auto_lines)}</div>
-                      <div class="metric-lbl">Lines</div>
-                    </div>""", unsafe_allow_html=True)
+                    if ae_df is None or ae_df.empty:
+                        st.markdown(f"""
+                        <div class="pps-card pps-card-grey">
+                          <span class="badge badge-grey">Not available</span>
+                          <span style="margin-left:1rem;font-size:0.85rem">
+                            Place <b>ae_departments_type1.csv</b> in the data subfolder.
+                          </span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        # Auto-detect location from access points coordinates file
+                        auto_lat, auto_lon, auto_source = find_worksite_coords(
+                            elr_from, elr_to, from_dec, to_dec, ap_coords_df)
 
-                    lines_df = pd.DataFrame(auto_lines)
+                        if auto_lat and auto_lon:
+                            nearest = find_nearest_ae(auto_lat, auto_lon, ae_df, n=3)
+                            st.markdown(f"""
+                            <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
+                              Location from nearest access point: <b>{auto_source}</b>
+                            </div>
+                            """, unsafe_allow_html=True)
+
+                            for i, hosp in enumerate(nearest):
+                                border_col = COLOURS['green'] if i == 0 else COLOURS['border']
+                                label = 'NEAREST' if i == 0 else f'#{i+1}'
+                                badge_class = 'badge-green' if i == 0 else 'badge-grey'
+                                st.markdown(f"""
+                                <div class="pps-card" style="border-left:3px solid {border_col}">
+                                  <span class="badge {badge_class}">{label} — {hosp['Distance (miles)']} miles</span>
+                                  <div style="margin-top:0.5rem;font-size:1rem;color:{COLOURS['white']};font-weight:600">
+                                    {hosp['Hospital']}</div>
+                                  <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-top:0.2rem">
+                                    {hosp['Address']}, {hosp['Postcode']}</div>
+                                  <div style="font-size:0.78rem;color:{COLOURS['muted']};margin-top:0.1rem">
+                                    {hosp['Trust']}</div>
+                                </div>
+                                """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                            <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
+                              No coordinate data for this ELR — search by town or hospital name below.
+                            </div>
+                            """, unsafe_allow_html=True)
+
+                        # Manual search fallback / override
+                        ae_search = st.text_input("Search A&E by town or hospital name",
+                                                  placeholder="e.g. Derby, Reading, Warrington",
+                                                  key="ae_search")
+
+                        if ae_search:
+                            matches = ae_df[
+                                ae_df['hospital_name'].str.contains(ae_search, case=False, na=False) |
+                                ae_df['address'].str.contains(ae_search, case=False, na=False) |
+                                ae_df['trust_name'].str.contains(ae_search, case=False, na=False) |
+                                ae_df['postcode'].str.contains(ae_search.upper().strip(), na=False)
+                            ].copy()
+
+                            if matches.empty:
+                                st.markdown(f"""
+                                <div class="pps-card pps-card-amber">
+                                  <span class="badge badge-amber">No results</span>
+                                  <span style="margin-left:1rem;font-size:0.85rem">
+                                    Try a different town name or hospital name.
+                                  </span>
+                                </div>
+                                """, unsafe_allow_html=True)
+                            else:
+                                display_ae = matches[['hospital_name', 'address', 'postcode', 'trust_name']].copy()
+                                display_ae.columns = ['Hospital', 'Address', 'Postcode', 'Trust']
+                                st.dataframe(display_ae, use_container_width=True, hide_index=True)
+
+    with tab_swp:
+        st.markdown(f"""
+        <div class="section-header">📋  SAFE WORK PACK BUILDER</div>
+        """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:1rem">
+          Paste a row from the Possession Tracker below. The app will auto-populate the SWP
+          with lines at site, signal box contacts, ECR details, nearest A&amp;E, hazards, and access points.
+        </div>
+        """, unsafe_allow_html=True)
+
+        tracker_paste = st.text_area(
+            "Paste tracker row here",
+            placeholder="Copy a full row from the Possession Tracker and paste it here...",
+            height=100,
+            key="swp_paste"
+        )
+
+        if tracker_paste and tracker_paste.strip():
+            # Parse the pasted tracker row (tab-separated)
+            fields = tracker_paste.strip().split('\t')
+
+            # Expected columns from the Possession Tracker:
+            # 0:Week, 1:Worksite, 2:W/S Status, 3:Poss'n Ref, 4:Worktype,
+            # 5:From Date, 6:From Time, 7:To Date, 8:To Time, 9:ELR, 10:LOR,
+            # 11:Distance From, 12:Distance To, 13:Isol, 14:ES Primary,
+            # 15:Location, 16:Client, 17:Contact, 18:Isolation Y/N,
+            # 19:PPS To Create SSOW, 20:SSOW In Use, 21:Protection,
+            # 22:SSOW Returned, 23:PPS Supply Labour, 24:COSS Name,
+            # 25:Email, 26:Number, 27:Item No, 28:Picop Meeting,
+            # 29:Planner Comments, 30:SWP Ref, 31:PO Number
+
+            def safe_get(lst, idx, default=''):
+                try:
+                    val = lst[idx].strip() if idx < len(lst) else default
+                    return val if val else default
+                except (IndexError, AttributeError):
+                    return default
+
+            swp_week = safe_get(fields, 0)
+            swp_worksite = safe_get(fields, 1)
+            swp_status = safe_get(fields, 2)
+            swp_poss_ref = safe_get(fields, 3)
+            swp_worktype = safe_get(fields, 4)
+            swp_from_date = safe_get(fields, 5)
+            swp_from_time = safe_get(fields, 6)
+            swp_to_date = safe_get(fields, 7)
+            swp_to_time = safe_get(fields, 8)
+            swp_elr = safe_get(fields, 9)
+            swp_lor = safe_get(fields, 10)
+            swp_dist_from = safe_get(fields, 11)
+            swp_dist_to = safe_get(fields, 12)
+            swp_isol = safe_get(fields, 13)
+            swp_es_primary = safe_get(fields, 14)
+            swp_location = safe_get(fields, 15)
+            swp_client = safe_get(fields, 16)
+            swp_contact = safe_get(fields, 17)
+            swp_isol_yn = safe_get(fields, 18)
+            swp_create_ssow = safe_get(fields, 19)
+            swp_ssow_in_use = safe_get(fields, 20)
+            swp_protection = safe_get(fields, 21)
+            swp_ssow_returned = safe_get(fields, 22)
+            swp_supply_labour = safe_get(fields, 23)
+            swp_coss_name = safe_get(fields, 24)
+            swp_coss_email = safe_get(fields, 25)
+            swp_coss_number = safe_get(fields, 26)
+            swp_item_no = safe_get(fields, 27)
+            swp_picop = safe_get(fields, 28)
+            swp_comments = safe_get(fields, 29)
+            swp_ref = safe_get(fields, 30)
+            swp_po = safe_get(fields, 31)
+
+            # Convert Excel date serial numbers to readable dates
+            def excel_date(serial):
+                try:
+                    serial = float(serial)
+                    if serial > 40000:
+                        from datetime import datetime, timedelta
+                        base = datetime(1899, 12, 30)
+                        return (base + timedelta(days=serial)).strftime('%d/%m/%Y')
+                except (ValueError, TypeError):
+                    pass
+                return serial
+
+            def excel_time(serial):
+                try:
+                    serial = float(serial)
+                    if 0 <= serial <= 1:
+                        hours = int(serial * 24)
+                        mins = int((serial * 24 - hours) * 60)
+                        return f"{hours:02d}:{mins:02d}"
+                except (ValueError, TypeError):
+                    pass
+                return serial
+
+            swp_from_date = excel_date(swp_from_date)
+            swp_to_date = excel_date(swp_to_date)
+            swp_from_time = excel_time(swp_from_time)
+            swp_to_time = excel_time(swp_to_time)
+
+            # ── Display parsed data ──
+            st.markdown(f'''<div class="section-header">📝  PARSED JOB DETAILS</div>''', unsafe_allow_html=True)
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown(f"""
+                <div class="pps-card pps-card-green">
+                  <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600;margin-bottom:0.5rem">
+                    {swp_ref if swp_ref else 'No SWP Ref'}</div>
+                  <div style="font-size:0.82rem;color:{COLOURS['muted']}">
+                    <b>Week:</b> {swp_week}<br/>
+                    <b>Worksite:</b> {swp_worksite}<br/>
+                    <b>Poss Ref:</b> {swp_poss_ref}<br/>
+                    <b>Work Type:</b> {swp_worktype}<br/>
+                    <b>Location:</b> {swp_location}<br/>
+                    <b>ELR:</b> {swp_elr} &nbsp; <b>LOR:</b> {swp_lor}<br/>
+                    <b>Mileage:</b> {swp_dist_from} to {swp_dist_to}<br/>
+                    <b>Dates:</b> {swp_from_date} {swp_from_time} — {swp_to_date} {swp_to_time}
+                  </div>
+                </div>
+                """, unsafe_allow_html=True)
+            with col2:
+                st.markdown(f"""
+                <div class="pps-card pps-card-green">
+                  <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600;margin-bottom:0.5rem">
+                    Contacts & Protection</div>
+                  <div style="font-size:0.82rem;color:{COLOURS['muted']}">
+                    <b>Client:</b> {swp_client}<br/>
+                    <b>Client Contact:</b> {swp_contact}<br/>
+                    <b>COSS:</b> {swp_coss_name}<br/>
+                    <b>COSS Phone:</b> {swp_coss_number}<br/>
+                    <b>COSS Email:</b> {swp_coss_email}<br/>
+                    <b>Protection:</b> {swp_protection}<br/>
+                    <b>SSOW:</b> {swp_ssow_in_use}<br/>
+                    <b>Isolation:</b> {swp_isol} ({swp_isol_yn})
+                  </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # ── Auto-lookup worksite intelligence ──
+            # Parse ELR (may be dual e.g. "DBP1/BJW3")
+            swp_elrs = [e.strip() for e in swp_elr.split('/') if e.strip()]
+            swp_elr_from = swp_elrs[0].upper() if swp_elrs else ''
+            swp_elr_to = swp_elrs[-1].upper() if swp_elrs else swp_elr_from
+
+            # Parse mileage from distance fields
+            swp_from_dec = None
+            swp_to_dec = None
+            # Distance fields may be like "DBP1 16m02ch" or just "131m0ch"
+            dist_from_clean = re.sub(r'^[A-Z0-9]+\s+', '', swp_dist_from) if swp_dist_from else ''
+            dist_to_clean = re.sub(r'^[A-Z0-9]+\s+', '', swp_dist_to) if swp_dist_to else ''
+            swp_from_dec = mileage_to_decimal(dist_from_clean)
+            swp_to_dec = mileage_to_decimal(dist_to_clean)
+
+            if swp_from_dec is not None and swp_to_dec is not None:
+                swp_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
+                swp_to_ch = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22)
+
+                # ── Lines at Site ──
+                st.markdown(f'''<div class="section-header">🚂  LINES AT SITE</div>''', unsafe_allow_html=True)
+                swp_lines = find_line_names_for_mileage(swp_elr_from, swp_elr_to, swp_from_ch, swp_to_ch, ln_df)
+                if swp_lines:
+                    lines_df = pd.DataFrame(swp_lines)
                     st.dataframe(lines_df, use_container_width=True, hide_index=True)
                 else:
-                    st.markdown(f'<div class="section-header">🚂  LINES AT SITE — {elr_label} {mil_from} to {mil_to}</div>',
-                                unsafe_allow_html=True)
-                    st.markdown(f"""
-                    <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
-                      No line name data found for this ELR/mileage.
-                    </div>
-                    """, unsafe_allow_html=True)
+                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No line name data found.</div>""", unsafe_allow_html=True)
 
-                # ─── SECTION 4: NEAREST A&E ──────────────────────────────
-                st.markdown(f'<div class="section-header">🏥  NEAREST A&amp;E — 24hr Type 1 Emergency Departments</div>',
-                            unsafe_allow_html=True)
-
-                if ae_df is None or ae_df.empty:
-                    st.markdown(f"""
-                    <div class="pps-card pps-card-grey">
-                      <span class="badge badge-grey">Not available</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">
-                        Place <b>ae_departments_type1.csv</b> in the data subfolder.
-                      </span>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    # Auto-detect location from access points coordinates file
-                    auto_lat, auto_lon, auto_source = find_worksite_coords(
-                        elr_from, elr_to, from_dec, to_dec, ap_coords_df)
-
-                    if auto_lat and auto_lon:
-                        nearest = find_nearest_ae(auto_lat, auto_lon, ae_df, n=3)
+                # ── Signal Box Contacts ──
+                st.markdown(f'''<div class="section-header">📞  SIGNAL BOX CONTACTS</div>''', unsafe_allow_html=True)
+                swp_boxes = find_signal_boxes_for_mileage(swp_elr_from, swp_elr_to, swp_from_ch, swp_to_ch, sba_df, signalbox_df)
+                if swp_boxes:
+                    for box in swp_boxes:
+                        phone_display = f" — <b>{box['Phone']}</b>" if box['Phone'] else ""
+                        prefix_display = f" ({box['Prefix']})" if box['Prefix'] else ""
+                        eco_parts = []
+                        if box.get('ECO'):
+                            eco_label = box['ECO']
+                            eco_phone = format_phone_numbers(box.get('ECO Phone', ''))
+                            if eco_phone:
+                                eco_parts.append(f"ECR: {eco_label} — <b>{eco_phone}</b>")
+                            else:
+                                eco_parts.append(f"ECR: {eco_label}")
+                        eco_display = f"<br/><span style='font-size:0.78rem'>{'<br/>'.join(eco_parts)}</span>" if eco_parts else ""
                         st.markdown(f"""
-                        <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
-                          Location from nearest access point: <b>{auto_source}</b>
+                        <div class="pps-card pps-card-green">
+                          <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600">
+                            {box['Signal Box']}{prefix_display}{phone_display}</div>
+                          <div style="font-size:0.82rem;color:{COLOURS['muted']};margin-top:0.2rem">
+                            {box['ELR']} {box['Coverage']}{eco_display}</div>
                         </div>
                         """, unsafe_allow_html=True)
+                else:
+                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No signal box data found.</div>""", unsafe_allow_html=True)
 
+                # ── Nearest A&E ──
+                st.markdown(f'''<div class="section-header">🏥  NEAREST A&amp;E</div>''', unsafe_allow_html=True)
+                if ae_df is not None and not ae_df.empty:
+                    swp_lat, swp_lon, swp_source = find_worksite_coords(
+                        swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec, ap_coords_df)
+                    if swp_lat and swp_lon:
+                        nearest = find_nearest_ae(swp_lat, swp_lon, ae_df, n=3)
                         for i, hosp in enumerate(nearest):
                             border_col = COLOURS['green'] if i == 0 else COLOURS['border']
                             label = 'NEAREST' if i == 0 else f'#{i+1}'
@@ -1253,40 +1507,48 @@ else:
                                 {hosp['Hospital']}</div>
                               <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-top:0.2rem">
                                 {hosp['Address']}, {hosp['Postcode']}</div>
-                              <div style="font-size:0.78rem;color:{COLOURS['muted']};margin-top:0.1rem">
-                                {hosp['Trust']}</div>
                             </div>
                             """, unsafe_allow_html=True)
                     else:
-                        st.markdown(f"""
-                        <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:0.8rem">
-                          No coordinate data for this ELR — search by town or hospital name below.
-                        </div>
-                        """, unsafe_allow_html=True)
+                        st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No coordinate data — cannot determine nearest A&amp;E.</div>""", unsafe_allow_html=True)
 
-                    # Manual search fallback / override
-                    ae_search = st.text_input("Search A&E by town or hospital name",
-                                              placeholder="e.g. Derby, Reading, Warrington",
-                                              key="ae_search")
+                # ── Hazards ──
+                st.markdown(f'''<div class="section-header">⚠️  HAZARDS</div>''', unsafe_allow_html=True)
+                swp_hazards = filter_hazards_only(query_by_elr_mileage(hazard_df, swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec))
+                if not swp_hazards.empty:
+                    st.markdown(f"""
+                    <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
+                      <div class="metric-num" style="color:{COLOURS['amber']}">{len(swp_hazards)}</div>
+                      <div class="metric-lbl">Hazards</div>
+                    </div>""", unsafe_allow_html=True)
+                    display_cols = [c for c in ['ELR', 'ELR Name', 'Mileage  From', 'Mileage To', 'Hazard Description', 'Local Name', 'Track', 'Free Text'] if c in swp_hazards.columns]
+                    st.dataframe(swp_hazards[display_cols].fillna(''), use_container_width=True, hide_index=True)
+                else:
+                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No hazards found.</div>""", unsafe_allow_html=True)
 
-                    if ae_search:
-                        matches = ae_df[
-                            ae_df['hospital_name'].str.contains(ae_search, case=False, na=False) |
-                            ae_df['address'].str.contains(ae_search, case=False, na=False) |
-                            ae_df['trust_name'].str.contains(ae_search, case=False, na=False) |
-                            ae_df['postcode'].str.contains(ae_search.upper().strip(), na=False)
-                        ].copy()
+                # ── Access Points ──
+                st.markdown(f'''<div class="section-header">🚪  ACCESS POINTS</div>''', unsafe_allow_html=True)
+                swp_access = filter_access_points(query_by_elr_mileage(hazard_df, swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec))
+                if not swp_access.empty:
+                    swp_access_enriched = enrich_access_points_with_coords(swp_access, ap_coords_df)
+                    st.markdown(f"""
+                    <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
+                      <div class="metric-num" style="color:{COLOURS['green']}">{len(swp_access_enriched)}</div>
+                      <div class="metric-lbl">Access Points</div>
+                    </div>""", unsafe_allow_html=True)
+                    display_cols = [c for c in ['ELR', 'ELR Name', 'Mileage  From', 'Hazard Description', 'Local Name', 'Track', 'Free Text', 'Google Maps'] if c in swp_access_enriched.columns]
+                    st.dataframe(swp_access_enriched[display_cols].fillna(''), use_container_width=True, hide_index=True)
+                else:
+                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No access points found.</div>""", unsafe_allow_html=True)
 
-                        if matches.empty:
-                            st.markdown(f"""
-                            <div class="pps-card pps-card-amber">
-                              <span class="badge badge-amber">No results</span>
-                              <span style="margin-left:1rem;font-size:0.85rem">
-                                Try a different town name or hospital name.
-                              </span>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        else:
-                            display_ae = matches[['hospital_name', 'address', 'postcode', 'trust_name']].copy()
-                            display_ae.columns = ['Hospital', 'Address', 'Postcode', 'Trust']
-                            st.dataframe(display_ae, use_container_width=True, hide_index=True)
+                st.markdown(f"""
+                <div style="margin-top:2rem;padding:1rem;background:{COLOURS['surface']};border:1px solid {COLOURS['border']};border-radius:4px;text-align:center">
+                  <div style="font-size:1rem;color:{COLOURS['amber']};font-weight:600;margin-bottom:0.5rem">
+                    📥 Excel &amp; PDF Download — Coming Soon</div>
+                  <div style="font-size:0.82rem;color:{COLOURS['muted']}">
+                    SWP document generation with auto-populated template will be available in the next update.</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            else:
+                st.warning("Could not parse mileage from the pasted row. Check the Distance From/To columns.")
