@@ -1520,6 +1520,41 @@ else:
                 if not swp_access_df.empty:
                     swp_access_df = enrich_access_points_with_coords(swp_access_df, ap_coords_df)
 
+            # ── Shift Contacts (editable) ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">👷  Shift Contact Numbers</div>', unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:0.82rem;color:{COLOURS['muted']};margin-bottom:0.5rem'>COSS auto-populated. Add PICOP, ES, and other personnel below.</div>", unsafe_allow_html=True)
+
+            shift_contacts = []
+            # Row 1: COSS (pre-filled)
+            shc1, shc2, shc3, shc4, shc5 = st.columns([3, 2, 2, 1, 1])
+            with shc1:
+                sc_name_0 = st.text_input("Name", value=swp_coss_name, key="swp_sc_name_0")
+            with shc2:
+                sc_duty_0 = st.text_input("Duty", value="COSS", key="swp_sc_duty_0")
+            with shc3:
+                sc_phone_0 = st.text_input("Phone", value=swp_coss_number, key="swp_sc_phone_0")
+            with shc4:
+                sc_start_0 = st.text_input("Start", value=swp_from_time, key="swp_sc_start_0")
+            with shc5:
+                sc_end_0 = st.text_input("End", value=swp_to_time, key="swp_sc_end_0")
+            shift_contacts.append({'Name': sc_name_0, 'Duty': sc_duty_0, 'Phone': sc_phone_0, 'Start': sc_start_0, 'End': sc_end_0})
+
+            # Rows 2-5: blank for PICOP, ES, etc
+            for i in range(1, 5):
+                shc1, shc2, shc3, shc4, shc5 = st.columns([3, 2, 2, 1, 1])
+                with shc1:
+                    sc_name = st.text_input("Name", value="", key=f"swp_sc_name_{i}", label_visibility="collapsed")
+                with shc2:
+                    sc_duty = st.text_input("Duty", value="", key=f"swp_sc_duty_{i}", label_visibility="collapsed")
+                with shc3:
+                    sc_phone = st.text_input("Phone", value="", key=f"swp_sc_phone_{i}", label_visibility="collapsed")
+                with shc4:
+                    sc_start = st.text_input("Start", value="", key=f"swp_sc_start_{i}", label_visibility="collapsed")
+                with shc5:
+                    sc_end = st.text_input("End", value="", key=f"swp_sc_end_{i}", label_visibility="collapsed")
+                if sc_name.strip():
+                    shift_contacts.append({'Name': sc_name, 'Duty': sc_duty, 'Phone': sc_phone, 'Start': sc_start, 'End': sc_end})
+
             # ══════════════════════════════════════════════════════
             # STEP 2: EDITABLE FIELDS
             # ══════════════════════════════════════════════════════
@@ -1587,6 +1622,8 @@ else:
                 )
 
             # If fenced — fence details
+            swp_fence_type = ""
+            swp_fence_dist = ""
             if prot_num == 2:
                 fc1, fc2 = st.columns(2)
                 with fc1:
@@ -1595,6 +1632,8 @@ else:
                     swp_fence_dist = st.selectbox("Distance from line", ["1.25m", "2m", "N/A"], key="swp_fence_dist")
 
             # If separated — separation details
+            swp_sep_dist = ""
+            swp_sep_warning = ""
             if prot_num == 3:
                 sc1, sc2 = st.columns(2)
                 with sc1:
@@ -1816,17 +1855,649 @@ else:
                 st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No access points found.</div>", unsafe_allow_html=True)
 
             # ══════════════════════════════════════════════════════
-            # GENERATE SWP BUTTON
+            # GENERATE SWP
             # ══════════════════════════════════════════════════════
             st.markdown("<br/>", unsafe_allow_html=True)
-            st.markdown(f"""
-            <div style="margin-top:1rem;padding:1rem;background:{COLOURS['surface']};border:1px solid {COLOURS['amber']};border-radius:4px;text-align:center">
-              <div style="font-size:1rem;color:{COLOURS['amber']};font-weight:600;margin-bottom:0.5rem">
-                📥 Excel &amp; PDF Download — Coming Soon</div>
-              <div style="font-size:0.82rem;color:{COLOURS['muted']}">
-                SWP document generation with auto-populated template will be available in the next update.</div>
-            </div>
-            """, unsafe_allow_html=True)
+
+            generate_btn = st.button("📥  GENERATE SWP", key="generate_swp_btn")
+
+            if generate_btn:
+                import io
+                from openpyxl import Workbook
+                from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+                from openpyxl.drawing.image import Image as XlImage
+                from datetime import datetime
+
+                wb = Workbook()
+                thin = Side(style='thin')
+                border_all = Border(left=thin, right=thin, top=thin, bottom=thin)
+                grey_fill = PatternFill('solid', fgColor='C0C0C0')
+                white_fill = PatternFill('solid', fgColor='FFFFFF')
+                bold_font = Font(bold=True, size=11)
+                normal_font = Font(size=10)
+                small_font = Font(size=8)
+                header_font = Font(bold=True, size=14)
+                title_font = Font(bold=True, size=18)
+                footer_text = "Issue 7 Dec 2025    Amended to Issue 13 019 Standard"
+
+                prot_name = swp_prot_selected.split(' - ', 1)[1] if ' - ' in swp_prot_selected else swp_prot_selected
+
+                def style_range(ws, row_start, row_end, col_start, col_end, font=None, fill=None, alignment=None, border=None):
+                    for r in range(row_start, row_end + 1):
+                        for c in range(col_start, col_end + 1):
+                            cell = ws.cell(row=r, column=c)
+                            if font: cell.font = font
+                            if fill: cell.fill = fill
+                            if alignment: cell.alignment = alignment
+                            if border: cell.border = border
+
+                def add_footer(ws, row):
+                    ws.cell(row=row, column=1, value=footer_text).font = Font(size=8, italic=True)
+
+                # ════════════════════════════════════════
+                # PAGE 1 — COVER
+                # ════════════════════════════════════════
+                ws1 = wb.active
+                ws1.title = "Cover"
+                ws1.sheet_properties.pageSetUpPr.fitToPage = True
+                for col_letter, width in [('A', 28), ('B', 25), ('C', 15), ('D', 20)]:
+                    ws1.column_dimensions[col_letter].width = width
+
+                # Try to add logo
+                try:
+                    logo_path = os.path.join(DATA_DIR, '..', 'PPS_Rail_Logo_with_Trademark.png')
+                    if not os.path.exists(logo_path):
+                        logo_path = os.path.join(DATA_DIR, 'PPS_Rail_Logo_with_Trademark.png')
+                    if os.path.exists(logo_path):
+                        img = XlImage(logo_path)
+                        img.width = 180
+                        img.height = 50
+                        ws1.add_image(img, 'C1')
+                except Exception:
+                    pass
+
+                ws1.merge_cells('A2:D2')
+                ws1.cell(row=2, column=1, value="SAFE WORK PACK").font = title_font
+                ws1.cell(row=2, column=1).alignment = Alignment(horizontal='center')
+
+                fields_p1 = [
+                    ("PRODUCED BY PLANNER", swp_planner_name, "Contact No", swp_planner_number),
+                    ("DATE PRODUCED", datetime.now().strftime('%d/%m/%Y'), "", ""),
+                    ("LOCATION OF WORKS", elr_location, "", ""),
+                    ("NATURE OF WORKS", swp_nature_of_work, "", ""),
+                    ("METHOD OF PROTECTION", prot_name, "", ""),
+                    ("SWP REFERENCE No.", swp_ref, "", ""),
+                    ("RESPONSIBLE MANAGER", swp_rm_name, "Contact No", swp_rm_number),
+                    ("PERSON IN CHARGE (Planning)", swp_coss_name, "Contact No", swp_coss_number),
+                    ("ITEM No & WORKSITE Ref", f"{swp_item_no} - {swp_worksite}", "", ""),
+                    ("WEEK NO & DATE(S) OF WORKS", f"WK{swp_week} : {swp_from_date} - {swp_to_date}", "", ""),
+                ]
+
+                row = 4
+                for label, val, label2, val2 in fields_p1:
+                    ws1.cell(row=row, column=1, value=label).font = bold_font
+                    ws1.cell(row=row, column=1).fill = grey_fill
+                    ws1.cell(row=row, column=1).border = border_all
+                    ws1.cell(row=row, column=2, value=val).font = normal_font
+                    ws1.cell(row=row, column=2).border = border_all
+                    if label2:
+                        ws1.cell(row=row, column=3, value=label2).font = bold_font
+                        ws1.cell(row=row, column=3).fill = grey_fill
+                        ws1.cell(row=row, column=3).border = border_all
+                        ws1.cell(row=row, column=4, value=val2).font = normal_font
+                        ws1.cell(row=row, column=4).border = border_all
+                    else:
+                        ws1.merge_cells(start_row=row, start_column=2, end_row=row, end_column=4)
+                    row += 1
+
+                # Shift Contacts
+                row += 1
+                ws1.merge_cells(start_row=row, start_column=1, end_row=row, end_column=4)
+                ws1.cell(row=row, column=1, value="SHIFT CONTACT NUMBERS").font = bold_font
+                ws1.cell(row=row, column=1).fill = grey_fill
+                ws1.cell(row=row, column=1).alignment = Alignment(horizontal='center')
+                style_range(ws1, row, row, 1, 4, border=border_all)
+                row += 1
+
+                for hdr, col in [("Name", 1), ("Duty", 2), ("Phone Number", 3), ("Shift Times", 4)]:
+                    ws1.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws1.cell(row=row, column=col).fill = grey_fill
+                    ws1.cell(row=row, column=col).border = border_all
+                    ws1.cell(row=row, column=col).alignment = Alignment(horizontal='center')
+                row += 1
+
+                for sc in shift_contacts:
+                    ws1.cell(row=row, column=1, value=sc['Name']).border = border_all
+                    ws1.cell(row=row, column=2, value=sc['Duty']).border = border_all
+                    ws1.cell(row=row, column=3, value=sc['Phone']).border = border_all
+                    shift_str = f"{sc['Start']}    {sc['End']}" if sc['Start'] else ""
+                    ws1.cell(row=row, column=4, value=shift_str).border = border_all
+                    row += 1
+
+                # Blank rows for extra contacts
+                for _ in range(max(0, 5 - len(shift_contacts))):
+                    for c in range(1, 5):
+                        ws1.cell(row=row, column=c).border = border_all
+                    row += 1
+
+                # Change authority section
+                row += 1
+                ws1.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=1)
+                ws1.cell(row=row, column=1, value="Reason and authority for change from planned safe system of work").font = small_font
+                ws1.cell(row=row, column=1).fill = grey_fill
+                ws1.cell(row=row, column=1).alignment = Alignment(wrap_text=True, vertical='center')
+                style_range(ws1, row, row+1, 1, 4, border=border_all)
+                row += 2
+
+                ws1.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=1)
+                ws1.cell(row=row, column=1, value="Name of Responsible Manager authorising the change.").font = small_font
+                ws1.cell(row=row, column=1).fill = grey_fill
+                ws1.cell(row=row, column=1).alignment = Alignment(wrap_text=True, vertical='center')
+                ws1.cell(row=row, column=3, value="Signature/\nAuthority no").font = small_font
+                ws1.cell(row=row, column=3).fill = grey_fill
+                ws1.cell(row=row, column=3).alignment = Alignment(wrap_text=True, vertical='center')
+                style_range(ws1, row, row+1, 1, 4, border=border_all)
+                row += 2
+
+                # COSS to Planner Feedback
+                row += 1
+                ws1.merge_cells(start_row=row, start_column=1, end_row=row, end_column=1)
+                ws1.cell(row=row, column=1, value="Coss To Planner\nFeedback").font = Font(bold=True, size=12)
+                ws1.cell(row=row, column=1).alignment = Alignment(wrap_text=True, vertical='center')
+                ws1.merge_cells(start_row=row, start_column=2, end_row=row+3, end_column=4)
+                style_range(ws1, row, row+3, 1, 4, border=border_all)
+                row += 4
+
+                # Return notice
+                row += 1
+                ws1.merge_cells(start_row=row, start_column=1, end_row=row, end_column=4)
+                ws1.cell(row=row, column=1, value="THIS PACK MUST BE RETURNED TO THE Supervisor ON COMPLETION OF THE WORKS").font = Font(bold=True, size=9)
+                ws1.cell(row=row, column=1).alignment = Alignment(horizontal='center')
+                row += 1
+                ws1.cell(row=row, column=1, value="Date Reviewed By planner").font = bold_font
+                ws1.cell(row=row, column=1).fill = grey_fill
+                ws1.cell(row=row, column=1).border = border_all
+                ws1.cell(row=row, column=2).border = border_all
+                ws1.cell(row=row, column=3, value="Planner\nSignature").font = bold_font
+                ws1.cell(row=row, column=3).fill = grey_fill
+                ws1.cell(row=row, column=3).border = border_all
+                ws1.cell(row=row, column=4).border = border_all
+                row += 2
+                add_footer(ws1, row)
+
+                # ════════════════════════════════════════
+                # PAGE 2 — VALIDATION
+                # ════════════════════════════════════════
+                ws2 = wb.create_sheet("Validation")
+                for col_letter, width in [('A', 55), ('B', 8), ('C', 8)]:
+                    ws2.column_dimensions[col_letter].width = width
+
+                ws2.cell(row=1, column=1, value="SWP Validation Form").font = header_font
+                ws2.cell(row=2, column=1, value=f"SWP Ref: {swp_ref}").font = bold_font
+                ws2.cell(row=3, column=1, value=f"Date & Time of Work: {swp_from_date}-{swp_to_date}  {swp_from_time} - {swp_to_time}").font = normal_font
+                ws2.cell(row=4, column=1, value=f"SWP expiry date: {swp_to_date}").font = normal_font
+                ws2.cell(row=5, column=1, value=f"Brief Description of Work: {swp_nature_of_work}").font = normal_font
+
+                row = 7
+                ws2.cell(row=row, column=1, value="CREATED by: Planner").font = bold_font
+                row += 1
+                ws2.cell(row=row, column=1, value=f"Planner Name: {swp_planner_name}    Signature:                    Date Issued:").font = normal_font
+                row += 2
+
+                ws2.cell(row=row, column=1, value="VERIFIED by: Person in charge").font = bold_font
+                row += 1
+                ws2.cell(row=row, column=1, value="I confirm the following are appropriate for the task:").font = normal_font
+                row += 1
+
+                yn_questions_p2 = [
+                    "The appropriate hierarchy of Safe System of Work has been selected",
+                    "Task risk and any specific controls are suitable and sufficient",
+                    "Necessary competence within team to undertake task",
+                    "Any additional specific controls identified",
+                    "Any necessary permit to work arrangements identified",
+                    "The welfare facilities have been identified and are appropriate",
+                ]
+                for q in yn_questions_p2:
+                    ws2.cell(row=row, column=1, value=q).font = normal_font
+                    ws2.cell(row=row, column=1).border = border_all
+                    ws2.cell(row=row, column=2, value="Y").font = Font(bold=True, color='008000')
+                    ws2.cell(row=row, column=2).border = border_all
+                    ws2.cell(row=row, column=2).alignment = Alignment(horizontal='center')
+                    ws2.cell(row=row, column=3, value="N").font = normal_font
+                    ws2.cell(row=row, column=3).border = border_all
+                    ws2.cell(row=row, column=3).alignment = Alignment(horizontal='center')
+                    row += 1
+
+                row += 1
+                ws2.cell(row=row, column=1, value=f"Name of Person in charge: {swp_coss_name}    Signature:          Date:").font = normal_font
+                row += 2
+
+                ws2.cell(row=row, column=1, value="AUTHORISED by: Responsible Manager").font = bold_font
+                row += 1
+                yn_questions_rm = [
+                    "Work content is understood by the person in charge",
+                    "Task / Site Risk and controls",
+                    "Protection / Warning arrangements suitable for the work",
+                    "The welfare facilities have been identified and are appropriate",
+                ]
+                for q in yn_questions_rm:
+                    ws2.cell(row=row, column=1, value=q).font = normal_font
+                    ws2.cell(row=row, column=1).border = border_all
+                    ws2.cell(row=row, column=2, value="Y").font = Font(bold=True, color='008000')
+                    ws2.cell(row=row, column=2).border = border_all
+                    ws2.cell(row=row, column=2).alignment = Alignment(horizontal='center')
+                    ws2.cell(row=row, column=3, value="N").font = normal_font
+                    ws2.cell(row=row, column=3).border = border_all
+                    ws2.cell(row=row, column=3).alignment = Alignment(horizontal='center')
+                    row += 1
+
+                row += 1
+                ws2.cell(row=row, column=1, value=f"Responsible Manager: {swp_rm_name}    Signature:          Date:").font = normal_font
+                row += 2
+                add_footer(ws2, row)
+
+                # ════════════════════════════════════════
+                # PAGE 3 — RISKS & RUNAWAY
+                # ════════════════════════════════════════
+                ws3 = wb.create_sheet("Risks & Runaway")
+                for col_letter, width in [('A', 50), ('B', 12), ('C', 30)]:
+                    ws3.column_dimensions[col_letter].width = width
+
+                ws3.cell(row=1, column=1, value=f"SWP Ref: {swp_ref}").font = bold_font
+                ws3.cell(row=2, column=1, value=f"Date & Time of Work: {swp_from_date}-{swp_to_date}  {swp_from_time} - {swp_to_time}").font = normal_font
+                ws3.cell(row=3, column=1, value=f"Brief Description of work: {swp_nature_of_work}").font = normal_font
+                ws3.cell(row=4, column=1, value=f"Location: {swp_location}").font = normal_font
+
+                row = 6
+                ws3.cell(row=row, column=1, value="Risk Identified and controls to be applied").font = bold_font
+                row += 1
+                for hdr, col in [("Specific Risk Requiring Control", 1), ("Control to be applied", 2), ("Person in charge initials", 3)]:
+                    ws3.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws3.cell(row=row, column=col).fill = grey_fill
+                    ws3.cell(row=row, column=col).border = border_all
+                row += 1
+                for _ in range(5):
+                    for c in range(1, 4):
+                        ws3.cell(row=row, column=c).border = border_all
+                    row += 1
+
+                row += 1
+                ws3.cell(row=row, column=1, value="Runaway Risk Analysis").font = bold_font
+                row += 1
+                for hdr, col in [("Question", 1), ("Answer", 2), ("Comment", 3)]:
+                    ws3.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws3.cell(row=row, column=col).fill = grey_fill
+                    ws3.cell(row=row, column=col).border = border_all
+                row += 1
+
+                runaway_qs = [
+                    "Are the works taking place on or near the line?",
+                    "Could your work potentially lead to a Runaway?",
+                    "Are my works within a Possession or adjacent to a Possession?",
+                    "Are my works on a gradient steeper than 1 in 100 or within 5 miles?",
+                    "Is the site of work at risk of a runaway from a 3rd Party?"
+                ]
+                for i, q in enumerate(runaway_qs):
+                    ws3.cell(row=row, column=1, value=q).font = normal_font
+                    ws3.cell(row=row, column=1).border = border_all
+                    ws3.cell(row=row, column=2, value=runaway_answers[i] if i < len(runaway_answers) else "No").font = normal_font
+                    ws3.cell(row=row, column=2).border = border_all
+                    ws3.cell(row=row, column=3, value=runaway_comments[i] if i < len(runaway_comments) else "").font = normal_font
+                    ws3.cell(row=row, column=3).border = border_all
+                    row += 1
+
+                row += 1
+                ws3.cell(row=row, column=1, value=f"Responsible Manager: {swp_rm_name}").font = normal_font
+                ws3.cell(row=row, column=2, value=f"PIC: {swp_coss_name}").font = normal_font
+                row += 2
+
+                ws3.cell(row=row, column=1, value="ACCEPTED by: Person in charge on site").font = bold_font
+                row += 1
+                ws3.cell(row=row, column=1, value="I Accept / Reject this SWP (Please circle)").font = normal_font
+                row += 1
+                ws3.cell(row=row, column=1, value=f"Print Name: {swp_coss_name}    Signature:          Date:").font = normal_font
+                row += 2
+                add_footer(ws3, row)
+
+                # ════════════════════════════════════════
+                # PAGE 4 — FORM B (Protection 1-3)
+                # ════════════════════════════════════════
+                ws4 = wb.create_sheet("Form B Protection")
+                for col_letter, width in [('A', 12), ('B', 40), ('C', 40)]:
+                    ws4.column_dimensions[col_letter].width = width
+
+                ws4.cell(row=1, column=1, value="Form B").font = header_font
+                ws4.cell(row=2, column=1, value=f"Location: {elr_location}").font = normal_font
+                ws4.cell(row=3, column=1, value=f"SWP Ref No: {swp_ref}").font = normal_font
+                ws4.cell(row=4, column=1, value=f"Date(s) of Work: {swp_from_date}-{swp_to_date}").font = normal_font
+                ws4.cell(row=5, column=1, value=f"Time of Work: {swp_from_time} - {swp_to_time}").font = normal_font
+
+                row = 7
+                ws4.cell(row=row, column=1, value="Hierarchy of control for operational risks (Protection)").font = bold_font
+                row += 1
+                ws4.cell(row=row, column=1, value="S.S.O.W: 1 to 3").font = bold_font
+                row += 2
+
+                ssow_methods = [
+                    (1, "Safeguarded"),
+                    (2, "Fenced"),
+                    (3, "Separated"),
+                ]
+                for num, name in ssow_methods:
+                    selected = "YES  ✓" if prot_num == num else "NO"
+                    ws4.cell(row=row, column=1, value=str(num)).font = bold_font
+                    ws4.cell(row=row, column=1).border = border_all
+                    ws4.cell(row=row, column=2, value=f"{name}    [{selected}]").font = normal_font
+                    ws4.cell(row=row, column=2).border = border_all
+                    reason = ""
+                    if num == 1 and prot_num >= 2:
+                        reason = sg_reason
+                    elif num == 2 and prot_num >= 3:
+                        reason = fence_reason
+                    ws4.cell(row=row, column=3, value=f"Reason: {reason}" if reason else "").font = normal_font
+                    ws4.cell(row=row, column=3).border = border_all
+                    row += 1
+
+                if prot_num >= 4:
+                    row += 1
+                    ws4.cell(row=row, column=1, value="SUPPLEMENTARY QUESTIONS A-D").font = bold_font
+                    row += 1
+                    supp_qs = [
+                        "A. Is the line speed greater than 125mph?",
+                        "B. Does the total warning time exceed 45 seconds?",
+                        "C. Are there 3+ open lines between site and position of safety?",
+                        "D. Does the NR Hazard Directory prohibit 4-6 working?"
+                    ]
+                    for q in supp_qs:
+                        ws4.cell(row=row, column=1, value=q).font = normal_font
+                        ws4.cell(row=row, column=1).border = border_all
+                        ws4.cell(row=row, column=2, value="NO").font = normal_font
+                        ws4.cell(row=row, column=2).border = border_all
+                        row += 1
+
+                row += 1
+                add_footer(ws4, row)
+
+                # ════════════════════════════════════════
+                # PAGE 5 — FORM B (Warning 4-6)
+                # ════════════════════════════════════════
+                ws5 = wb.create_sheet("Form B Warning")
+                for col_letter, width in [('A', 12), ('B', 40), ('C', 40)]:
+                    ws5.column_dimensions[col_letter].width = width
+
+                ws5.cell(row=1, column=1, value="Warning Systems 4 to 6").font = header_font
+                row = 3
+                warn_methods = [
+                    (4, "Warning systems permanent - train activated equipment"),
+                    (5, "Warning systems portable - train activated equipment"),
+                    (6, "Lookout warning - max permissible line or temporarily restricted to 25 mph"),
+                ]
+                for num, name in warn_methods:
+                    selected = "YES  ✓" if prot_num == num else "NO"
+                    ws5.cell(row=row, column=1, value=str(num)).font = bold_font
+                    ws5.cell(row=row, column=1).border = border_all
+                    ws5.cell(row=row, column=2, value=f"{name}    [{selected}]").font = normal_font
+                    ws5.cell(row=row, column=2).border = border_all
+                    ws5.cell(row=row, column=3, value="").font = normal_font
+                    ws5.cell(row=row, column=3).border = border_all
+                    row += 1
+
+                row += 1
+                add_footer(ws5, row)
+
+                # ════════════════════════════════════════
+                # PAGE 6 — RT9909
+                # ════════════════════════════════════════
+                ws6 = wb.create_sheet("RT9909")
+                for col_letter, width in [('A', 30), ('B', 45), ('C', 20)]:
+                    ws6.column_dimensions[col_letter].width = width
+
+                ws6.cell(row=1, column=1, value="RECORD OF ARRANGEMENTS AND BRIEFING FORM RT9909").font = header_font
+                ws6.cell(row=2, column=1, value="GENERAL INFORMATION").font = bold_font
+
+                row = 4
+                ws6.cell(row=row, column=1, value="Name of COSS/IWA:").font = bold_font
+                ws6.cell(row=row, column=1).fill = grey_fill
+                ws6.cell(row=row, column=1).border = border_all
+                ws6.cell(row=row, column=2, value=swp_coss_name).border = border_all
+                ws6.cell(row=row, column=3, value="Sentinel Card No:").font = bold_font
+                ws6.cell(row=row, column=3).fill = grey_fill
+                ws6.cell(row=row, column=3).border = border_all
+                row += 1
+
+                ws6.cell(row=row, column=1, value="Nature of Work:").font = bold_font
+                ws6.cell(row=row, column=1).fill = grey_fill
+                ws6.cell(row=row, column=1).border = border_all
+                ws6.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
+                ws6.cell(row=row, column=2, value=swp_nature_of_work).border = border_all
+                ws6.cell(row=row, column=2).alignment = Alignment(wrap_text=True)
+                row += 1
+
+                # Location and lines affected
+                lines_affected = elr_location
+                if swp_line_data:
+                    lines_affected += " / " + swp_line_data[0]['Line Name']
+                ws6.cell(row=row, column=1, value="Location and Lines Affected:").font = bold_font
+                ws6.cell(row=row, column=1).fill = grey_fill
+                ws6.cell(row=row, column=1).border = border_all
+                ws6.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
+                ws6.cell(row=row, column=2, value=lines_affected).border = border_all
+                row += 1
+
+                # Lines at site table
+                ws6.cell(row=row, column=1, value="Lines at the Site:").font = bold_font
+                ws6.cell(row=row, column=1).fill = grey_fill
+                row += 1
+                for hdr, col in [("Line Name", 1), ("Open or Blocked", 2), ("Speed", 3)]:
+                    ws6.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws6.cell(row=row, column=col).fill = grey_fill
+                    ws6.cell(row=row, column=col).border = border_all
+                row += 1
+                for ld in swp_line_data:
+                    ws6.cell(row=row, column=1, value=f"{ld['Abbreviation']} - {ld['Line Name']}").border = border_all
+                    ws6.cell(row=row, column=2, value=ld['Status']).border = border_all
+                    ws6.cell(row=row, column=3).border = border_all
+                    row += 1
+
+                row += 1
+                # Signal box contact
+                sb_text = ""
+                ecr_text = ""
+                if swp_boxes:
+                    box = swp_boxes[0]
+                    sb_text = f"SB - {box['Signal Box']}"
+                    if box['Phone']:
+                        sb_text += f" Tel {box['Phone']}"
+                    if box.get('ECO'):
+                        ecr_text = f"DC: {box['ECO']} ECR"
+                        eco_phone = box.get('ECO Phone', '')
+                        if eco_phone:
+                            ecr_text += f" Tel {eco_phone}"
+
+                ws6.cell(row=row, column=1, value="How to contact Signaller:").font = bold_font
+                ws6.cell(row=row, column=1).fill = grey_fill
+                ws6.cell(row=row, column=1).border = border_all
+                ws6.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
+                ws6.cell(row=row, column=2, value=sb_text).border = border_all
+                row += 1
+                if ecr_text:
+                    ws6.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
+                    ws6.cell(row=row, column=2, value=ecr_text).border = border_all
+                    ws6.cell(row=row, column=1).border = border_all
+                    row += 1
+
+                row += 1
+                # Task risks, permits, welfare, first aid, access, hazards
+                rt_fields = [
+                    ("Task Key Risks and Controls:", swp_task_risks),
+                    ("Permits Required:", swp_permits),
+                    ("Welfare Arrangements:", "Local Welfare Facilities / As Per Task Brief"),
+                ]
+
+                # First aid
+                fa_text = "First Aider On Site:"
+                if swp_nearest_ae:
+                    h = swp_nearest_ae[0]
+                    fa_text += f"\nNearest A&E: {h['Hospital']}, {h['Address']}, {h['Postcode']}"
+                rt_fields.append(("First Aid Arrangements:", fa_text))
+
+                # Access
+                access_text = ", ".join(swp_access_selected) if swp_access_selected else ""
+                if swp_access_manual:
+                    access_text += ("\n" if access_text else "") + swp_access_manual
+                rt_fields.append(("Access & Egress:", access_text))
+                rt_fields.append(("Hazards (access/egress):", swp_access_hazards))
+                rt_fields.append(("Hazards (site):", swp_site_hazards))
+
+                for label, val in rt_fields:
+                    ws6.cell(row=row, column=1, value=label).font = bold_font
+                    ws6.cell(row=row, column=1).fill = grey_fill
+                    ws6.cell(row=row, column=1).border = border_all
+                    ws6.cell(row=row, column=1).alignment = Alignment(wrap_text=True, vertical='top')
+                    ws6.merge_cells(start_row=row, start_column=2, end_row=row, end_column=3)
+                    ws6.cell(row=row, column=2, value=val).border = border_all
+                    ws6.cell(row=row, column=2).alignment = Alignment(wrap_text=True)
+                    row += 1
+
+                row += 1
+                add_footer(ws6, row)
+
+                # ════════════════════════════════════════
+                # PAGE 7 — SSOW & DECLARATIONS
+                # ════════════════════════════════════════
+                ws7 = wb.create_sheet("SSOW & Declarations")
+                for col_letter, width in [('A', 35), ('B', 15), ('C', 15), ('D', 15)]:
+                    ws7.column_dimensions[col_letter].width = width
+
+                ws7.cell(row=1, column=1, value="SAFE SYSTEM OF WORK").font = header_font
+
+                row = 3
+                ws7.cell(row=row, column=1, value="Limits of the working area:").font = bold_font
+                ws7.cell(row=row, column=1).fill = grey_fill
+                ws7.cell(row=row, column=1).border = border_all
+                ws7.merge_cells(start_row=row, start_column=2, end_row=row, end_column=4)
+                ws7.cell(row=row, column=2, value=swp_limits).border = border_all
+                row += 2
+
+                # SSOW tables
+                all_methods = [
+                    "1 - Safeguarded", "2 - Fenced", "3 - Separated",
+                    "4 - Warning permanent", "5 - Warning portable", "6 - Lookout warning"
+                ]
+
+                walking_num = int(swp_ssow_walking[0]) if swp_ssow_walking else prot_num
+                working_num = int(swp_ssow_working[0]) if swp_ssow_working else prot_num
+
+                ws7.cell(row=row, column=1, value="Walking to/from site").font = bold_font
+                ws7.cell(row=row, column=1).fill = grey_fill
+                row += 1
+                for hdr, col in [("Method", 1), ("Planned", 2), ("Actual", 3)]:
+                    ws7.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws7.cell(row=row, column=col).fill = grey_fill
+                    ws7.cell(row=row, column=col).border = border_all
+                row += 1
+                for m in all_methods:
+                    num = int(m[0])
+                    ws7.cell(row=row, column=1, value=m).border = border_all
+                    ws7.cell(row=row, column=2, value="✓" if num == walking_num else "").border = border_all
+                    ws7.cell(row=row, column=2).alignment = Alignment(horizontal='center')
+                    ws7.cell(row=row, column=3).border = border_all
+                    row += 1
+
+                row += 1
+                ws7.cell(row=row, column=1, value="Whilst carrying out the work").font = bold_font
+                ws7.cell(row=row, column=1).fill = grey_fill
+                row += 1
+                for hdr, col in [("Method", 1), ("Planned", 2), ("Actual", 3)]:
+                    ws7.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws7.cell(row=row, column=col).fill = grey_fill
+                    ws7.cell(row=row, column=col).border = border_all
+                row += 1
+                for m in all_methods:
+                    num = int(m[0])
+                    ws7.cell(row=row, column=1, value=m).border = border_all
+                    ws7.cell(row=row, column=2, value="✓" if num == working_num else "").border = border_all
+                    ws7.cell(row=row, column=2).alignment = Alignment(horizontal='center')
+                    ws7.cell(row=row, column=3).border = border_all
+                    row += 1
+
+                row += 1
+                # Fence/separation details
+                ws7.cell(row=row, column=1, value="1 to 3 WORKING ONLY").font = bold_font
+                ws7.cell(row=row, column=1).fill = grey_fill
+                row += 1
+                fence_fields = [
+                    ("Type of Fence (fenced only):", swp_fence_type if prot_num == 2 else ""),
+                    ("Distance from Line (fenced only):", swp_fence_dist if prot_num == 2 else ""),
+                    ("Separation distance (Site Warden):", swp_sep_dist if prot_num == 3 else ""),
+                    ("How Site Warden will give warning:", swp_sep_warning if prot_num == 3 else ""),
+                ]
+                for label, val in fence_fields:
+                    ws7.cell(row=row, column=1, value=label).font = normal_font
+                    ws7.cell(row=row, column=1).border = border_all
+                    ws7.cell(row=row, column=2, value=val).border = border_all
+                    row += 1
+
+                row += 1
+                # Lookout/wardens table
+                ws7.cell(row=row, column=1, value="Details of Site Wardens, Lookouts, First Aiders, Banksmen:").font = bold_font
+                row += 1
+                for hdr, col in [("Name", 1), ("Sentinel Card No.", 2), ("Location/Position", 3), ("Role", 4)]:
+                    ws7.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws7.cell(row=row, column=col).fill = grey_fill
+                    ws7.cell(row=row, column=col).border = border_all
+                row += 1
+                for _ in range(4):
+                    for c in range(1, 5):
+                        ws7.cell(row=row, column=c).border = border_all
+                    row += 1
+
+                row += 1
+                # Declaration
+                ws7.cell(row=row, column=1, value="DECLARATION").font = bold_font
+                row += 1
+                ws7.merge_cells(start_row=row, start_column=1, end_row=row, end_column=4)
+                ws7.cell(row=row, column=1, value="Each member of the group to sign and confirm they have been briefed and understand the safe system of work.").font = small_font
+                ws7.cell(row=row, column=1).alignment = Alignment(wrap_text=True)
+                row += 1
+                for hdr, col in [("Name & Signature", 1), ("Sentinel Card No.", 2), ("Name & Signature", 3), ("Sentinel Card No.", 4)]:
+                    ws7.cell(row=row, column=col, value=hdr).font = bold_font
+                    ws7.cell(row=row, column=col).fill = grey_fill
+                    ws7.cell(row=row, column=col).border = border_all
+                row += 1
+                for _ in range(6):
+                    for c in range(1, 5):
+                        ws7.cell(row=row, column=c).border = border_all
+                    row += 1
+
+                row += 1
+                ws7.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=4)
+                ws7.cell(row=row, column=1, value="COSS/IWA DECLARATION: I have made the above arrangements and am satisfied that all members of the work group understand the safe system of work.").font = normal_font
+                ws7.cell(row=row, column=1).alignment = Alignment(wrap_text=True)
+                row += 3
+                ws7.cell(row=row, column=1, value="COSS/IWA MUST identify how verified & confirmed location:").font = normal_font
+                ws7.cell(row=row, column=1).border = border_all
+                ws7.merge_cells(start_row=row, start_column=2, end_row=row, end_column=4)
+                ws7.cell(row=row, column=2).border = border_all
+                row += 2
+                add_footer(ws7, row)
+
+                # ════════════════════════════════════════
+                # SAVE AND DOWNLOAD
+                # ════════════════════════════════════════
+                output = io.BytesIO()
+                wb.save(output)
+                output.seek(0)
+
+                safe_ref = re.sub(r'[^a-zA-Z0-9_-]', '_', swp_ref) if swp_ref else 'SWP'
+                filename = f"SWP_{safe_ref}.xlsx"
+
+                st.download_button(
+                    label="📥  Download SWP Excel",
+                    data=output.getvalue(),
+                    file_name=filename,
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
 
         else:
             if not st.session_state.get('swp_data'):
