@@ -2056,12 +2056,13 @@ else:
                 # ═══════════════════════════════════════
                 row = 1
 
-                # Logo
+                # Logo — top right
                 try:
                     app_dir = os.path.dirname(os.path.abspath(__file__))
-                    for lp in [os.path.join(app_dir, 'PPS_Rail_Logo_with_Trademark.png'),
+                    for lp in [os.path.join(app_dir, 'PPS_rail_logo.jpg'),
+                               os.path.join(app_dir, 'PPS_Rail_Logo_with_Trademark.png'),
                                os.path.join(app_dir, 'PPS-logo-ol.png'),
-                               os.path.join(app_dir, 'data', 'PPS_Rail_Logo_with_Trademark.png')]:
+                               os.path.join(app_dir, 'data', 'PPS_rail_logo.jpg')]:
                         if os.path.exists(lp):
                             img = XlImage(lp)
                             img.width = 150; img.height = 42
@@ -2073,14 +2074,9 @@ else:
                 ws.row_dimensions[1].height = 24
                 row = 2
                 row = MC(row, 1, 25, "SAFE WORK PACK", fn_t, None, cc, 30)
-
-                # SWP Ref for QC — top right area
-                ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
-                ws.cell(row=1, column=1, value=f"Ref: {swp_ref}").font = fn_lb
-
                 row += 1  # blank row
 
-                # Job details
+                # Job details — FULL WIDTH col 1-25
                 job = [
                     ("PRODUCED BY PLANNER", swp_planner_name, "Contact No", swp_planner_number),
                     ("DATE PRODUCED", datetime.now().strftime('%d/%m/%Y'), None, None),
@@ -2094,65 +2090,65 @@ else:
                     ("WEEK NO & DATE(S) OF WORKS", f"WK{swp_week} : {swp_from_date} - {swp_to_date}", None, None),
                 ]
                 for label, val, l2, v2 in job:
-                    MC(row, 4, 9, f"  {label}", fn_b, grey, wc, 20)
+                    MC(row, 1, 8, f"  {label}", fn_b, grey, wc, 20)
                     if l2:
-                        MC(row, 10, 16, val, fn_n, None, wt)
+                        MC(row, 9, 16, val, fn_n, None, wt)
                         MC(row, 17, 19, l2, fn_b, grey, wc)
-                        MC(row, 20, 23, v2, fn_n)
-                        SR(row, row, 4, 23, border=brd)
+                        MC(row, 20, 25, v2, fn_n)
+                        SR(row, row, 1, 25, border=brd)
                     else:
-                        MC(row, 10, 23, val, fn_n, None, wt)
-                        SR(row, row, 4, 23, border=brd)
+                        MC(row, 9, 25, val, fn_n, None, wt)
+                        SR(row, row, 1, 25, border=brd)
                     row += 1
 
-                # Shift Contact Numbers
-                row = MC(row, 4, 23, "SHIFT CONTACT NUMBERS", fn_b, grey, cc, 20)
+                # Shift Contact Numbers — FULL WIDTH
+                row = MC(row, 1, 25, "SHIFT CONTACT NUMBERS", fn_b, grey, cc, 20)
 
-                for lbl, c1, c2 in [("Name",4,8),("Duty",9,12),("Phone Number",13,18),("Shift Times",19,23)]:
+                for lbl, c1, c2 in [("Name",1,7),("Duty",8,11),("Phone Number",12,18),("Shift Times",19,25)]:
                     MC(row, c1, c2, lbl, fn_b, grey, cc)
                 row += 1
 
                 all_sc = list(shift_contacts) + [{'Name':'','Duty':'','Phone':'','Start':'','End':''}] * max(0, 5 - len(shift_contacts))
                 for sc in all_sc[:5]:
-                    MC(row, 4, 8, sc.get('Name',''), fn_n)
-                    MC(row, 9, 12, sc.get('Duty',''), fn_n, None, cc)
-                    MC(row, 13, 18, sc.get('Phone',''), fn_n, None, cc)
-                    MC(row, 19, 21, sc.get('Start',''), fn_n, None, cc)
-                    MC(row, 22, 23, sc.get('End',''), fn_n, None, cc)
-                    SR(row, row, 4, 23, border=brd)
+                    MC(row, 1, 7, sc.get('Name',''), fn_n)
+                    MC(row, 8, 11, sc.get('Duty',''), fn_n, None, cc)
+                    MC(row, 12, 18, sc.get('Phone',''), fn_n, None, cc)
+                    MC(row, 19, 22, sc.get('Start',''), fn_n, None, cc)
+                    MC(row, 23, 25, sc.get('End',''), fn_n, None, cc)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 row += 1
 
-                # Change authority — aligned with job details (col 4-23)
-                MC(row, 4, 14, "Reason and authority for change from\nplanned safe system of work", fn_s, grey, wc, 36, r2=row+1)
-                MC(row, 15, 23, "", fn_n, None, None, None, r2=row+1)
-                SR(row, row+1, 4, 23, border=brd_m)
+                # Change authority — FULL WIDTH
+                MC(row, 1, 10, "Reason and authority for change from\nplanned safe system of work", fn_s, grey, wc, 36, r2=row+1)
+                MC(row, 11, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
                 row += 2
 
                 row += 1
-                MC(row, 4, 14, "Name of Responsible Manager\nauthorising the change.", fn_s, grey, wc, 40, r2=row+1)
-                MC(row, 15, 16, "", fn_n, None, None, None, r2=row+1)
-                MC(row, 17, 19, "Signature/\nAuthority no", fn_s, grey, wc, None, r2=row+1)
-                MC(row, 20, 23, "", fn_n, None, None, None, r2=row+1)
-                SR(row, row+1, 4, 23, border=brd_m)
+                MC(row, 1, 10, "Name of Responsible Manager\nauthorising the change.", fn_s, grey, wc, 40, r2=row+1)
+                MC(row, 11, 16, "", fn_n, None, None, None, r2=row+1)
+                MC(row, 17, 20, "Signature/\nAuthority no", fn_s, grey, wc, None, r2=row+1)
+                MC(row, 21, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
                 row += 2
 
                 row += 1
-                # COSS to Planner Feedback — aligned col 2-23, bigger box
-                MC(row, 2, 8, "Coss To Planner\nFeedback", fn_big, None, wc, 60, r2=row+2)
-                MC(row, 9, 23, "", fn_n, None, None, None, r2=row+2)
-                SR(row, row+2, 2, 23, border=brd_m)
+                # COSS to Planner Feedback — FULL WIDTH
+                MC(row, 1, 8, "Coss To Planner\nFeedback", fn_big, None, wc, 60, r2=row+2)
+                MC(row, 9, 25, "", fn_n, None, None, None, r2=row+2)
+                SR(row, row+2, 1, 25, border=brd_m)
                 row += 3
 
                 row += 1
-                MC(row, 2, 23, "THIS PACK MUST BE RETURNED TO THE Supervisor ON COMPLETION OF THE WORKS", Font(name='Arial', bold=True, size=9), None, cc, 20)
+                MC(row, 1, 25, "THIS PACK MUST BE RETURNED TO THE Supervisor ON COMPLETION OF THE WORKS", Font(name='Arial', bold=True, size=9), None, cc, 20)
                 row += 1
-                MC(row, 2, 12, "Date Reviewed By planner", fn_b, grey, cc, 28, r2=row+1)
+                MC(row, 1, 12, "Date Reviewed By planner", fn_b, grey, cc, 28, r2=row+1)
                 MC(row, 13, 14, "", fn_n, None, None, None, r2=row+1)
-                MC(row, 15, 19, "Planner Signature", fn_b, grey, cc, None, r2=row+1)
-                MC(row, 20, 23, "", fn_n, None, None, None, r2=row+1)
-                SR(row, row+1, 2, 23, border=brd_m)
+                MC(row, 15, 20, "Planner Signature", fn_b, grey, cc, None, r2=row+1)
+                MC(row, 21, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
                 row += 2
 
                 row += 1
@@ -2188,13 +2184,13 @@ else:
                 # SWP Ref / Expiry / Dates — wider columns
                 MC(row, 2, 8, "SWP Ref.", fn_b, None, None, 22, r2=row+1)
                 MC(row, 9, 12, swp_ref, fn_n, None, wt, None, r2=row+1)
-                MC(row, 13, 16, "SWP expiry date", fn_lb, None, None)
-                MC(row, 17, 18, swp_to_date, fn_n)
-                MC(row, 19, 20, "Date & Time of Work", fn_lb, None, wt)
-                MC(row, 21, 25, f"{swp_from_date}-{swp_to_date}", fn_n, None, wt)
+                MC(row, 13, 15, "SWP expiry date", fn_lb, None, None)
+                MC(row, 16, 19, swp_to_date, fn_n)
+                MC(row, 20, 21, "Date & Time of Work", fn_lb, None, wt)
+                MC(row, 22, 25, f"{swp_from_date}-{swp_to_date}", fn_n, None, wt)
                 SR(row, row, 2, 25, border=brd)
                 row += 1
-                MC(row, 21, 25, f"{swp_from_time} - {swp_to_time}", fn_n, None, wt)
+                MC(row, 22, 25, f"{swp_from_time} - {swp_to_time}", fn_n, None, wt)
                 SR(row, row, 2, 25, border=brd)
                 row += 1
 
