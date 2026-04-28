@@ -2001,10 +2001,10 @@ else:
 
                 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
-                # ── Column widths (A-Y, 25 cols like template) ──
-                col_widths = {'A':4,'B':4,'C':4,'D':5,'E':5,'F':5,'G':5,'H':5,'I':5,'J':5,
-                              'K':5,'L':5,'M':5,'N':5,'O':5,'P':5,'Q':5,'R':5,'S':5,'T':5,
-                              'U':5,'V':5,'W':5,'X':5,'Y':5}
+                # ── Column widths (A-Y, 25 cols — wider to match template) ──
+                col_widths = {'A':4,'B':4,'C':4,'D':6,'E':6,'F':6,'G':6,'H':6,'I':6,'J':6,
+                              'K':6,'L':6,'M':6,'N':6,'O':6,'P':6,'Q':6,'R':6,'S':6,'T':6,
+                              'U':6,'V':4,'W':4,'X':4,'Y':4}
                 for cl, w in col_widths.items():
                     ws.column_dimensions[cl].width = w
 
@@ -2066,13 +2066,21 @@ else:
                 # ════════════════════════════════════════════════════════
                 row = 1
 
-                # Logo
+                # Logo — check multiple locations
                 try:
-                    logo_path = os.path.join(os.path.dirname(__file__), 'PPS_Rail_Logo_with_Trademark.png')
-                    if not os.path.exists(logo_path):
-                        logo_path = os.path.join(DATA_DIR, 'PPS_Rail_Logo_with_Trademark.png')
-                    if os.path.exists(logo_path):
-                        img = XlImage(logo_path)
+                    app_dir = os.path.dirname(os.path.abspath(__file__))
+                    logo_candidates = [
+                        os.path.join(app_dir, 'PPS_Rail_Logo_with_Trademark.png'),
+                        os.path.join(app_dir, 'data', 'PPS_Rail_Logo_with_Trademark.png'),
+                        os.path.join(app_dir, 'PPS-logo-ol.png'),
+                    ]
+                    logo_found = None
+                    for lp in logo_candidates:
+                        if os.path.exists(lp):
+                            logo_found = lp
+                            break
+                    if logo_found:
+                        img = XlImage(logo_found)
                         img.width = 150
                         img.height = 42
                         ws.add_image(img, 'S1')
@@ -3013,230 +3021,78 @@ else:
                 row = add_footer(ws, row)
 
                 # ════════════════════════════════════════════════════════
-                # SAVE EXCEL
+                # SAVE EXCEL AND CONVERT TO PDF
                 # ════════════════════════════════════════════════════════
-                output = io.BytesIO()
-                wb.save(output)
-                output.seek(0)
+                import tempfile
+                import subprocess
 
                 safe_ref = re.sub(r'[^a-zA-Z0-9_-]', '_', swp_ref) if swp_ref else 'SWP'
-                filename = f"SWP_{safe_ref}.xlsx"
 
-                st.download_button(
-                    label="\U0001F4E5  Download SWP Excel",
-                    data=output.getvalue(),
-                    file_name=filename,
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    key="swp_excel_dl"
-                )
+                # Save Excel to a temp file
+                tmp_dir = tempfile.mkdtemp()
+                xlsx_path = os.path.join(tmp_dir, f"SWP_{safe_ref}.xlsx")
+                wb.save(xlsx_path)
 
-                # ════════════════════════════════════════════════════════
-                # PDF GENERATION — Print Excel to PDF via ReportLab
-                # ════════════════════════════════════════════════════════
+                # Convert Excel to PDF using LibreOffice
+                pdf_path = None
+                pdf_bytes = None
                 try:
-                    from reportlab.lib.pagesizes import A4
-                    from reportlab.lib.units import mm
-                    from reportlab.lib.colors import HexColor, white, black
-                    from reportlab.platypus import Table, TableStyle, Paragraph, Spacer, PageBreak, SimpleDocTemplate
-                    from reportlab.lib.styles import ParagraphStyle
-                    from reportlab.lib.enums import TA_LEFT, TA_CENTER
+                    subprocess.run([
+                        'libreoffice', '--headless', '--convert-to', 'pdf',
+                        '--outdir', tmp_dir, xlsx_path
+                    ], capture_output=True, timeout=60)
+                    expected_pdf = os.path.join(tmp_dir, f"SWP_{safe_ref}.pdf")
+                    if os.path.exists(expected_pdf):
+                        with open(expected_pdf, 'rb') as pf:
+                            pdf_bytes = pf.read()
+                        pdf_path = expected_pdf
+                except Exception as conv_err:
+                    st.warning(f"PDF conversion issue: {conv_err}")
 
-                    pdf_buf = io.BytesIO()
-                    page_w, page_h = A4
-                    margin = 12 * mm
-                    usable = page_w - 2 * margin
+                # Also load Excel bytes for the backup download
+                with open(xlsx_path, 'rb') as xf:
+                    xlsx_bytes = xf.read()
 
-                    NWR = HexColor('#003366')
-                    GREY = HexColor('#D9D9D9')
-                    GREEN = HexColor('#C6EFCE')
-                    GRN_T = HexColor('#006100')
-
-                    ps_title = ParagraphStyle('T', fontName='Helvetica-Bold', fontSize=16, textColor=NWR, alignment=TA_CENTER, spaceAfter=3*mm)
-                    ps_hdr = ParagraphStyle('H', fontName='Helvetica-Bold', fontSize=9, textColor=white, alignment=TA_CENTER)
-                    ps_b = ParagraphStyle('B', fontName='Helvetica-Bold', fontSize=8, textColor=black, leading=10)
-                    ps_n = ParagraphStyle('N', fontName='Helvetica', fontSize=8, textColor=black, leading=10)
-                    ps_s = ParagraphStyle('S', fontName='Helvetica', fontSize=7, textColor=black, leading=9)
-                    ps_t = ParagraphStyle('TK', fontName='Helvetica-Bold', fontSize=9, textColor=GRN_T, alignment=TA_CENTER)
-                    ps_f = ParagraphStyle('F', fontName='Helvetica-Oblique', fontSize=6, textColor=HexColor('#666666'), alignment=TA_CENTER)
-
-                    def pdf_section(text):
-                        t = Table([[Paragraph(text, ps_hdr)]], colWidths=[usable])
-                        t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),NWR),('TEXTCOLOR',(0,0),(-1,-1),white),('ALIGN',(0,0),(-1,-1),'CENTER'),('TOPPADDING',(0,0),(-1,-1),3),('BOTTOMPADDING',(0,0),(-1,-1),3)]))
-                        return t
-
-                    def pdf_kv(rows, cw=None):
-                        if cw is None: cw = [usable*0.35, usable*0.65]
-                        data = [[Paragraph(r[0], ps_b), Paragraph(str(r[1]), ps_n)] for r in rows]
-                        t = Table(data, colWidths=cw)
-                        st_cmds = [('GRID',(0,0),(-1,-1),0.4,HexColor('#999')),('VALIGN',(0,0),(-1,-1),'TOP'),('TOPPADDING',(0,0),(-1,-1),2),('BOTTOMPADDING',(0,0),(-1,-1),2)]
-                        for i in range(len(data)):
-                            st_cmds.append(('BACKGROUND',(0,i),(0,i),GREY))
-                        t.setStyle(TableStyle(st_cmds))
-                        return t
-
-                    story = []
-                    # PDF mirrors the Excel content but as a compact printable
-                    story.append(Paragraph("SAFE WORK PACK", ps_title))
-                    story.append(pdf_section("JOB DETAILS"))
-                    story.append(pdf_kv([
-                        ("PRODUCED BY PLANNER", f"{swp_planner_name}  Tel: {swp_planner_number}"),
-                        ("DATE PRODUCED", datetime.now().strftime('%d/%m/%Y')),
-                        ("LOCATION", elr_location),
-                        ("NATURE OF WORKS", swp_nature_of_work),
-                        ("PROTECTION", prot_name),
-                        ("SWP REF", swp_ref),
-                        ("RESPONSIBLE MANAGER", f"{swp_rm_name}  Tel: {swp_rm_number}"),
-                        ("PERSON IN CHARGE", f"{swp_coss_name}  Tel: {swp_coss_number}"),
-                        ("ITEM / WORKSITE", f"{swp_item_no} - {swp_worksite}"),
-                        ("WEEK / DATES", f"WK{swp_week}: {swp_from_date} - {swp_to_date}"),
-                    ]))
-                    story.append(Spacer(1,2*mm))
-
-                    # Shift contacts
-                    story.append(pdf_section("SHIFT CONTACTS"))
-                    sc_d = [[Paragraph(h,ps_b) for h in ["Name","Duty","Phone","Times"]]]
-                    for sc in all_sc[:5]:
-                        t = f"{sc.get('Start','')}-{sc.get('End','')}" if sc.get('Start') else ""
-                        sc_d.append([Paragraph(sc.get('Name',''),ps_n),Paragraph(sc.get('Duty',''),ps_n),Paragraph(sc.get('Phone',''),ps_n),Paragraph(t,ps_n)])
-                    sct = Table(sc_d, colWidths=[usable*0.30,usable*0.18,usable*0.27,usable*0.25])
-                    sct.setStyle(TableStyle([('GRID',(0,0),(-1,-1),0.4,HexColor('#999')),('BACKGROUND',(0,0),(-1,0),GREY),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('TOPPADDING',(0,0),(-1,-1),2),('BOTTOMPADDING',(0,0),(-1,-1),2)]))
-                    story.append(sct)
-                    story.append(Spacer(1,2*mm))
-                    story.append(Paragraph(footer_text, ps_f))
-                    story.append(PageBreak())
-
-                    # Page 2: Validation
-                    story.append(pdf_section("SWP VALIDATION"))
-                    story.append(pdf_kv([("SWP Ref", swp_ref),("Dates", f"{swp_from_date}-{swp_to_date} {swp_from_time}-{swp_to_time}"),("Description", swp_nature_of_work)]))
-                    story.append(Spacer(1,2*mm))
-                    story.append(pdf_section("VERIFIED BY: PERSON IN CHARGE"))
-                    yn_d = [[Paragraph("Question",ps_b),Paragraph("Y",ps_b),Paragraph("N",ps_b)]]
-                    for q in yn_pic:
-                        yn_d.append([Paragraph(q,ps_n),Paragraph("Y",ps_t),Paragraph("",ps_n)])
-                    ynt = Table(yn_d, colWidths=[usable*0.80,usable*0.10,usable*0.10])
-                    ynt.setStyle(TableStyle([('GRID',(0,0),(-1,-1),0.4,HexColor('#999')),('BACKGROUND',(0,0),(-1,0),GREY),('ALIGN',(1,0),(2,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('TOPPADDING',(0,0),(-1,-1),2),('BOTTOMPADDING',(0,0),(-1,-1),2)]))
-                    story.append(ynt)
-                    story.append(Spacer(1,2*mm))
-                    story.append(pdf_section("AUTHORISED BY: RESPONSIBLE MANAGER"))
-                    rm_d = [[Paragraph("Question",ps_b),Paragraph("Y",ps_b),Paragraph("N",ps_b)]]
-                    for q in yn_rm:
-                        rm_d.append([Paragraph(q,ps_n),Paragraph("Y",ps_t),Paragraph("",ps_n)])
-                    rmt = Table(rm_d, colWidths=[usable*0.80,usable*0.10,usable*0.10])
-                    rmt.setStyle(TableStyle([('GRID',(0,0),(-1,-1),0.4,HexColor('#999')),('BACKGROUND',(0,0),(-1,0),GREY),('ALIGN',(1,0),(2,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('TOPPADDING',(0,0),(-1,-1),2),('BOTTOMPADDING',(0,0),(-1,-1),2)]))
-                    story.append(rmt)
-                    story.append(Spacer(1,2*mm))
-                    story.append(Paragraph(footer_text, ps_f))
-                    story.append(PageBreak())
-
-                    # Page 3: Risks & Runaway
-                    story.append(pdf_section("RISKS & RUNAWAY"))
-                    story.append(pdf_kv([("SWP Ref",swp_ref),("Dates",f"{swp_from_date}-{swp_to_date}"),("Description",swp_nature_of_work)]))
-                    story.append(Spacer(1,2*mm))
-                    story.append(pdf_section("RUNAWAY RISK ANALYSIS"))
-                    ra_d = [[Paragraph(h,ps_b) for h in ["Question","Ans","Comment"]]]
-                    for i,q in enumerate(runaway_qs_full):
-                        a = runaway_answers[i] if i < len(runaway_answers) else "No"
-                        c = runaway_comments[i] if i < len(runaway_comments) else ""
-                        ra_d.append([Paragraph(q,ps_n),Paragraph(a,ps_t if a=="Yes" else ps_n),Paragraph(c,ps_n)])
-                    rat = Table(ra_d, colWidths=[usable*0.55,usable*0.12,usable*0.33])
-                    rat.setStyle(TableStyle([('GRID',(0,0),(-1,-1),0.4,HexColor('#999')),('BACKGROUND',(0,0),(-1,0),GREY),('ALIGN',(1,0),(1,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'TOP'),('TOPPADDING',(0,0),(-1,-1),2),('BOTTOMPADDING',(0,0),(-1,-1),2)]))
-                    story.append(rat)
-                    story.append(Spacer(1,2*mm))
-                    story.append(Paragraph(footer_text, ps_f))
-                    story.append(PageBreak())
-
-                    # Page 4: Form B
-                    story.append(pdf_section("FORM B — PROTECTION 1-3 / WARNING 4-6"))
-                    story.append(pdf_kv([("Location",elr_location),("SWP Ref",swp_ref),("Dates",f"{swp_from_date}-{swp_to_date} {swp_from_time}-{swp_to_time}")]))
-                    story.append(Spacer(1,2*mm))
-                    fb_d = [[Paragraph(h,ps_b) for h in ["No.","Method","Selected","Reason"]]]
-                    for num,name in [(1,"Safeguarded"),(2,"Fenced"),(3,"Separated"),(4,"Warning permanent"),(5,"Warning portable"),(6,"Lookout (25mph)")]:
-                        is_s = prot_num == num
-                        reason = ""
-                        if num==1 and prot_num>=2: reason = sg_reason
-                        elif num==2 and prot_num>=3: reason = fence_reason
-                        fb_d.append([Paragraph(str(num),ps_b),Paragraph(name,ps_n),Paragraph("YES" if is_s else "NO",ps_t if is_s else ps_n),Paragraph(reason,ps_n)])
-                    fbt = Table(fb_d, colWidths=[usable*0.06,usable*0.38,usable*0.12,usable*0.44])
-                    fb_st = [('GRID',(0,0),(-1,-1),0.4,HexColor('#999')),('BACKGROUND',(0,0),(-1,0),GREY),('ALIGN',(0,0),(0,-1),'CENTER'),('ALIGN',(2,0),(2,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('TOPPADDING',(0,0),(-1,-1),3),('BOTTOMPADDING',(0,0),(-1,-1),3)]
-                    for i in range(1,7):
-                        if i == prot_num: fb_st.append(('BACKGROUND',(2,i),(2,i),GREEN))
-                    fbt.setStyle(TableStyle(fb_st))
-                    story.append(fbt)
-                    story.append(Spacer(1,2*mm))
-                    story.append(Paragraph(footer_text, ps_f))
-                    story.append(PageBreak())
-
-                    # Page 5: RT9909
-                    story.append(pdf_section("RT9909 — RECORD OF ARRANGEMENTS AND BRIEFING"))
-                    rt_pdf = [
-                        ("COSS/IWA", swp_coss_name),
-                        ("Nature of Work", swp_nature_of_work),
-                        ("Location & Lines", lines_affected),
-                        ("Signaller Contact", sb_text),
-                        ("Electrical Control Room", ecr_text),
-                    ]
-                    if swp_line_data:
-                        rt_pdf.append(("Lines at Site", " | ".join([f"{ld['Abbreviation']} ({ld['Status']})" for ld in swp_line_data])))
-                    for label,val in rt_fields:
-                        short_label = label.split("(")[0].strip().rstrip("*").strip()
-                        rt_pdf.append((short_label, val))
-                    story.append(pdf_kv(rt_pdf))
-                    story.append(Spacer(1,2*mm))
-                    story.append(Paragraph(footer_text, ps_f))
-                    story.append(PageBreak())
-
-                    # Page 6: SSOW
-                    story.append(pdf_section("SAFE SYSTEM OF WORK"))
-                    story.append(pdf_kv([("Limits of working area", swp_limits)]))
-                    story.append(Spacer(1,2*mm))
-                    ssow_d = [[Paragraph(h,ps_b) for h in ["Method","Walk Plan","Walk Act","Work Plan","Work Act"]]]
-                    for m in all_methods:
-                        num = int(m[0])
-                        ssow_d.append([Paragraph(m,ps_n),Paragraph("Y" if num==walking_num else "",ps_t if num==walking_num else ps_n),Paragraph("",ps_n),Paragraph("Y" if num==working_num else "",ps_t if num==working_num else ps_n),Paragraph("",ps_n)])
-                    ssowt = Table(ssow_d, colWidths=[usable*0.44,usable*0.14,usable*0.14,usable*0.14,usable*0.14])
-                    ssow_st = [('GRID',(0,0),(-1,-1),0.4,HexColor('#999')),('BACKGROUND',(0,0),(-1,0),GREY),('ALIGN',(1,0),(4,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('TOPPADDING',(0,0),(-1,-1),2),('BOTTOMPADDING',(0,0),(-1,-1),2)]
-                    for i,m in enumerate(all_methods,1):
-                        num=int(m[0])
-                        if num==walking_num: ssow_st.append(('BACKGROUND',(1,i),(1,i),GREEN))
-                        if num==working_num: ssow_st.append(('BACKGROUND',(3,i),(3,i),GREEN))
-                    ssowt.setStyle(TableStyle(ssow_st))
-                    story.append(ssowt)
-                    story.append(Spacer(1,2*mm))
-                    story.append(pdf_kv([
-                        ("Fence type", swp_fence_type if prot_num==2 else "N/A"),
-                        ("Fence distance", swp_fence_dist if prot_num==2 else "N/A"),
-                        ("Separation distance", swp_sep_dist if prot_num==3 else "N/A"),
-                        ("Warning method", swp_sep_warning if prot_num==3 else "N/A"),
-                    ]))
-                    story.append(Spacer(1,3*mm))
-                    story.append(pdf_section("COSS/IWA DECLARATION"))
-                    story.append(Paragraph("I have made the above arrangements and am satisfied that all members of the work group understand the safe system of work.", ps_n))
-                    story.append(Spacer(1,2*mm))
-                    story.append(Paragraph(footer_text, ps_f))
-
-                    doc = SimpleDocTemplate(pdf_buf, pagesize=A4, leftMargin=margin, rightMargin=margin, topMargin=margin, bottomMargin=margin, title=f"SWP {swp_ref}", author="PPS Rail")
-                    doc.build(story)
-                    pdf_buf.seek(0)
-
+                # PRIMARY: PDF download (this is what planners use)
+                if pdf_bytes:
                     st.download_button(
-                        label="\U0001F4C4  Download SWP PDF",
-                        data=pdf_buf.getvalue(),
+                        label="\U0001F4C4  Download SWP (PDF)",
+                        data=pdf_bytes,
                         file_name=f"SWP_{safe_ref}.pdf",
                         mime="application/pdf",
                         key="swp_pdf_dl"
                     )
 
+                # SECONDARY: Excel backup (for edits only)
+                st.download_button(
+                    label="\U0001F4DD  Download SWP (Excel — editable backup)",
+                    data=xlsx_bytes,
+                    file_name=f"SWP_{safe_ref}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key="swp_excel_dl"
+                )
+
+                if pdf_bytes:
                     st.markdown(f"""
                     <div class="pps-card pps-card-green" style="margin-top:1rem">
                       <span class="badge badge-green">&#10003; SWP Generated</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">Excel + PDF ready. Ref: {swp_ref}</span>
+                      <span style="margin-left:1rem;font-size:0.85rem">PDF + Excel ready. Ref: {swp_ref}</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.markdown(f"""
+                    <div class="pps-card pps-card-amber" style="margin-top:1rem">
+                      <span class="badge badge-amber">Excel Only</span>
+                      <span style="margin-left:1rem;font-size:0.85rem">PDF conversion not available — download Excel and print to PDF from your PC. Ref: {swp_ref}</span>
                     </div>
                     """, unsafe_allow_html=True)
 
-                except Exception as pdf_err:
-                    st.warning(f"Excel generated OK. PDF generation failed: {pdf_err}")
-                    import traceback
-                    st.code(traceback.format_exc())
+                # Clean up temp files
+                try:
+                    import shutil
+                    shutil.rmtree(tmp_dir, ignore_errors=True)
+                except Exception:
+                    pass
 
 
         else:
