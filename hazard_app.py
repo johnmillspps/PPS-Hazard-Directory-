@@ -1301,7 +1301,7 @@ else:
 
         st.markdown(f"""
         <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-bottom:1rem">
-          Paste a row from the Possession Tracker below. The app will auto-populate the SWP
+          Paste a row from the Possession Tracker (AI version) below. The app will auto-populate the SWP
           with lines at site, signal box contacts, ECR details, nearest A&amp;E, hazards, and access points.
         </div>
         """, unsafe_allow_html=True)
@@ -1313,19 +1313,26 @@ else:
             key="swp_paste"
         )
 
-        if tracker_paste and tracker_paste.strip():
-            # Parse the pasted tracker row (tab-separated)
-            fields = tracker_paste.strip().split('\t')
+        build_swp = st.button("📋  BUILD SWP", key="build_swp_btn")
 
-            # Expected columns from the Possession Tracker:
+        if build_swp and tracker_paste and tracker_paste.strip():
+            st.session_state['swp_data'] = tracker_paste.strip()
+
+        if st.session_state.get('swp_data'):
+            # Parse the pasted tracker row (tab-separated)
+            fields = st.session_state['swp_data'].split('\t')
+
+            # AI Version Tracker columns:
             # 0:Week, 1:Worksite, 2:W/S Status, 3:Poss'n Ref, 4:Worktype,
-            # 5:From Date, 6:From Time, 7:To Date, 8:To Time, 9:ELR, 10:LOR,
-            # 11:Distance From, 12:Distance To, 13:Isol, 14:ES Primary,
-            # 15:Location, 16:Client, 17:Contact, 18:Isolation Y/N,
-            # 19:PPS To Create SSOW, 20:SSOW In Use, 21:Protection,
-            # 22:SSOW Returned, 23:PPS Supply Labour, 24:COSS Name,
-            # 25:Email, 26:Number, 27:Item No, 28:Picop Meeting,
-            # 29:Planner Comments, 30:SWP Ref, 31:PO Number
+            # 5:From Date, 6:From Time, 7:To Date, 8:To Time,
+            # 9:ELR1, 10:Distance From 1, 11:Distance To 1,
+            # 12:ELR2, 13:Distance From 2, 14:Distance To 2,
+            # 15:LOR, 16:Isol, 17:ES Primary, 18:Location, 19:Client,
+            # 20:Responsible Manager, 21:Planner,
+            # 22:Isolation Y/N, 23:SSOW In Use, 24:Protection,
+            # 25:SSOW Returned, 26:COSS Name, 27:Email, 28:Number,
+            # 29:Item No, 30:Picop Meeting, 31:Planner Comments,
+            # 32:SWP Ref, 33:PO Number
 
             def safe_get(lst, idx, default=''):
                 try:
@@ -1343,31 +1350,49 @@ else:
             swp_from_time = safe_get(fields, 6)
             swp_to_date = safe_get(fields, 7)
             swp_to_time = safe_get(fields, 8)
-            swp_elr = safe_get(fields, 9)
-            swp_lor = safe_get(fields, 10)
-            swp_dist_from = safe_get(fields, 11)
-            swp_dist_to = safe_get(fields, 12)
-            swp_isol = safe_get(fields, 13)
-            swp_es_primary = safe_get(fields, 14)
-            swp_location = safe_get(fields, 15)
-            swp_client = safe_get(fields, 16)
-            swp_contact = safe_get(fields, 17)
-            swp_isol_yn = safe_get(fields, 18)
-            swp_create_ssow = safe_get(fields, 19)
-            swp_ssow_in_use = safe_get(fields, 20)
-            swp_protection = safe_get(fields, 21)
-            swp_ssow_returned = safe_get(fields, 22)
-            swp_supply_labour = safe_get(fields, 23)
-            swp_coss_name = safe_get(fields, 24)
-            swp_coss_email = safe_get(fields, 25)
-            swp_coss_number = safe_get(fields, 26)
-            swp_item_no = safe_get(fields, 27)
-            swp_picop = safe_get(fields, 28)
-            swp_comments = safe_get(fields, 29)
-            swp_ref = safe_get(fields, 30)
-            swp_po = safe_get(fields, 31)
+            swp_elr1 = safe_get(fields, 9).upper()
+            swp_dist_from1 = safe_get(fields, 10)
+            swp_dist_to1 = safe_get(fields, 11)
+            swp_elr2 = safe_get(fields, 12).upper()
+            swp_dist_from2 = safe_get(fields, 13)
+            swp_dist_to2 = safe_get(fields, 14)
+            swp_lor = safe_get(fields, 15)
+            swp_isol = safe_get(fields, 16)
+            swp_es_primary = safe_get(fields, 17)
+            swp_location = safe_get(fields, 18)
+            swp_client = safe_get(fields, 19)
+            swp_rm = safe_get(fields, 20)
+            swp_planner = safe_get(fields, 21)
+            swp_isol_yn = safe_get(fields, 22)
+            swp_ssow = safe_get(fields, 23)
+            swp_protection = safe_get(fields, 24)
+            swp_ssow_returned = safe_get(fields, 25)
+            swp_coss_name = safe_get(fields, 26)
+            swp_coss_email = safe_get(fields, 27)
+            swp_coss_number = safe_get(fields, 28)
+            swp_item_no = safe_get(fields, 29)
+            swp_picop = safe_get(fields, 30)
+            swp_comments = safe_get(fields, 31)
+            swp_ref = safe_get(fields, 32)
+            swp_po = safe_get(fields, 33)
 
-            # Convert Excel date serial numbers to readable dates
+            # If ELR2 is blank, use ELR1 only
+            swp_elr_from = swp_elr1
+            swp_elr_to = swp_elr2 if swp_elr2 else swp_elr1
+
+            # Parse RM name and number from combined field "Steve Carroll - 07939 393913"
+            def parse_name_number(combined):
+                if not combined:
+                    return '', ''
+                parts = re.split(r'\s*[-–]\s*(?=\d)', combined, maxsplit=1)
+                if len(parts) == 2:
+                    return parts[0].strip(), parts[1].strip()
+                return combined.strip(), ''
+
+            swp_rm_name, swp_rm_number = parse_name_number(swp_rm)
+            swp_planner_name, swp_planner_number = parse_name_number(swp_planner)
+
+            # Convert Excel date serial numbers
             def excel_date(serial):
                 try:
                     serial = float(serial)
@@ -1395,8 +1420,15 @@ else:
             swp_from_time = excel_time(swp_from_time)
             swp_to_time = excel_time(swp_to_time)
 
-            # ── Display parsed data ──
-            st.markdown(f'''<div class="section-header">📝  PARSED JOB DETAILS</div>''', unsafe_allow_html=True)
+            # Build location string
+            elr_location = f"ELR: {swp_elr1} {swp_dist_from1}-{swp_dist_to1}"
+            if swp_elr2:
+                elr_location += f" / {swp_elr2} {swp_dist_from2}-{swp_dist_to2}"
+
+            # ══════════════════════════════════════════════════════
+            # STEP 1: PARSED JOB DETAILS (auto from tracker)
+            # ══════════════════════════════════════════════════════
+            st.markdown(f'<div class="section-header">📝  STEP 1 — JOB DETAILS (auto-populated)</div>', unsafe_allow_html=True)
 
             col1, col2 = st.columns(2)
             with col1:
@@ -1410,8 +1442,8 @@ else:
                     <b>Poss Ref:</b> {swp_poss_ref}<br/>
                     <b>Work Type:</b> {swp_worktype}<br/>
                     <b>Location:</b> {swp_location}<br/>
-                    <b>ELR:</b> {swp_elr} &nbsp; <b>LOR:</b> {swp_lor}<br/>
-                    <b>Mileage:</b> {swp_dist_from} to {swp_dist_to}<br/>
+                    <b>{elr_location}</b><br/>
+                    <b>LOR:</b> {swp_lor}<br/>
                     <b>Dates:</b> {swp_from_date} {swp_from_time} — {swp_to_date} {swp_to_time}
                   </div>
                 </div>
@@ -1423,132 +1455,361 @@ else:
                     Contacts & Protection</div>
                   <div style="font-size:0.82rem;color:{COLOURS['muted']}">
                     <b>Client:</b> {swp_client}<br/>
-                    <b>Client Contact:</b> {swp_contact}<br/>
+                    <b>RM:</b> {swp_rm_name} — {swp_rm_number}<br/>
+                    <b>Planner:</b> {swp_planner_name} — {swp_planner_number}<br/>
                     <b>COSS:</b> {swp_coss_name}<br/>
                     <b>COSS Phone:</b> {swp_coss_number}<br/>
                     <b>COSS Email:</b> {swp_coss_email}<br/>
                     <b>Protection:</b> {swp_protection}<br/>
-                    <b>SSOW:</b> {swp_ssow_in_use}<br/>
+                    <b>SSOW:</b> {swp_ssow}<br/>
                     <b>Isolation:</b> {swp_isol} ({swp_isol_yn})
                   </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-            # ── Auto-lookup worksite intelligence ──
-            # Parse ELR (may be dual e.g. "DBP1/BJW3")
-            swp_elrs = [e.strip() for e in swp_elr.split('/') if e.strip()]
-            swp_elr_from = swp_elrs[0].upper() if swp_elrs else ''
-            swp_elr_to = swp_elrs[-1].upper() if swp_elrs else swp_elr_from
+            # ══════════════════════════════════════════════════════
+            # AUTO-LOOKUP: Get worksite intelligence data
+            # ══════════════════════════════════════════════════════
+            swp_from_dec = mileage_to_decimal(swp_dist_from1)
+            swp_to_dec = mileage_to_decimal(swp_dist_to1)
 
-            # Parse mileage from distance fields
-            swp_from_dec = None
-            swp_to_dec = None
-            # Distance fields may be like "DBP1 16m02ch" or just "131m0ch"
-            dist_from_clean = re.sub(r'^[A-Z0-9]+\s+', '', swp_dist_from) if swp_dist_from else ''
-            dist_to_clean = re.sub(r'^[A-Z0-9]+\s+', '', swp_dist_to) if swp_dist_to else ''
-            swp_from_dec = mileage_to_decimal(dist_from_clean)
-            swp_to_dec = mileage_to_decimal(dist_to_clean)
+            swp_lines = []
+            swp_boxes = []
+            swp_nearest_ae = []
+            swp_hazards_df = pd.DataFrame()
+            swp_access_df = pd.DataFrame()
 
             if swp_from_dec is not None and swp_to_dec is not None:
                 swp_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
                 swp_to_ch = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22)
 
-                # ── Lines at Site ──
-                st.markdown(f'''<div class="section-header">🚂  LINES AT SITE</div>''', unsafe_allow_html=True)
                 swp_lines = find_line_names_for_mileage(swp_elr_from, swp_elr_to, swp_from_ch, swp_to_ch, ln_df)
-                if swp_lines:
-                    lines_df = pd.DataFrame(swp_lines)
-                    st.dataframe(lines_df, use_container_width=True, hide_index=True)
-                else:
-                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No line name data found.</div>""", unsafe_allow_html=True)
-
-                # ── Signal Box Contacts ──
-                st.markdown(f'''<div class="section-header">📞  SIGNAL BOX CONTACTS</div>''', unsafe_allow_html=True)
                 swp_boxes = find_signal_boxes_for_mileage(swp_elr_from, swp_elr_to, swp_from_ch, swp_to_ch, sba_df, signalbox_df)
-                if swp_boxes:
-                    for box in swp_boxes:
-                        phone_display = f" — <b>{box['Phone']}</b>" if box['Phone'] else ""
-                        prefix_display = f" ({box['Prefix']})" if box['Prefix'] else ""
-                        eco_parts = []
-                        if box.get('ECO'):
-                            eco_label = box['ECO']
-                            eco_phone = format_phone_numbers(box.get('ECO Phone', ''))
-                            if eco_phone:
-                                eco_parts.append(f"ECR: {eco_label} — <b>{eco_phone}</b>")
-                            else:
-                                eco_parts.append(f"ECR: {eco_label}")
-                        eco_display = f"<br/><span style='font-size:0.78rem'>{'<br/>'.join(eco_parts)}</span>" if eco_parts else ""
-                        st.markdown(f"""
-                        <div class="pps-card pps-card-green">
-                          <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600">
-                            {box['Signal Box']}{prefix_display}{phone_display}</div>
-                          <div style="font-size:0.82rem;color:{COLOURS['muted']};margin-top:0.2rem">
-                            {box['ELR']} {box['Coverage']}{eco_display}</div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                else:
-                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No signal box data found.</div>""", unsafe_allow_html=True)
 
-                # ── Nearest A&E ──
-                st.markdown(f'''<div class="section-header">🏥  NEAREST A&amp;E</div>''', unsafe_allow_html=True)
                 if ae_df is not None and not ae_df.empty:
                     swp_lat, swp_lon, swp_source = find_worksite_coords(
                         swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec, ap_coords_df)
                     if swp_lat and swp_lon:
-                        nearest = find_nearest_ae(swp_lat, swp_lon, ae_df, n=3)
-                        for i, hosp in enumerate(nearest):
-                            border_col = COLOURS['green'] if i == 0 else COLOURS['border']
-                            label = 'NEAREST' if i == 0 else f'#{i+1}'
-                            badge_class = 'badge-green' if i == 0 else 'badge-grey'
-                            st.markdown(f"""
-                            <div class="pps-card" style="border-left:3px solid {border_col}">
-                              <span class="badge {badge_class}">{label} — {hosp['Distance (miles)']} miles</span>
-                              <div style="margin-top:0.5rem;font-size:1rem;color:{COLOURS['white']};font-weight:600">
-                                {hosp['Hospital']}</div>
-                              <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-top:0.2rem">
-                                {hosp['Address']}, {hosp['Postcode']}</div>
-                            </div>
-                            """, unsafe_allow_html=True)
+                        swp_nearest_ae = find_nearest_ae(swp_lat, swp_lon, ae_df, n=3)
+
+                swp_hazards_df = filter_hazards_only(query_by_elr_mileage(hazard_df, swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec))
+                swp_access_df = filter_access_points(query_by_elr_mileage(hazard_df, swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec))
+                if not swp_access_df.empty:
+                    swp_access_df = enrich_access_points_with_coords(swp_access_df, ap_coords_df)
+
+            # ══════════════════════════════════════════════════════
+            # STEP 2: EDITABLE FIELDS
+            # ══════════════════════════════════════════════════════
+            st.markdown(f'<div class="section-header">✏️  STEP 2 — COMPLETE THE PACK</div>', unsafe_allow_html=True)
+
+            # ── Nature of Work (editable, pre-filled, overrides Page 1) ──
+            swp_nature_of_work = st.text_area(
+                "Nature of Work (expand if needed — this overrides Page 1)",
+                value=swp_worktype,
+                height=80,
+                key="swp_nature"
+            )
+
+            # ── Protection Method ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">🛡️  Protection Method</div>', unsafe_allow_html=True)
+
+            protection_options = [
+                "1 - Safeguarded site of work",
+                "2 - Fenced site of work",
+                "3 - Separated site of work",
+                "4 - Warning systems - permanent train activated",
+                "5 - Warning systems - portable train activated",
+                "6 - Lookout warning (max 25mph)"
+            ]
+
+            # Pre-select from tracker
+            default_prot_idx = 0
+            prot_lower = swp_protection.lower() if swp_protection else ''
+            if 'safeguard' in prot_lower:
+                default_prot_idx = 0
+            elif 'fenced' in prot_lower or 'fence' in prot_lower:
+                default_prot_idx = 1
+            elif 'separat' in prot_lower:
+                default_prot_idx = 2
+            elif 'possession' in prot_lower:
+                default_prot_idx = 0
+            elif 'lineblock' in prot_lower or 'line block' in prot_lower:
+                default_prot_idx = 2
+            elif 'site warden' in prot_lower:
+                default_prot_idx = 2
+
+            swp_prot_selected = st.selectbox(
+                "Protection method selected",
+                protection_options,
+                index=default_prot_idx,
+                key="swp_protection_sel"
+            )
+
+            # If not safeguarded, show reason fields
+            prot_num = int(swp_prot_selected[0])
+
+            sg_reason = ''
+            fence_reason = ''
+            if prot_num >= 2:
+                sg_reason = st.text_input(
+                    "Reason Safeguarded NOT selected",
+                    value="Not Available",
+                    key="swp_sg_reason"
+                )
+            if prot_num >= 3:
+                fence_reason = st.text_input(
+                    "Reason Fenced NOT selected",
+                    value="Disproportionate 25% rule",
+                    key="swp_fence_reason"
+                )
+
+            # If fenced — fence details
+            if prot_num == 2:
+                fc1, fc2 = st.columns(2)
+                with fc1:
+                    swp_fence_type = st.selectbox("Type of fence", ["Vortok", "Blue Netlon", "Black & Yellow Tape", "N/A"], key="swp_fence_type")
+                with fc2:
+                    swp_fence_dist = st.selectbox("Distance from line", ["1.25m", "2m", "N/A"], key="swp_fence_dist")
+
+            # If separated — separation details
+            if prot_num == 3:
+                sc1, sc2 = st.columns(2)
+                with sc1:
+                    swp_sep_dist = st.selectbox("Separation distance", ["2m", "N/A"], key="swp_sep_dist")
+                with sc2:
+                    swp_sep_warning = st.selectbox("How Site Warden will give warning", ["Verbal", "Horn", "Whistle", "Horn or Whistle", "N/A"], key="swp_sep_warn")
+
+            # SSOW walking vs working tick boxes
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">🚶  SSOW — Walking to Site vs Working</div>', unsafe_allow_html=True)
+
+            ssow_col1, ssow_col2 = st.columns(2)
+            with ssow_col1:
+                swp_ssow_walking = st.selectbox(
+                    "SSOW for walking to/from site",
+                    protection_options,
+                    index=default_prot_idx,
+                    key="swp_ssow_walking"
+                )
+            with ssow_col2:
+                swp_ssow_working = st.selectbox(
+                    "SSOW for working at site",
+                    protection_options,
+                    index=default_prot_idx,
+                    key="swp_ssow_working"
+                )
+
+            # ── Runaway Risk Analysis ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">⚠️  Runaway Risk Analysis</div>', unsafe_allow_html=True)
+
+            runaway_questions = [
+                "Are the works taking place on or near the line?",
+                "Could your work potentially lead to a Runaway?",
+                "Are my works within a Possession or adjacent to a Possession?",
+                "Are my works on a gradient steeper than 1 in 100 or is there a gradient within 5 miles?",
+                "Is the site of work at risk of a runaway from a 3rd Party?"
+            ]
+            runaway_defaults = ["Yes", "No", "No", "No", "No"]
+
+            runaway_answers = []
+            runaway_comments = []
+            for i, q in enumerate(runaway_questions):
+                rc1, rc2, rc3 = st.columns([4, 1, 3])
+                with rc1:
+                    st.markdown(f"<div style='font-size:0.82rem;color:{COLOURS['text']};padding-top:0.5rem'>{q}</div>", unsafe_allow_html=True)
+                with rc2:
+                    ans = st.selectbox("", ["Yes", "No"], index=0 if runaway_defaults[i] == "Yes" else 1, key=f"swp_ra_{i}", label_visibility="collapsed")
+                    runaway_answers.append(ans)
+                with rc3:
+                    comment = st.text_input("", placeholder="Comment...", key=f"swp_ra_c_{i}", label_visibility="collapsed")
+                    runaway_comments.append(comment)
+
+            # ── Lines at Site ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">🚂  Lines at Site</div>', unsafe_allow_html=True)
+
+            swp_line_data = []
+            if swp_lines:
+                for i, line in enumerate(swp_lines):
+                    lc1, lc2, lc3 = st.columns([2, 3, 2])
+                    with lc1:
+                        abbr = st.text_input("Abbrev", value=line['Abbreviation'], key=f"swp_ln_a_{i}", label_visibility="collapsed")
+                    with lc2:
+                        name = st.text_input("Line Name", value=line['Line Name'], key=f"swp_ln_n_{i}", label_visibility="collapsed")
+                    with lc3:
+                        status = st.selectbox("Status", ["Open", "Blocked", "Blocked in between trains"], key=f"swp_ln_s_{i}", label_visibility="collapsed")
+                    swp_line_data.append({'Abbreviation': abbr, 'Line Name': name, 'Status': status})
+            else:
+                st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No line data found. Add manually below.</div>", unsafe_allow_html=True)
+
+            # Add extra line option
+            if st.checkbox("Add extra line manually", key="swp_add_line"):
+                elc1, elc2, elc3 = st.columns([2, 3, 2])
+                with elc1:
+                    extra_abbr = st.text_input("Abbrev", key="swp_ln_extra_a", label_visibility="collapsed")
+                with elc2:
+                    extra_name = st.text_input("Line Name", key="swp_ln_extra_n", label_visibility="collapsed")
+                with elc3:
+                    extra_status = st.selectbox("Status", ["Open", "Blocked", "Blocked in between trains"], key="swp_ln_extra_s", label_visibility="collapsed")
+                if extra_abbr:
+                    swp_line_data.append({'Abbreviation': extra_abbr, 'Line Name': extra_name, 'Status': extra_status})
+
+            # ── Task Key Risks ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">📋  Task Key Risks & Controls</div>', unsafe_allow_html=True)
+
+            swp_task_risks = st.text_area(
+                "Task Key Risks and Controls",
+                value="See Task Briefing (NWR Life Saving Rules Apply)",
+                height=80,
+                key="swp_task_risks"
+            )
+
+            # ── Permits ──
+            swp_permits = st.text_input(
+                "Permits Required",
+                value="None required",
+                key="swp_permits"
+            )
+
+            # ── Access & Egress ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">🚪  Access & Egress</div>', unsafe_allow_html=True)
+
+            access_options = []
+            if not swp_access_df.empty:
+                for _, row in swp_access_df.iterrows():
+                    local = str(row.get('Local Name', '')).strip()
+                    mil = str(row.get('Mileage  From', '')).strip()
+                    desc = str(row.get('Hazard Description', '')).strip()
+                    elr = str(row.get('ELR', '')).strip()
+                    free_text = str(row.get('Free Text', '')).strip()
+                    if local and local != 'nan':
+                        label = f"{local} ({elr} {mil})"
+                    elif desc and desc != 'nan':
+                        label = f"{desc} ({elr} {mil})"
                     else:
-                        st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No coordinate data — cannot determine nearest A&amp;E.</div>""", unsafe_allow_html=True)
+                        label = f"{elr} {mil}"
+                    access_options.append(label)
 
-                # ── Hazards ──
-                st.markdown(f'''<div class="section-header">⚠️  HAZARDS</div>''', unsafe_allow_html=True)
-                swp_hazards = filter_hazards_only(query_by_elr_mileage(hazard_df, swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec))
-                if not swp_hazards.empty:
+            if access_options:
+                swp_access_selected = st.multiselect(
+                    "Select access point(s) from database",
+                    access_options,
+                    default=[access_options[0]] if access_options else [],
+                    key="swp_access_sel"
+                )
+            else:
+                swp_access_selected = []
+                st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No access points found in database.</div>", unsafe_allow_html=True)
+
+            swp_access_manual = st.text_input(
+                "Additional access details (if not in database)",
+                placeholder="e.g. Access via field gate at 131m 02ch, postcode DE24 8EB",
+                key="swp_access_manual"
+            )
+
+            # ── Hazards (both fields) ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">⚠️  Hazards</div>', unsafe_allow_html=True)
+
+            swp_access_hazards = st.text_area(
+                "Hazards associated with access/egress",
+                value="*** See Hazard Directory ***",
+                height=60,
+                key="swp_access_hazards"
+            )
+
+            swp_site_hazards = st.text_area(
+                "Hazards associated with the site",
+                value="*** See Hazard Directory ***",
+                height=60,
+                key="swp_site_hazards"
+            )
+
+            # ── Limits of Working Area ──
+            swp_limits = st.text_input(
+                "Limits of the working area",
+                value=f"{elr_location}",
+                key="swp_limits"
+            )
+
+            # ══════════════════════════════════════════════════════
+            # STEP 3: AUTO-POPULATED DATA (read-only display)
+            # ══════════════════════════════════════════════════════
+            st.markdown(f'<div class="section-header">📊  STEP 3 — AUTO-POPULATED DATA</div>', unsafe_allow_html=True)
+
+            # ── Signal Box Contacts ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">📞  Signal Box Contacts</div>', unsafe_allow_html=True)
+            if swp_boxes:
+                for box in swp_boxes:
+                    phone_display = f" — <b>{box['Phone']}</b>" if box['Phone'] else ""
+                    prefix_display = f" ({box['Prefix']})" if box['Prefix'] else ""
+                    eco_parts = []
+                    if box.get('ECO'):
+                        eco_label = box['ECO']
+                        eco_phone = format_phone_numbers(box.get('ECO Phone', ''))
+                        if eco_phone:
+                            eco_parts.append(f"ECR: {eco_label} — <b>{eco_phone}</b>")
+                        else:
+                            eco_parts.append(f"ECR: {eco_label}")
+                    eco_display = f"<br/><span style='font-size:0.78rem'>{'<br/>'.join(eco_parts)}</span>" if eco_parts else ""
                     st.markdown(f"""
-                    <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
-                      <div class="metric-num" style="color:{COLOURS['amber']}">{len(swp_hazards)}</div>
-                      <div class="metric-lbl">Hazards</div>
-                    </div>""", unsafe_allow_html=True)
-                    display_cols = [c for c in ['ELR', 'ELR Name', 'Mileage  From', 'Mileage To', 'Hazard Description', 'Local Name', 'Track', 'Free Text'] if c in swp_hazards.columns]
-                    st.dataframe(swp_hazards[display_cols].fillna(''), use_container_width=True, hide_index=True)
-                else:
-                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No hazards found.</div>""", unsafe_allow_html=True)
+                    <div class="pps-card pps-card-green">
+                      <div style="font-size:1rem;color:{COLOURS['white']};font-weight:600">
+                        {box['Signal Box']}{prefix_display}{phone_display}</div>
+                      <div style="font-size:0.82rem;color:{COLOURS['muted']};margin-top:0.2rem">
+                        {box['ELR']} {box['Coverage']}{eco_display}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No signal box data found.</div>", unsafe_allow_html=True)
 
-                # ── Access Points ──
-                st.markdown(f'''<div class="section-header">🚪  ACCESS POINTS</div>''', unsafe_allow_html=True)
-                swp_access = filter_access_points(query_by_elr_mileage(hazard_df, swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec))
-                if not swp_access.empty:
-                    swp_access_enriched = enrich_access_points_with_coords(swp_access, ap_coords_df)
-                    st.markdown(f"""
-                    <div class="metric-box" style="max-width:200px;margin-bottom:0.8rem">
-                      <div class="metric-num" style="color:{COLOURS['green']}">{len(swp_access_enriched)}</div>
-                      <div class="metric-lbl">Access Points</div>
-                    </div>""", unsafe_allow_html=True)
-                    display_cols = [c for c in ['ELR', 'ELR Name', 'Mileage  From', 'Hazard Description', 'Local Name', 'Track', 'Free Text', 'Google Maps'] if c in swp_access_enriched.columns]
-                    st.dataframe(swp_access_enriched[display_cols].fillna(''), use_container_width=True, hide_index=True)
-                else:
-                    st.markdown(f"""<div style="font-size:0.85rem;color:{COLOURS['muted']}">No access points found.</div>""", unsafe_allow_html=True)
-
+            # ── Nearest A&E ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">🏥  Nearest A&amp;E</div>', unsafe_allow_html=True)
+            if swp_nearest_ae:
+                hosp = swp_nearest_ae[0]
                 st.markdown(f"""
-                <div style="margin-top:2rem;padding:1rem;background:{COLOURS['surface']};border:1px solid {COLOURS['border']};border-radius:4px;text-align:center">
-                  <div style="font-size:1rem;color:{COLOURS['amber']};font-weight:600;margin-bottom:0.5rem">
-                    📥 Excel &amp; PDF Download — Coming Soon</div>
-                  <div style="font-size:0.82rem;color:{COLOURS['muted']}">
-                    SWP document generation with auto-populated template will be available in the next update.</div>
+                <div class="pps-card pps-card-green">
+                  <span class="badge badge-green">NEAREST — {hosp['Distance (miles)']} miles</span>
+                  <div style="margin-top:0.5rem;font-size:1rem;color:{COLOURS['white']};font-weight:600">
+                    {hosp['Hospital']}</div>
+                  <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-top:0.2rem">
+                    {hosp['Address']}, {hosp['Postcode']}</div>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No A&E data available.</div>", unsafe_allow_html=True)
+
+            # ── Hazards Summary ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">⚠️  Hazards from Directory ({len(swp_hazards_df)})</div>', unsafe_allow_html=True)
+            if not swp_hazards_df.empty:
+                display_cols = [c for c in ['ELR', 'Mileage  From', 'Mileage To', 'Hazard Description', 'Local Name', 'Free Text'] if c in swp_hazards_df.columns]
+                st.dataframe(swp_hazards_df[display_cols].fillna(''), use_container_width=True, hide_index=True, height=200)
+            else:
+                st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No hazards found.</div>", unsafe_allow_html=True)
+
+            # ── Access Points Summary ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">🚪  Access Points ({len(swp_access_df)})</div>', unsafe_allow_html=True)
+            if not swp_access_df.empty:
+                display_cols = [c for c in ['ELR', 'Mileage  From', 'Hazard Description', 'Local Name', 'Free Text', 'Google Maps'] if c in swp_access_df.columns]
+                st.dataframe(swp_access_df[display_cols].fillna(''), use_container_width=True, hide_index=True, height=200)
+            else:
+                st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No access points found.</div>", unsafe_allow_html=True)
+
+            # ══════════════════════════════════════════════════════
+            # GENERATE SWP BUTTON
+            # ══════════════════════════════════════════════════════
+            st.markdown("<br/>", unsafe_allow_html=True)
+            st.markdown(f"""
+            <div style="margin-top:1rem;padding:1rem;background:{COLOURS['surface']};border:1px solid {COLOURS['amber']};border-radius:4px;text-align:center">
+              <div style="font-size:1rem;color:{COLOURS['amber']};font-weight:600;margin-bottom:0.5rem">
+                📥 Excel &amp; PDF Download — Coming Soon</div>
+              <div style="font-size:0.82rem;color:{COLOURS['muted']}">
+                SWP document generation with auto-populated template will be available in the next update.</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        else:
+            if not st.session_state.get('swp_data'):
+                st.markdown(f"""
+                <div style="font-size:0.85rem;color:{COLOURS['muted']};margin-top:2rem;text-align:center">
+                  Paste a row from the Possession Tracker above and press <b>BUILD SWP</b> to get started.
                 </div>
                 """, unsafe_allow_html=True)
 
-            else:
-                st.warning("Could not parse mileage from the pasted row. Check the Distance From/To columns.")
