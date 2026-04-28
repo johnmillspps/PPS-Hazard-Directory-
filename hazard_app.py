@@ -1433,6 +1433,9 @@ else:
             def safe_get(lst, idx, default=''):
                 try:
                     val = lst[idx].strip() if idx < len(lst) else default
+                    # Strip surrounding quotes that come from Excel copy/paste
+                    if val:
+                        val = val.strip('"').strip("'").strip()
                     return val if val else default
                 except (IndexError, AttributeError):
                     return default
@@ -1639,6 +1642,14 @@ else:
                 value=swp_worktype,
                 height=80,
                 key="swp_nature"
+            )
+
+            # ── SWP Type: Cyclical / Non-Cyclical / Repeat ──
+            swp_type = st.selectbox(
+                "SWP Type",
+                ["Cyclical", "Non-Cyclical", "Repeat"],
+                index=1,
+                key="swp_type_sel"
             )
 
             # ── Protection Method ──
@@ -1947,17 +1958,20 @@ else:
 
             if generate_btn:
                 import io
+                import tempfile
+                import subprocess
                 from openpyxl import Workbook
                 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
                 from openpyxl.drawing.image import Image as XlImage
                 from openpyxl.utils import get_column_letter
+                import openpyxl.worksheet.pagebreak
                 from datetime import datetime
 
                 wb = Workbook()
                 ws = wb.active
                 ws.title = "Safe Work Pack"
 
-                # ── Page setup ──
+                # Page setup — A4 portrait, fit to width
                 ws.sheet_properties.pageSetUpPr.fitToPage = True
                 ws.page_setup.fitToWidth = 1
                 ws.page_setup.fitToHeight = 0
@@ -1967,137 +1981,107 @@ else:
                 ws.page_margins.top = 0.3
                 ws.page_margins.bottom = 0.3
 
-                # ── Styles ──
+                # Styles
                 thin = Side(style='thin')
                 med = Side(style='medium')
-                border_all = Border(left=thin, right=thin, top=thin, bottom=thin)
-                border_thick = Border(left=med, right=med, top=med, bottom=med)
-                grey_fill = PatternFill('solid', fgColor='D9D9D9')
-                white_fill = PatternFill('solid', fgColor='FFFFFF')
-                green_fill = PatternFill('solid', fgColor='C6EFCE')
-                yellow_fill = PatternFill('solid', fgColor='FFFF00')
-                nwr_fill = PatternFill('solid', fgColor='003366')
+                brd = Border(left=thin, right=thin, top=thin, bottom=thin)
+                brd_m = Border(left=med, right=med, top=med, bottom=med)
+                grey = PatternFill('solid', fgColor='D9D9D9')
+                white_f = PatternFill('solid', fgColor='FFFFFF')
+                green_f = PatternFill('solid', fgColor='C6EFCE')
+                nwr_f = PatternFill('solid', fgColor='003366')
 
-                bold_font = Font(name='Arial', bold=True, size=10)
-                normal_font = Font(name='Arial', size=10)
-                small_font = Font(name='Arial', size=8)
-                header_font = Font(name='Arial', bold=True, size=14)
-                title_font = Font(name='Arial', bold=True, size=18)
-                label_font = Font(name='Arial', bold=True, size=9)
-                tick_font = Font(name='Arial', bold=True, size=11)
-                tick_green = Font(name='Arial', bold=True, size=11, color='008000')
-                section_font = Font(name='Arial', bold=True, size=11, color='FFFFFF')
-                footer_font = Font(name='Arial', size=7, italic=True, color='666666')
-                red_font = Font(name='Arial', bold=True, size=9, color='CC2200')
+                fn_b = Font(name='Arial', bold=True, size=10)
+                fn_n = Font(name='Arial', size=10)
+                fn_s = Font(name='Arial', size=8)
+                fn_h = Font(name='Arial', bold=True, size=14)
+                fn_t = Font(name='Arial', bold=True, size=18)
+                fn_lb = Font(name='Arial', bold=True, size=9)
+                fn_tk = Font(name='Arial', bold=True, size=12)
+                fn_tg = Font(name='Arial', bold=True, size=11, color='008000')
+                fn_sec = Font(name='Arial', bold=True, size=11, color='FFFFFF')
+                fn_ft = Font(name='Arial', size=7, italic=True, color='666666')
+                fn_red = Font(name='Arial', bold=True, size=9, color='CC2200')
+                fn_big = Font(name='Arial', bold=True, size=12)
+                fn_num = Font(name='Arial', bold=True, size=14)
 
-                wrap_top = Alignment(wrap_text=True, vertical='top')
-                wrap_center = Alignment(wrap_text=True, vertical='center')
-                center = Alignment(horizontal='center', vertical='center')
-                center_wrap = Alignment(horizontal='center', vertical='center', wrap_text=True)
+                wt = Alignment(wrap_text=True, vertical='top')
+                wc = Alignment(wrap_text=True, vertical='center')
+                cc = Alignment(horizontal='center', vertical='center')
+                cw = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
                 footer_text = "Issue 7 Dec 2025    Amended to Issue 13 019 Standard"
-
                 prot_name = swp_prot_selected.split(' - ', 1)[1] if ' - ' in swp_prot_selected else swp_prot_selected
 
-                DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+                # Column widths — 25 columns (A-Y)
+                for c in range(1, 26):
+                    ws.column_dimensions[get_column_letter(c)].width = 5.5
 
-                # ── Column widths (A-Y, 25 cols — wider to match template) ──
-                col_widths = {'A':4,'B':4,'C':4,'D':6,'E':6,'F':6,'G':6,'H':6,'I':6,'J':6,
-                              'K':6,'L':6,'M':6,'N':6,'O':6,'P':6,'Q':6,'R':6,'S':6,'T':6,
-                              'U':6,'V':4,'W':4,'X':4,'Y':4}
-                for cl, w in col_widths.items():
-                    ws.column_dimensions[cl].width = w
-
-                def style_range(ws, r1, r2, c1, c2, font=None, fill=None, alignment=None, border=None):
+                # Helper functions
+                def SR(r1, r2, c1, c2, font=None, fill=None, alignment=None, border=None):
                     for r in range(r1, r2+1):
                         for c in range(c1, c2+1):
-                            cell = ws.cell(row=r, column=c)
-                            if font: cell.font = font
-                            if fill: cell.fill = fill
-                            if alignment: cell.alignment = alignment
-                            if border: cell.border = border
+                            cl = ws.cell(row=r, column=c)
+                            if font: cl.font = font
+                            if fill: cl.fill = fill
+                            if alignment: cl.alignment = alignment
+                            if border: cl.border = border
 
-                def merged_cell(ws, row, col, end_col, value, font=None, fill=None, alignment=None, height=None):
-                    """Write a merged cell spanning from col to end_col."""
-                    if end_col > col:
-                        ws.merge_cells(start_row=row, start_column=col, end_row=row, end_column=end_col)
-                    cell = ws.cell(row=row, column=col, value=value)
-                    if font: cell.font = font
-                    if fill: cell.fill = fill
-                    if alignment: cell.alignment = alignment
-                    style_range(ws, row, row, col, end_col, border=border_all)
-                    if height:
-                        ws.row_dimensions[row].height = height
-                    return row + 1
+                def MC(r, c1, c2, val, font=fn_n, fill=None, align=None, h=None, r2=None):
+                    """Merged cell helper. r2=end row for multi-row merge."""
+                    er = r2 if r2 else r
+                    if c2 > c1 or er > r:
+                        ws.merge_cells(start_row=r, start_column=c1, end_row=er, end_column=c2)
+                    cl = ws.cell(row=r, column=c1, value=val)
+                    cl.font = font
+                    if fill: cl.fill = fill
+                    if align: cl.alignment = align
+                    SR(r, er, c1, c2, border=brd)
+                    if h: ws.row_dimensions[r].height = h
+                    return er + 1
 
-                def merged_cell_2row(ws, row, col, end_col, value, font=None, fill=None, alignment=None):
-                    ws.merge_cells(start_row=row, start_column=col, end_row=row+1, end_column=end_col)
-                    cell = ws.cell(row=row, column=col, value=value)
-                    if font: cell.font = font
-                    if fill: cell.fill = fill
-                    if alignment: cell.alignment = alignment
-                    style_range(ws, row, row+1, col, end_col, border=border_all)
-                    return row + 2
+                def footer(r):
+                    ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=12)
+                    ws.cell(row=r, column=1, value="Issue 7 Dec 2025").font = fn_ft
+                    ws.merge_cells(start_row=r, start_column=13, end_row=r, end_column=25)
+                    ws.cell(row=r, column=13, value="Amended to Issue 13 019 Standard").font = fn_ft
+                    return r + 1
 
-                def section_header(ws, row, text):
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=25)
-                    cell = ws.cell(row=row, column=1, value=text)
-                    cell.font = section_font
-                    cell.fill = nwr_fill
-                    cell.alignment = center
-                    style_range(ws, row, row, 1, 25, border=border_all)
-                    return row + 1
+                def PB(r):
+                    ws.row_breaks.append(openpyxl.worksheet.pagebreak.Break(id=r-1))
+                    return r
 
-                def add_footer(ws, row):
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=12)
-                    ws.cell(row=row, column=1, value="Issue 7 Dec 2025").font = footer_font
-                    ws.merge_cells(start_row=row, start_column=13, end_row=row, end_column=25)
-                    ws.cell(row=row, column=13, value="Amended to Issue 13 019 Standard").font = footer_font
-                    return row + 1
-
-                def page_break(ws, row):
-                    ws.row_breaks.append(openpyxl.worksheet.pagebreak.Break(id=row-1))
-                    return row
-
-                import openpyxl.worksheet.pagebreak
-
-                # ════════════════════════════════════════════════════════
+                # ═══════════════════════════════════════
                 # PAGE 1 — COVER
-                # ════════════════════════════════════════════════════════
+                # ═══════════════════════════════════════
                 row = 1
 
-                # Logo — check multiple locations
+                # Logo
                 try:
                     app_dir = os.path.dirname(os.path.abspath(__file__))
-                    logo_candidates = [
-                        os.path.join(app_dir, 'PPS_Rail_Logo_with_Trademark.png'),
-                        os.path.join(app_dir, 'data', 'PPS_Rail_Logo_with_Trademark.png'),
-                        os.path.join(app_dir, 'PPS-logo-ol.png'),
-                    ]
-                    logo_found = None
-                    for lp in logo_candidates:
+                    for lp in [os.path.join(app_dir, 'PPS_Rail_Logo_with_Trademark.png'),
+                               os.path.join(app_dir, 'PPS-logo-ol.png'),
+                               os.path.join(app_dir, 'data', 'PPS_Rail_Logo_with_Trademark.png')]:
                         if os.path.exists(lp):
-                            logo_found = lp
+                            img = XlImage(lp)
+                            img.width = 150; img.height = 42
+                            ws.add_image(img, 'S1')
                             break
-                    if logo_found:
-                        img = XlImage(logo_found)
-                        img.width = 150
-                        img.height = 42
-                        ws.add_image(img, 'S1')
                 except Exception:
                     pass
 
-                ws.row_dimensions[row].height = 24
-                row += 1
-                # Title
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=25)
-                ws.cell(row=row, column=1, value="SAFE WORK PACK").font = title_font
-                ws.cell(row=row, column=1).alignment = center
-                ws.row_dimensions[row].height = 30
-                row += 2
+                ws.row_dimensions[1].height = 24
+                row = 2
+                row = MC(row, 1, 25, "SAFE WORK PACK", fn_t, None, cc, 30)
 
-                # Job details - label in D:I, value in J:P or J:W, Contact No in Q:S, number in T:W
-                job_fields = [
+                # SWP Ref for QC — top right area
+                ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=8)
+                ws.cell(row=1, column=1, value=f"Ref: {swp_ref}").font = fn_lb
+
+                row += 1  # blank row
+
+                # Job details
+                job = [
                     ("PRODUCED BY PLANNER", swp_planner_name, "Contact No", swp_planner_number),
                     ("DATE PRODUCED", datetime.now().strftime('%d/%m/%Y'), None, None),
                     ("LOCATION OF WORKS", elr_location, None, None),
@@ -2109,189 +2093,128 @@ else:
                     ("ITEM No  &  WORKSITE Ref", f"{swp_item_no} - {swp_worksite}", None, None),
                     ("WEEK NO & DATE(S) OF WORKS", f"WK{swp_week} : {swp_from_date} - {swp_to_date}", None, None),
                 ]
-
-                for label, val, label2, val2 in job_fields:
-                    ws.merge_cells(start_row=row, start_column=4, end_row=row, end_column=9)
-                    ws.cell(row=row, column=4, value=f"  {label}").font = bold_font
-                    ws.cell(row=row, column=4).fill = grey_fill
-                    if label2:
-                        ws.merge_cells(start_row=row, start_column=10, end_row=row, end_column=16)
-                        ws.cell(row=row, column=10, value=val).font = normal_font
-                        ws.merge_cells(start_row=row, start_column=17, end_row=row, end_column=19)
-                        ws.cell(row=row, column=17, value=label2).font = bold_font
-                        ws.cell(row=row, column=17).fill = grey_fill
-                        ws.merge_cells(start_row=row, start_column=20, end_row=row, end_column=23)
-                        ws.cell(row=row, column=20, value=val2).font = normal_font
-                        style_range(ws, row, row, 4, 23, border=border_all)
+                for label, val, l2, v2 in job:
+                    MC(row, 4, 9, f"  {label}", fn_b, grey, wc, 20)
+                    if l2:
+                        MC(row, 10, 16, val, fn_n, None, wt)
+                        MC(row, 17, 19, l2, fn_b, grey, wc)
+                        MC(row, 20, 23, v2, fn_n)
+                        SR(row, row, 4, 23, border=brd)
                     else:
-                        ws.merge_cells(start_row=row, start_column=10, end_row=row, end_column=23)
-                        ws.cell(row=row, column=10, value=val).font = normal_font
-                        ws.cell(row=row, column=10).alignment = wrap_top
-                        style_range(ws, row, row, 4, 23, border=border_all)
-                    ws.row_dimensions[row].height = 20
+                        MC(row, 10, 23, val, fn_n, None, wt)
+                        SR(row, row, 4, 23, border=brd)
                     row += 1
 
                 # Shift Contact Numbers
-                row = merged_cell(ws, row, 4, 23, "SHIFT CONTACT NUMBERS", bold_font, grey_fill, center, 20)
+                row = MC(row, 4, 23, "SHIFT CONTACT NUMBERS", fn_b, grey, cc, 20)
 
-                # Shift headers
-                for label, c1, c2 in [("Name",4,8),("Duty",9,13),("Phone Number",14,18),("Shift Times",19,23)]:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                    ws.cell(row=row, column=c1, value=label).font = bold_font
-                    ws.cell(row=row, column=c1).alignment = center
-                    ws.cell(row=row, column=c1).fill = grey_fill
-                    style_range(ws, row, row, c1, c2, border=border_all)
+                for lbl, c1, c2 in [("Name",4,8),("Duty",9,12),("Phone Number",13,18),("Shift Times",19,23)]:
+                    MC(row, c1, c2, lbl, fn_b, grey, cc)
                 row += 1
 
-                # Shift data rows
                 all_sc = list(shift_contacts) + [{'Name':'','Duty':'','Phone':'','Start':'','End':''}] * max(0, 5 - len(shift_contacts))
                 for sc in all_sc[:5]:
-                    for val, c1, c2 in [
-                        (sc.get('Name',''), 4, 8),
-                        (sc.get('Duty',''), 9, 13),
-                        (sc.get('Phone',''), 14, 18),
-                    ]:
-                        ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                        ws.cell(row=row, column=c1, value=val).font = normal_font
-                        style_range(ws, row, row, c1, c2, border=border_all)
-                    # Shift times: start and end in separate sub-columns
-                    ws.merge_cells(start_row=row, start_column=19, end_row=row, end_column=21)
-                    ws.cell(row=row, column=19, value=sc.get('Start','')).font = normal_font
-                    ws.cell(row=row, column=19).alignment = center
-                    style_range(ws, row, row, 19, 21, border=border_all)
-                    ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=23)
-                    ws.cell(row=row, column=22, value=sc.get('End','')).font = normal_font
-                    ws.cell(row=row, column=22).alignment = center
-                    style_range(ws, row, row, 22, 23, border=border_all)
+                    MC(row, 4, 8, sc.get('Name',''), fn_n)
+                    MC(row, 9, 12, sc.get('Duty',''), fn_n, None, cc)
+                    MC(row, 13, 18, sc.get('Phone',''), fn_n, None, cc)
+                    MC(row, 19, 21, sc.get('Start',''), fn_n, None, cc)
+                    MC(row, 22, 23, sc.get('End',''), fn_n, None, cc)
+                    SR(row, row, 4, 23, border=brd)
                     row += 1
 
                 row += 1
-                # Change authority
-                ws.merge_cells(start_row=row, start_column=4, end_row=row+1, end_column=23)
-                ws.cell(row=row, column=4, value="Reason and authority for change from planned safe system of work").font = small_font
-                ws.cell(row=row, column=4).alignment = wrap_center
-                ws.cell(row=row, column=4).fill = grey_fill
-                style_range(ws, row, row+1, 4, 23, border=border_all)
+
+                # Change authority — aligned with job details (col 4-23)
+                MC(row, 4, 14, "Reason and authority for change from\nplanned safe system of work", fn_s, grey, wc, 36, r2=row+1)
+                MC(row, 15, 23, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 4, 23, border=brd_m)
                 row += 2
 
                 row += 1
-                ws.merge_cells(start_row=row, start_column=4, end_row=row+1, end_column=14)
-                ws.cell(row=row, column=4, value="Name of Responsible Manager authorising the change.").font = small_font
-                ws.cell(row=row, column=4).fill = grey_fill
-                ws.cell(row=row, column=4).alignment = wrap_center
-                ws.merge_cells(start_row=row, start_column=15, end_row=row+1, end_column=18)
-                ws.cell(row=row, column=15, value="Signature/\nAuthority no").font = small_font
-                ws.cell(row=row, column=15).fill = grey_fill
-                ws.cell(row=row, column=15).alignment = wrap_center
-                ws.merge_cells(start_row=row, start_column=19, end_row=row+1, end_column=23)
-                style_range(ws, row, row+1, 4, 23, border=border_all)
+                MC(row, 4, 14, "Name of Responsible Manager\nauthorising the change.", fn_s, grey, wc, 40, r2=row+1)
+                MC(row, 15, 16, "", fn_n, None, None, None, r2=row+1)
+                MC(row, 17, 19, "Signature/\nAuthority no", fn_s, grey, wc, None, r2=row+1)
+                MC(row, 20, 23, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 4, 23, border=brd_m)
                 row += 2
 
                 row += 1
-                # COSS to Planner Feedback
-                ws.merge_cells(start_row=row, start_column=2, end_row=row+2, end_column=8)
-                ws.cell(row=row, column=2, value="Coss To Planner\nFeedback").font = Font(name='Arial', bold=True, size=12)
-                ws.cell(row=row, column=2).alignment = wrap_center
-                ws.merge_cells(start_row=row, start_column=9, end_row=row+2, end_column=23)
-                style_range(ws, row, row+2, 2, 23, border=border_all)
+                # COSS to Planner Feedback — aligned col 2-23, bigger box
+                MC(row, 2, 8, "Coss To Planner\nFeedback", fn_big, None, wc, 60, r2=row+2)
+                MC(row, 9, 23, "", fn_n, None, None, None, r2=row+2)
+                SR(row, row+2, 2, 23, border=brd_m)
                 row += 3
 
                 row += 1
-                # Return notice
-                ws.merge_cells(start_row=row, start_column=2, end_row=row, end_column=23)
-                ws.cell(row=row, column=2, value="THIS PACK MUST BE RETURNED TO THE Supervisor ON COMPLETION OF THE WORKS").font = Font(name='Arial', bold=True, size=9)
-                ws.cell(row=row, column=2).alignment = center
+                MC(row, 2, 23, "THIS PACK MUST BE RETURNED TO THE Supervisor ON COMPLETION OF THE WORKS", Font(name='Arial', bold=True, size=9), None, cc, 20)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=2, end_row=row+1, end_column=13)
-                ws.cell(row=row, column=2, value="Date Reviewed By planner").font = bold_font
-                ws.cell(row=row, column=2).fill = grey_fill
-                ws.cell(row=row, column=2).alignment = center
-                ws.merge_cells(start_row=row, start_column=14, end_row=row+1, end_column=18)
-                ws.cell(row=row, column=14, value="Planner Signature").font = bold_font
-                ws.cell(row=row, column=14).fill = grey_fill
-                ws.cell(row=row, column=14).alignment = center
-                ws.merge_cells(start_row=row, start_column=19, end_row=row+1, end_column=23)
-                style_range(ws, row, row+1, 2, 23, border=border_all)
+                MC(row, 2, 12, "Date Reviewed By planner", fn_b, grey, cc, 28, r2=row+1)
+                MC(row, 13, 14, "", fn_n, None, None, None, r2=row+1)
+                MC(row, 15, 19, "Planner Signature", fn_b, grey, cc, None, r2=row+1)
+                MC(row, 20, 23, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 2, 23, border=brd_m)
                 row += 2
 
                 row += 1
-                row = add_footer(ws, row)
-
+                row = footer(row)
                 row += 1
-                row = page_break(ws, row)
+                row = PB(row)
 
-                # ════════════════════════════════════════════════════════
+                # ═══════════════════════════════════════
                 # PAGE 2 — VALIDATION
-                # ════════════════════════════════════════════════════════
-                row = merged_cell(ws, row, 3, 23, "SWP Validation Form", header_font, None, Alignment(horizontal='left'), 22)
+                # ═══════════════════════════════════════
+                row = MC(row, 3, 23, "SWP Validation Form", fn_h, None, Alignment(horizontal='left'), 24)
 
-                # Rejected / Errors / Cyclical row
-                for lbl, c1, c2 in [("Rejected",2,8),("YES",9,15),("NO",17,23)]:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                    ws.cell(row=row, column=c1, value=lbl).font = bold_font
-                    ws.cell(row=row, column=c1).alignment = center
-                    style_range(ws, row, row, c1, c2, border=border_all)
+                # Rejected / Errors — tidy bordered layout
+                MC(row, 2, 8, "Rejected", fn_b, grey, cc, 22)
+                MC(row, 9, 15, "YES", fn_b, None, cc)
+                MC(row, 17, 23, "NO", fn_b, None, cc)
+                SR(row, row, 2, 23, border=brd)
                 row += 1
-                for lbl, c1, c2 in [("Errors / Changes",2,8),("YES",9,15),("NO",17,23)]:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                    ws.cell(row=row, column=c1, value=lbl).font = bold_font
-                    ws.cell(row=row, column=c1).alignment = center
-                    style_range(ws, row, row, c1, c2, border=border_all)
+                MC(row, 2, 8, "Errors / Changes", fn_b, grey, cc, 22)
+                MC(row, 9, 15, "YES", fn_b, None, cc)
+                MC(row, 17, 23, "NO", fn_b, None, cc)
+                SR(row, row, 2, 23, border=brd)
                 row += 2
 
-                # Cyclical checkboxes
-                for lbl, c1, c2 in [("Cyclical",2,8),("Non-Cyclical",9,15),("Repeat",16,23)]:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                    ws.cell(row=row, column=c1, value=lbl).font = bold_font
-                    ws.cell(row=row, column=c1).alignment = center
-                    style_range(ws, row, row, c1, c2, border=border_all)
+                # Cyclical / Non-Cyclical / Repeat — highlight selected
+                cyc_opts = ["Cyclical", "Non-Cyclical", "Repeat"]
+                for i, (lbl, c1, c2) in enumerate([("Cyclical",2,8),("Non-Cyclical",9,15),("Repeat",16,23)]):
+                    is_sel = (swp_type == lbl)
+                    MC(row, c1, c2, lbl, fn_b, green_f if is_sel else None, cc, 22)
+                    SR(row, row, c1, c2, border=brd)
                 row += 1
 
-                # SWP Ref / Expiry / Dates
-                ws.merge_cells(start_row=row, start_column=2, end_row=row+1, end_column=8)
-                ws.cell(row=row, column=2, value="SWP Ref.").font = bold_font
-                ws.merge_cells(start_row=row, start_column=9, end_row=row+1, end_column=11)
-                ws.cell(row=row, column=9, value=swp_ref).font = normal_font
-                ws.merge_cells(start_row=row, start_column=12, end_row=row, end_column=15)
-                ws.cell(row=row, column=12, value="SWP expiry date").font = label_font
-                ws.merge_cells(start_row=row, start_column=16, end_row=row, end_column=18)
-                ws.cell(row=row, column=16, value=swp_to_date).font = normal_font
-                ws.merge_cells(start_row=row, start_column=19, end_row=row, end_column=23)
-                ws.cell(row=row, column=19, value=f"Date & Time of Work").font = label_font
-                style_range(ws, row, row, 2, 23, border=border_all)
+                # SWP Ref / Expiry / Dates — wider columns
+                MC(row, 2, 8, "SWP Ref.", fn_b, None, None, 22, r2=row+1)
+                MC(row, 9, 12, swp_ref, fn_n, None, wt, None, r2=row+1)
+                MC(row, 13, 16, "SWP expiry date", fn_lb, None, None)
+                MC(row, 17, 18, swp_to_date, fn_n)
+                MC(row, 19, 20, "Date & Time of Work", fn_lb, None, wt)
+                MC(row, 21, 25, f"{swp_from_date}-{swp_to_date}", fn_n, None, wt)
+                SR(row, row, 2, 25, border=brd)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=12, end_row=row, end_column=18)
-                ws.merge_cells(start_row=row, start_column=19, end_row=row, end_column=23)
-                ws.cell(row=row, column=19, value=f"{swp_from_date}-{swp_to_date}\n{swp_from_time} - {swp_to_time}").font = normal_font
-                ws.cell(row=row, column=19).alignment = wrap_top
-                style_range(ws, row, row, 2, 23, border=border_all)
+                MC(row, 21, 25, f"{swp_from_time} - {swp_to_time}", fn_n, None, wt)
+                SR(row, row, 2, 25, border=brd)
                 row += 1
 
-                ws.merge_cells(start_row=row, start_column=2, end_row=row+1, end_column=8)
-                ws.cell(row=row, column=2, value="Brief Description of Work").font = bold_font
-                ws.merge_cells(start_row=row, start_column=9, end_row=row+1, end_column=23)
-                ws.cell(row=row, column=9, value=swp_nature_of_work).font = normal_font
-                ws.cell(row=row, column=9).alignment = wrap_top
-                style_range(ws, row, row+1, 2, 23, border=border_all)
+                MC(row, 2, 8, "Brief Description of Work", fn_b, None, None, 20, r2=row+1)
+                MC(row, 9, 25, swp_nature_of_work, fn_n, None, wt, None, r2=row+1)
+                SR(row, row+1, 2, 25, border=brd)
                 row += 2
 
                 row += 1
-                # CREATED by: Planner
-                row = merged_cell(ws, row, 1, 25, "CREATED by: Planner", bold_font, grey_fill, None, 20)
-                row = merged_cell(ws, row, 1, 25, "I confirm this SWP has been checked and compliant with NR/L2/OHS/019, Appendix A and Form B", small_font, None, wrap_top, 20)
+                row = MC(row, 1, 25, "CREATED by: Planner", fn_b, grey, None, 20)
+                row = MC(row, 1, 25, "I confirm this SWP has been checked and compliant with NR/L2/OHS/019, Appendix A and Form B", fn_s, None, wt, 20)
 
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
-                ws.cell(row=row, column=1, value=f"Planner Name: {swp_planner_name}").font = normal_font
-                ws.merge_cells(start_row=row, start_column=11, end_row=row, end_column=17)
-                ws.cell(row=row, column=11, value="Signature:").font = label_font
-                ws.merge_cells(start_row=row, start_column=18, end_row=row, end_column=25)
-                ws.cell(row=row, column=18, value="Date Issued:").font = label_font
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 10, f"Planner Name: {swp_planner_name}", fn_n)
+                MC(row, 11, 17, "Signature:", fn_lb)
+                MC(row, 18, 25, "Date Issued:", fn_lb)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # VERIFIED by: PIC
-                row = merged_cell(ws, row, 1, 25, "VERIFIED by: Person in charge", bold_font, grey_fill, None, 20)
-                row = merged_cell(ws, row, 1, 25, "I confirm the following are appropriate for the task and included in the SWP (for guidance use Appendix C checklist). Circle Yes or No for each question, and sign the declaration below", small_font, None, wrap_top, 30)
+                row = MC(row, 1, 25, "VERIFIED by: Person in charge", fn_b, grey, None, 20)
+                row = MC(row, 1, 25, "I confirm the following are appropriate for the task and included in the SWP (for guidance use Appendix C checklist). Circle Yes or No for each question, and sign the declaration below", fn_s, None, wt, 30)
 
                 yn_pic = [
                     "The appropriate hierarchy of Safe System of Work has been selected",
@@ -2302,38 +2225,31 @@ else:
                     "The welfare facilities have been identified and are appropriate",
                 ]
                 for q in yn_pic:
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=18)
-                    ws.cell(row=row, column=1, value=q).font = normal_font
-                    ws.cell(row=row, column=1).alignment = wrap_top
-                    ws.merge_cells(start_row=row, start_column=19, end_row=row, end_column=20)
-                    ws.cell(row=row, column=19, value="Y").font = tick_green
-                    ws.cell(row=row, column=19).alignment = center
-                    ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=25)
-                    ws.cell(row=row, column=22, value="N").font = normal_font
-                    ws.cell(row=row, column=22).alignment = center
-                    style_range(ws, row, row, 1, 25, border=border_all)
+                    MC(row, 1, 18, q, fn_n, None, wt)
+                    MC(row, 19, 21, "Y", fn_tg, None, cc)
+                    MC(row, 22, 25, "N", fn_n, None, cc)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
-                row = merged_cell(ws, row, 1, 25, "If any of the above statements are answered NO, reject the SWP and return it to the Planner.", small_font, None, wrap_top, 18)
-                row = merged_cell(ws, row, 1, 25, "Comments if SWP rejected:", small_font, None, None, 18)
-                row += 1  # blank row for comments
+                row = MC(row, 1, 25, "If any of the above statements are answered NO, reject the SWP and return it to the Planner.", fn_s, None, wt, 18)
+                row = MC(row, 1, 25, "Comments if SWP rejected:", fn_s, None, None, 18)
+                row += 1
 
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
-                ws.cell(row=row, column=1, value=f"Name of Person in charge").font = label_font
-                ws.merge_cells(start_row=row, start_column=11, end_row=row, end_column=17)
-                ws.cell(row=row, column=11, value="Signature:").font = label_font
-                ws.merge_cells(start_row=row, start_column=18, end_row=row, end_column=25)
-                ws.cell(row=row, column=18, value="Date:").font = label_font
-                style_range(ws, row, row, 1, 25, border=border_all)
+                # PIC signature — proper merged boxes
+                MC(row, 1, 10, "Name of Person in charge", fn_lb, grey)
+                MC(row, 11, 17, "Signature:", fn_lb, grey)
+                MC(row, 18, 25, "Date:", fn_lb, grey)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
-                ws.cell(row=row, column=1, value=swp_coss_name).font = normal_font
-                style_range(ws, row, row, 1, 25, border=border_all)
-                row += 1
+                MC(row, 1, 10, swp_coss_name, fn_n, None, None, 30, r2=row+1)
+                MC(row, 11, 17, "", fn_n, None, None, None, r2=row+1)
+                MC(row, 18, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
+                row += 2
 
                 # AUTHORISED by: RM
-                row = merged_cell(ws, row, 1, 25, "AUTHORISED by: Responsible Manager", bold_font, grey_fill, None, 20)
-                row = merged_cell(ws, row, 1, 25, "Complete as part of review/discussion with person in charge. Circle Yes or No for each question and sign the declaration below.", small_font, None, wrap_top, 26)
+                row = MC(row, 1, 25, "AUTHORISED by: Responsible Manager", fn_b, grey, None, 20)
+                row = MC(row, 1, 25, "Complete as part of review/discussion with person in charge. Circle Yes or No for each question and sign the declaration below.", fn_s, None, wt, 26)
 
                 yn_rm = [
                     "Work content is understood by the person in charge",
@@ -2344,519 +2260,353 @@ else:
                     "The welfare facilities have been identified and are appropriate",
                 ]
                 for q in yn_rm:
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=18)
-                    ws.cell(row=row, column=1, value=q).font = normal_font
-                    ws.cell(row=row, column=1).alignment = wrap_top
-                    ws.merge_cells(start_row=row, start_column=19, end_row=row, end_column=20)
-                    ws.cell(row=row, column=19, value="Y").font = tick_green
-                    ws.cell(row=row, column=19).alignment = center
-                    ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=25)
-                    ws.cell(row=row, column=22, value="N").font = normal_font
-                    ws.cell(row=row, column=22).alignment = center
-                    style_range(ws, row, row, 1, 25, border=border_all)
+                    MC(row, 1, 18, q, fn_n, None, wt)
+                    MC(row, 19, 21, "Y", fn_tg, None, cc)
+                    MC(row, 22, 25, "N", fn_n, None, cc)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
-                row = merged_cell(ws, row, 1, 25, "Responsible Manager's authorisation and confirmation this SWP is complete, and includes any specific additional information required to manage risk on site (cannot be the same person as the verifier). If any of the above statements are answered NO, reject the SWP.", small_font, None, wrap_top, 30)
+                row = MC(row, 1, 25, "Responsible Manager's authorisation and confirmation this SWP is complete, and includes any specific additional information required to manage risk on site (cannot be the same person as the verifier). If any of the above statements are answered NO, reject the SWP.", fn_s, None, wt, 30)
 
-                # RM Print Name / Signature / Date
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
-                ws.cell(row=row, column=1, value="Print Name:").font = label_font
-                ws.merge_cells(start_row=row, start_column=11, end_row=row, end_column=17)
-                ws.cell(row=row, column=11, value="Signature or Authority Number:").font = label_font
-                ws.merge_cells(start_row=row, start_column=18, end_row=row, end_column=25)
-                ws.cell(row=row, column=18, value="Date:").font = label_font
-                style_range(ws, row, row, 1, 25, border=border_all)
+                # RM signature — proper merged boxes with height
+                MC(row, 1, 10, "Print Name:", fn_lb, grey)
+                MC(row, 11, 17, "Signature or Authority Number:", fn_lb, grey)
+                MC(row, 18, 25, "Date:", fn_lb, grey)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=10)
-                ws.cell(row=row, column=1, value=swp_rm_name).font = normal_font
-                style_range(ws, row, row+1, 1, 25, border=border_all)
+                MC(row, 1, 10, swp_rm_name, fn_n, None, None, 36, r2=row+1)
+                MC(row, 11, 17, "", fn_n, None, None, None, r2=row+1)
+                MC(row, 18, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
                 row += 2
 
                 # ACCEPTED by PIC on site
-                row = merged_cell(ws, row, 1, 25, "ACCEPTED by: Person in charge on site", bold_font, grey_fill, None, 20)
-                row = merged_cell(ws, row, 1, 25, "Person in charge, at the site of work completes this section. Endorse declaration below.", small_font, None, wrap_top, 20)
-                row = merged_cell(ws, row, 1, 25, "I Accept / Reject this SWP (Please circle)", bold_font, None, None, 20)
-                row = merged_cell(ws, row, 1, 25, "If rejected, detail briefly change(s) needed:\n\nGeneral comments:", small_font, None, wrap_top, 40)
+                row = MC(row, 1, 25, "ACCEPTED by: Person in charge on site", fn_b, grey, None, 20)
+                row = MC(row, 1, 25, "Person in charge, at the site of work completes this section. Endorse declaration below.", fn_s, None, wt, 20)
+                row = MC(row, 1, 25, "I Accept / Reject this SWP (Please circle)", fn_b, None, None, 20)
+                row = MC(row, 1, 25, "If rejected, detail briefly change(s) needed:\n\nGeneral comments:", fn_s, None, wt, 44)
+
+                MC(row, 1, 13, "Person in charge (Name):", fn_lb, grey)
+                MC(row, 14, 25, "Signature:", fn_lb, grey)
+                SR(row, row, 1, 25, border=brd)
+                row += 1
+                MC(row, 1, 13, "", fn_n, None, None, 30, r2=row+1)
+                MC(row, 14, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
+                row += 2
+                MC(row, 1, 13, "Date:", fn_lb, grey)
+                MC(row, 14, 25, "Location i.e. Site:", fn_lb, grey)
+                SR(row, row, 1, 25, border=brd)
+                row += 1
+                MC(row, 1, 13, "", fn_n, None, None, 24, r2=row)
+                MC(row, 14, 25, "", fn_n, None, None, None, r2=row)
+                SR(row, row, 1, 25, border=brd_m)
                 row += 1
 
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=13)
-                ws.cell(row=row, column=1, value="Person in charge (Name):").font = label_font
-                ws.merge_cells(start_row=row, start_column=14, end_row=row, end_column=25)
-                ws.cell(row=row, column=14, value="Signature:").font = label_font
-                style_range(ws, row, row, 1, 25, border=border_all)
+                row = footer(row)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=13)
-                ws.cell(row=row, column=1, value="Date:").font = label_font
-                ws.merge_cells(start_row=row, start_column=14, end_row=row, end_column=25)
-                ws.cell(row=row, column=14, value="Location i.e. Site:").font = label_font
-                style_range(ws, row, row, 1, 25, border=border_all)
-                row += 1
+                row = PB(row)
 
-                row = add_footer(ws, row)
-                row += 1
-                row = page_break(ws, row)
-
-                # ════════════════════════════════════════════════════════
+                # ═══════════════════════════════════════
                 # PAGE 3 — RISKS & RUNAWAY
-                # ════════════════════════════════════════════════════════
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
-                ws.cell(row=row, column=1, value="SWP Ref.").font = bold_font
-                ws.merge_cells(start_row=row, start_column=8, end_row=row+1, end_column=12)
-                ws.cell(row=row, column=8, value=swp_ref).font = normal_font
-                ws.merge_cells(start_row=row, start_column=13, end_row=row, end_column=16)
-                ws.cell(row=row, column=13, value="Date & Time of").font = label_font
-                ws.merge_cells(start_row=row, start_column=17, end_row=row, end_column=25)
-                ws.cell(row=row, column=17, value=f"{swp_from_date}-{swp_to_date}").font = normal_font
-                style_range(ws, row, row, 1, 25, border=border_all)
+                # ═══════════════════════════════════════
+                MC(row, 1, 7, "SWP Ref.", fn_b, grey)
+                MC(row, 8, 12, swp_ref, fn_n, None, None, 20, r2=row+1)
+                MC(row, 13, 16, "Date & Time of", fn_lb, grey)
+                MC(row, 17, 25, f"{swp_from_date}-{swp_to_date}", fn_n, None, wt)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=13, end_row=row, end_column=16)
-                ws.cell(row=row, column=13, value="Work").font = label_font
-                ws.merge_cells(start_row=row, start_column=17, end_row=row, end_column=25)
-                ws.cell(row=row, column=17, value=f"{swp_from_time} - {swp_to_time}").font = normal_font
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 13, 16, "Work", fn_lb, grey)
+                MC(row, 17, 25, f"{swp_from_time} - {swp_to_time}", fn_n)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=7)
-                ws.cell(row=row, column=1, value="Brief Description of work").font = bold_font
-                ws.merge_cells(start_row=row, start_column=8, end_row=row+1, end_column=25)
-                ws.cell(row=row, column=8, value=swp_nature_of_work).font = normal_font
-                ws.cell(row=row, column=8).alignment = wrap_top
-                style_range(ws, row, row+1, 1, 25, border=border_all)
+                MC(row, 1, 7, "Brief Description of work", fn_b, grey, None, 20)
+                MC(row, 8, 25, swp_nature_of_work, fn_n, None, wt, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd)
                 row += 2
 
                 row += 1
-                # Risk table with 5 columns
-                row = merged_cell(ws, row, 4, 25, "Risk Identified and controls to be applied (Not applicable where task briefing sheets are included)", bold_font, grey_fill, wrap_top, 20)
+                row = MC(row, 4, 25, "Risk Identified and controls to be applied (Not applicable where task briefing sheets are included)", fn_b, grey, wt, 20)
 
-                risk_headers = [
-                    ("Specific Risk Requiring Control", 1, 8),
-                    ("Control to be applied", 9, 13),
-                    ("Person in charge /RM initials", 14, 16),
-                    ("Control Delegated to: (name)", 17, 19),
-                    ("Acceptance of Control by:", 20, 25),
-                ]
-                for lbl, c1, c2 in risk_headers:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row+1, end_column=c2)
-                    ws.cell(row=row, column=c1, value=lbl).font = label_font
-                    ws.cell(row=row, column=c1).fill = grey_fill
-                    ws.cell(row=row, column=c1).alignment = center_wrap
-                    style_range(ws, row, row+1, c1, c2, border=border_all)
+                # Risk table — 5 columns
+                for lbl, c1, c2 in [("Specific Risk Requiring Control",1,8),("Control to be applied",9,13),("Person in charge /RM initials",14,16),("Control Delegated to: (name)",17,19),("Acceptance of Control by:",20,25)]:
+                    MC(row, c1, c2, lbl, fn_lb, grey, cw, None, r2=row+1)
                 row += 2
-
-                # 4 blank risk rows (2 rows height each)
                 for _ in range(4):
                     for c1, c2 in [(1,8),(9,13),(14,16),(17,19),(20,25)]:
-                        ws.merge_cells(start_row=row, start_column=c1, end_row=row+1, end_column=c2)
-                        style_range(ws, row, row+1, c1, c2, border=border_all)
+                        MC(row, c1, c2, "", fn_n, None, None, None, r2=row+1)
                     row += 2
 
                 row += 1
-                # Runaway Risk Analysis
-                row = merged_cell(ws, row, 1, 25, "Runaway Risk analysis", bold_font, grey_fill, None, 20)
+                row = MC(row, 1, 25, "Runaway Risk analysis", fn_b, grey, None, 20)
 
                 for lbl, c1, c2 in [("Question",1,13),("Answer",14,16),("Comment",18,25)]:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                    ws.cell(row=row, column=c1, value=lbl).font = bold_font
-                    ws.cell(row=row, column=c1).fill = grey_fill
-                    ws.cell(row=row, column=c1).alignment = center
-                    style_range(ws, row, row, c1, c2, border=border_all)
+                    MC(row, c1, c2, lbl, fn_b, grey, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                runaway_qs_full = [
+                rq = [
                     "Are the works taking place on or near the line?",
                     "Could your work potentially Lead to a Runaway? I.e. involve the use of equipment subject to Runaway and control requirements (Trolleys, Trailers, Manually propelled rail handling equipment)",
                     "Are my works within a Possession or adjacent to a Possession?",
                     "Are my works on a gradient steeper than 1 in 100 or is there a gradient within 5 miles of my works?",
                     "Is the site of work at risk of a runaway from a 3rd Party",
                 ]
-                for i, q in enumerate(runaway_qs_full):
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=13)
-                    ws.cell(row=row, column=1, value=q).font = normal_font
-                    ws.cell(row=row, column=1).alignment = wrap_top
-                    ws.merge_cells(start_row=row, start_column=14, end_row=row, end_column=16)
+                for i, q in enumerate(rq):
+                    h = 22 if len(q) < 60 else 40
+                    MC(row, 1, 13, q, fn_n, None, wt, h)
                     ans = runaway_answers[i] if i < len(runaway_answers) else "No"
-                    ws.cell(row=row, column=14, value=ans).font = tick_green if ans == "Yes" else normal_font
-                    ws.cell(row=row, column=14).alignment = center
-                    ws.merge_cells(start_row=row, start_column=18, end_row=row, end_column=25)
-                    ws.cell(row=row, column=18, value=runaway_comments[i] if i < len(runaway_comments) else "").font = normal_font
-                    style_range(ws, row, row, 1, 25, border=border_all)
-                    ws.row_dimensions[row].height = 22 if len(q) < 60 else 36
+                    MC(row, 14, 16, ans, fn_tg if ans == "Yes" else fn_n, None, cc)
+                    MC(row, 18, 25, runaway_comments[i] if i < len(runaway_comments) else "", fn_n, None, wt)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
-                # RM and PIC review
-                row = merged_cell(ws, row, 1, 25, "Responsible Manager and PIC or Site Manager review of Runaway Risk Review", bold_font, grey_fill, wrap_top, 20)
-                row = merged_cell(ws, row, 1, 25, f"{swp_rm_name} (Responsible Manager)", normal_font, None, None, 18)
-                row = merged_cell(ws, row, 1, 25, f"{swp_coss_name} (Site PIC)", normal_font, None, None, 18)
+                row = MC(row, 1, 25, "Responsible Manager and PIC or Site Manager review of Runaway Risk Review", fn_b, grey, wt, 20)
+                row = MC(row, 1, 25, f"{swp_rm_name} (Responsible Manager)", fn_n)
+                row = MC(row, 1, 25, f"{swp_coss_name} (Site PIC)", fn_n)
 
-                row = add_footer(ws, row)
+                row = footer(row)
                 row += 1
-                row = page_break(ws, row)
+                row = PB(row)
 
-                # ════════════════════════════════════════════════════════
+                # ═══════════════════════════════════════
                 # PAGE 4 — FORM B
-                # ════════════════════════════════════════════════════════
-                row = merged_cell(ws, row, 1, 25, "Form B", header_font, None, None, 24)
+                # ═══════════════════════════════════════
+                row = MC(row, 1, 25, "Form B", fn_h, None, None, 24)
 
-                # Date/Time/Location/Ref
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Date(s) of Work:").font = bold_font
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=12)
-                ws.cell(row=row, column=6, value=f"{swp_from_date}-{swp_to_date}").font = normal_font
-                ws.merge_cells(start_row=row, start_column=13, end_row=row, end_column=15)
-                ws.cell(row=row, column=13, value="Time of Work:").font = bold_font
-                ws.merge_cells(start_row=row, start_column=16, end_row=row, end_column=25)
-                ws.cell(row=row, column=16, value=f"{swp_from_time} - {swp_to_time}").font = normal_font
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 5, "Date(s) of Work:", fn_b, grey)
+                MC(row, 6, 12, f"{swp_from_date}-{swp_to_date}", fn_n)
+                MC(row, 13, 15, "Time of Work:", fn_b, grey)
+                MC(row, 16, 25, f"{swp_from_time} - {swp_to_time}", fn_n)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                ws.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=5)
-                ws.cell(row=row, column=1, value="Location").font = bold_font
-                ws.merge_cells(start_row=row, start_column=6, end_row=row+1, end_column=12)
-                ws.cell(row=row, column=6, value=elr_location).font = normal_font
-                ws.merge_cells(start_row=row, start_column=13, end_row=row+1, end_column=15)
-                ws.cell(row=row, column=13, value="SWP Ref No:").font = bold_font
-                ws.merge_cells(start_row=row, start_column=16, end_row=row+1, end_column=25)
-                ws.cell(row=row, column=16, value=swp_ref).font = normal_font
-                style_range(ws, row, row+1, 1, 25, border=border_all)
+                MC(row, 1, 5, "Location", fn_b, grey, None, None, r2=row+1)
+                MC(row, 6, 12, elr_location, fn_n, None, wt, None, r2=row+1)
+                MC(row, 13, 15, "SWP Ref No:", fn_b, grey, None, None, r2=row+1)
+                MC(row, 16, 25, swp_ref, fn_n, None, wt, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd)
                 row += 2
 
                 row += 1
-                row = merged_cell(ws, row, 1, 25, "The following safe systems of work are organised in priority order. Each should be considered with the highest achievable system consistent with the nature, location and duration of the work to be selected. Following selection of the SSOW the Responsible Manager must sign the 'Form B' authorisation", small_font, None, wrap_top, 36)
+                row = MC(row, 1, 25, "The following safe systems of work are organised in priority order. Each should be considered with the highest achievable system consistent with the nature, location and duration of the work to be selected. Following selection of the SSOW the Responsible Manager must sign the 'Form B' authorisation", fn_s, None, wt, 36)
+
+                row = MC(row, 1, 25, "If a safe system of work IS selected, tick the YES box next to the system.", fn_n, None, None, 18)
+                row += 1
+                row = MC(row, 1, 25, "S.S.O.W: 1 to 3.", fn_b, None, None, 20)
+
+                row = MC(row, 1, 25, "If S.S.O.W protection between 1 & 3 IS NOT selected, tick the NO box next to the method AND provide an explanation in the box below - then consider the next method. If none of the methods of protection can be selected proceed to warning systems (methods 4 to 6)", fn_s, None, wt, 30)
 
                 row += 1
-                row = merged_cell(ws, row, 1, 25, "If a safe system of work IS selected, tick the YES box next to the system.", normal_font, None, None, 18)
+                MC(row, 1, 21, "          Hierarchy of control for operational risks (Protection)", fn_b)
+                MC(row, 22, 25, "SELECTED", fn_b, None, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                row = merged_cell(ws, row, 1, 25, "S.S.O.W: 1 to 3.", bold_font, None, None, 20)
-                row += 1
-                row = merged_cell(ws, row, 1, 25, "If S.S.O.W protection between 1 & 3 IS NOT selected, tick the NO box next to the method AND provide an explanation in the box below - then consider the next method. If none of the methods of protection can be selected proceed to warning systems (methods 4 to 6)", small_font, None, wrap_top, 30)
-
-                row += 1
-                # Protection header
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=21)
-                ws.cell(row=row, column=1, value="          Hierarchy of control for operational risks (Protection)").font = bold_font
-                ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=25)
-                ws.cell(row=row, column=22, value="SELECTED").font = bold_font
-                ws.cell(row=row, column=22).alignment = center
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 22, 22, "YES", fn_lb, grey, cc)
+                MC(row, 23, 25, "NO", fn_lb, grey, cc)
+                SR(row, row, 22, 25, border=brd)
                 row += 1
 
-                # YES / NO header
-                ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=22)
-                ws.cell(row=row, column=22, value="YES").font = label_font
-                ws.cell(row=row, column=22).alignment = center
-                ws.merge_cells(start_row=row, start_column=23, end_row=row, end_column=25)
-                ws.cell(row=row, column=23, value="NO").font = label_font
-                ws.cell(row=row, column=23).alignment = center
-                style_range(ws, row, row, 22, 25, border=border_all)
-                row += 1
-
-                # Methods 1-3
-                prot_methods = [
+                # Methods 1-3 with YES/NO ticks
+                prot_methods_fb = [
                     (1, "Safeguarded", sg_reason if prot_num >= 2 else ""),
                     (2, "Fenced", fence_reason if prot_num >= 3 else ""),
                     (3, "Separated", ""),
                 ]
-                for num, name, reason in prot_methods:
+                for num, name, reason in prot_methods_fb:
                     is_sel = prot_num == num
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row+2, end_column=3)
-                    ws.cell(row=row, column=1, value=str(num)).font = Font(name='Arial', bold=True, size=14)
-                    ws.cell(row=row, column=1).alignment = center
-
-                    reason_text = f"If this method is NOT selected, please give reasons here."
-                    ws.merge_cells(start_row=row, start_column=4, end_row=row, end_column=21)
-                    ws.cell(row=row, column=4, value=f"{name} {reason_text}").font = normal_font
-                    ws.cell(row=row, column=4).alignment = wrap_top
-
-                    # YES / NO tick
-                    ws.merge_cells(start_row=row, start_column=22, end_row=row+2, end_column=22)
-                    ws.cell(row=row, column=22, value="a" if is_sel else " ").font = tick_font
-                    ws.cell(row=row, column=22).alignment = center
-                    if is_sel:
-                        ws.cell(row=row, column=22).fill = green_fill
-
-                    ws.merge_cells(start_row=row, start_column=23, end_row=row+2, end_column=25)
-                    ws.cell(row=row, column=23, value="a" if not is_sel else " ").font = tick_font
-                    ws.cell(row=row, column=23).alignment = center
-
-                    style_range(ws, row, row+2, 1, 25, border=border_all)
+                    MC(row, 1, 3, str(num), fn_num, None, cc, None, r2=row+2)
+                    MC(row, 4, 21, f"{name} If this method is NOT selected, please give reasons here.", fn_n, None, wt)
+                    # YES column — tick if selected
+                    MC(row, 22, 22, "\u2713" if is_sel else "", fn_tk, green_f if is_sel else None, cc, None, r2=row+2)
+                    # NO column — tick if NOT selected
+                    MC(row, 23, 25, "\u2713" if not is_sel else "", fn_tk, None, cc, None, r2=row+2)
+                    SR(row, row+2, 1, 25, border=brd)
                     row += 1
-
-                    # Reason row
-                    ws.merge_cells(start_row=row, start_column=4, end_row=row+1, end_column=21)
-                    ws.cell(row=row, column=4, value=reason).font = normal_font
-                    ws.cell(row=row, column=4).alignment = wrap_top
+                    MC(row, 4, 21, reason, fn_n, None, wt, None, r2=row+1)
                     row += 2
 
                 row += 1
-                # Warning Systems 4 to 6
-                row = merged_cell(ws, row, 1, 25, "Warning Systems 4 to 6", bold_font, None, None, 20)
-                row += 1
-                row = merged_cell(ws, row, 1, 25, "Supplementary questions A, B; C & D must be answered before using warning systems 4 to 6. If the answer to any of the supplementary questions is YES - THEN WORK MUST BE PLANNED USING METHODS 1 TO 3. If all of the questions are answered NO, continue to methods 4 to 6.", small_font, None, wrap_top, 36)
+                row = MC(row, 1, 25, "Warning Systems 4 to 6", fn_b, None, None, 20)
+
+                row = MC(row, 1, 25, "Supplementary questions A, B; C & D must be answered before using warning systems 4 to 6. If the answer to any of the supplementary questions is YES - THEN WORK MUST BE PLANNED USING METHODS 1 TO 3. If all of the questions are answered NO, continue to methods 4 to 6.", fn_s, None, wt, 36)
 
                 row += 1
-                # Supp questions header
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=21)
-                ws.cell(row=row, column=1, value="           SUPPLEMENTARY QUESTIONS for  4 to 6").font = bold_font
-                ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=22)
-                ws.cell(row=row, column=22, value="YES").font = label_font
-                ws.cell(row=row, column=22).alignment = center
-                ws.merge_cells(start_row=row, start_column=23, end_row=row, end_column=25)
-                ws.cell(row=row, column=23, value="NO").font = label_font
-                ws.cell(row=row, column=23).alignment = center
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 21, "           SUPPLEMENTARY QUESTIONS for  4 to 6", fn_b)
+                MC(row, 22, 22, "YES", fn_lb, grey, cc)
+                MC(row, 23, 25, "NO", fn_lb, grey, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                supp_qs = [
+                supp = [
                     ("A", "Is the line speed greater than 125mph (200kph)? (Answer NO if a temporary or emergency speed restriction to 125mph (200kph) or less applies)?"),
                     ("B", "Does the total warning time required exceed 45 seconds?"),
                     ("C", "Are there three or more lines open to traffic between the site of work and the designated position(s) of safety?"),
                     ("D", "Does the Network Rail Hazard Directory prohibit 4 to 6 working at this location?"),
                 ]
-                for letter, q in supp_qs:
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=2)
-                    ws.cell(row=row, column=1, value=letter).font = bold_font
-                    ws.cell(row=row, column=1).alignment = center
-                    ws.merge_cells(start_row=row, start_column=3, end_row=row+1, end_column=21)
-                    ws.cell(row=row, column=3, value=q).font = normal_font
-                    ws.cell(row=row, column=3).alignment = wrap_top
-                    ws.merge_cells(start_row=row, start_column=22, end_row=row+1, end_column=22)
-                    ws.merge_cells(start_row=row, start_column=23, end_row=row+1, end_column=25)
-                    style_range(ws, row, row+1, 1, 25, border=border_all)
+                for letter, q in supp:
+                    MC(row, 1, 2, letter, fn_b, None, cc, None, r2=row+1)
+                    MC(row, 3, 21, q, fn_n, None, wt, None, r2=row+1)
+                    MC(row, 22, 22, "", fn_n, None, cc, None, r2=row+1)
+                    MC(row, 23, 25, "", fn_n, None, cc, None, r2=row+1)
+                    SR(row, row+1, 1, 25, border=brd)
                     row += 2
 
                 row += 1
-                # Warning methods 4-6
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=21)
-                ws.cell(row=row, column=1, value="          Hierarchy of control for operational risks (Warning)").font = bold_font
-                ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=25)
-                ws.cell(row=row, column=22, value="SELECTED").font = bold_font
-                ws.cell(row=row, column=22).alignment = center
-                style_range(ws, row, row, 1, 25, border=border_all)
+                # Warning 4-6
+                MC(row, 1, 21, "          Hierarchy of control for operational risks (Warning)", fn_b)
+                MC(row, 22, 25, "SELECTED", fn_b, None, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=22, end_row=row, end_column=22)
-                ws.cell(row=row, column=22, value="YES").font = label_font
-                ws.cell(row=row, column=22).alignment = center
-                ws.merge_cells(start_row=row, start_column=23, end_row=row, end_column=25)
-                ws.cell(row=row, column=23, value="NO").font = label_font
-                ws.cell(row=row, column=23).alignment = center
-                style_range(ws, row, row, 22, 25, border=border_all)
+                MC(row, 22, 22, "YES", fn_lb, grey, cc)
+                MC(row, 23, 25, "NO", fn_lb, grey, cc)
+                SR(row, row, 22, 25, border=brd)
                 row += 1
 
-                warn_methods = [
+                warn = [
                     (4, "Warning systems permanent-train activated equipment"),
                     (5, "Warning systems portable - train activated equipment"),
                     (6, "Lookout warning \u2013 maximum permissible line or temporarily restricted to 25 mph"),
                 ]
-                for num, name in warn_methods:
+                for num, name in warn:
                     is_sel = prot_num == num
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row+2, end_column=3)
-                    ws.cell(row=row, column=1, value=str(num)).font = Font(name='Arial', bold=True, size=14)
-                    ws.cell(row=row, column=1).alignment = center
-                    ws.merge_cells(start_row=row, start_column=4, end_row=row+2, end_column=21)
-                    ws.cell(row=row, column=4, value=f"{name} If this method is NOT selected, please give reasons here.").font = normal_font
-                    ws.cell(row=row, column=4).alignment = wrap_top
-                    ws.merge_cells(start_row=row, start_column=22, end_row=row+2, end_column=22)
-                    ws.cell(row=row, column=22, value="a" if is_sel else " ").font = tick_font
-                    ws.cell(row=row, column=22).alignment = center
-                    if is_sel:
-                        ws.cell(row=row, column=22).fill = green_fill
-                    ws.merge_cells(start_row=row, start_column=23, end_row=row+2, end_column=25)
-                    ws.cell(row=row, column=23, value="a" if not is_sel else " ").font = tick_font
-                    ws.cell(row=row, column=23).alignment = center
-                    style_range(ws, row, row+2, 1, 25, border=border_all)
+                    MC(row, 1, 3, str(num), fn_num, None, cc, None, r2=row+2)
+                    MC(row, 4, 21, f"{name} If this method is NOT selected, please give reasons here.", fn_n, None, wt, None, r2=row+2)
+                    MC(row, 22, 22, "\u2713" if is_sel else "", fn_tk, green_f if is_sel else None, cc, None, r2=row+2)
+                    MC(row, 23, 25, "\u2713" if not is_sel else "", fn_tk, None, cc, None, r2=row+2)
+                    SR(row, row+2, 1, 25, border=brd)
                     row += 3
 
-                row = add_footer(ws, row)
+                row = footer(row)
                 row += 1
-                row = page_break(ws, row)
+                row = PB(row)
 
-                # ════════════════════════════════════════════════════════
-                # PAGE 6 — RT9909
-                # ════════════════════════════════════════════════════════
-                row = merged_cell(ws, row, 1, 25, "RECORD OF ARRANGEMENTS AND BRIEFING FORM RT9909", header_font, None, None, 24)
-                row = merged_cell(ws, row, 1, 25, "GENERAL INFORMATION *where the work is pre-planned, these parts of the form should be completed before it is provided to the COSS/IWA.", small_font, None, wrap_top, 24)
+                # ═══════════════════════════════════════
+                # PAGE 5/6 — RT9909 + SSOW (combined if fits)
+                # ═══════════════════════════════════════
+                row = MC(row, 1, 25, "RECORD OF ARRANGEMENTS AND BRIEFING FORM RT9909", fn_h, None, None, 24)
+                row = MC(row, 1, 25, "GENERAL INFORMATION *where the work is pre-planned, these parts of the form should be completed before it is provided to the COSS/IWA.", fn_s, None, wt, 24)
 
-                # COSS Name / Sentinel
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Name of COSS/IWA").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=9)
-                ws.cell(row=row, column=6, value=swp_coss_name).font = normal_font
-                ws.merge_cells(start_row=row, start_column=10, end_row=row, end_column=12)
-                ws.cell(row=row, column=10, value="Sentinel Card No.").font = label_font
-                ws.cell(row=row, column=10).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=13, end_row=row, end_column=25)
-                style_range(ws, row, row, 1, 25, border=border_all)
+                # COSS / Sentinel
+                MC(row, 1, 5, "Name of COSS/IWA", fn_b, grey, wt)
+                MC(row, 6, 9, swp_coss_name, fn_n)
+                MC(row, 10, 12, "Sentinel Card No.", fn_lb, grey)
+                MC(row, 13, 25, "", fn_n)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # Date row
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Date").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=25)
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 5, "Date", fn_b, grey)
+                MC(row, 6, 25, "", fn_n)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # Nature of Work
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Nature of Work*").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=25)
-                ws.cell(row=row, column=6, value=swp_nature_of_work).font = normal_font
-                ws.cell(row=row, column=6).alignment = wrap_top
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 5, "Nature of Work*", fn_b, grey, wt)
+                MC(row, 6, 25, swp_nature_of_work, fn_n, None, wt)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # Time started / finished
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Time Work Started").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=9)
-                ws.merge_cells(start_row=row, start_column=10, end_row=row, end_column=12)
-                ws.cell(row=row, column=10, value="Time Work Finished").font = bold_font
-                ws.cell(row=row, column=10).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=13, end_row=row, end_column=25)
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 5, "Time Work Started", fn_b, grey, wt)
+                MC(row, 6, 9, "", fn_n)
+                MC(row, 10, 12, "Time Work Finished", fn_lb, grey, wt)
+                MC(row, 13, 25, "", fn_n)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # Location and Lines
+                # Location and lines
                 lines_affected = elr_location
                 if swp_line_data:
                     lines_affected += " / " + ", ".join([ld['Line Name'] for ld in swp_line_data[:2]])
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Location and Lines Affected*").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.cell(row=row, column=1).alignment = wrap_top
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=25)
-                ws.cell(row=row, column=6, value=lines_affected).font = normal_font
-                ws.cell(row=row, column=6).alignment = wrap_top
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 5, "Location and Lines\nAffected*", fn_b, grey, wt, 22)
+                MC(row, 6, 25, lines_affected, fn_n, None, wt)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # How to contact signaller
+                # Signaller
                 sb_text = ""
                 ecr_text = ""
                 if swp_boxes:
                     box = swp_boxes[0]
-                    sb_text = f"{box['Signal Box']}"
-                    if box['Phone']: sb_text += f": Tel {box['Phone']}"
+                    sb_text = f"{box['Signal Box']}: Tel {box['Phone']}" if box['Phone'] else box['Signal Box']
                     if len(swp_boxes) > 1:
                         b2 = swp_boxes[1]
-                        sb_text += f"  {b2['Signal Box']}"
-                        if b2['Phone']: sb_text += f": Tel {b2['Phone']}"
+                        sb_text += f"  {b2['Signal Box']}: Tel {b2['Phone']}" if b2['Phone'] else f"  {b2['Signal Box']}"
                     if box.get('ECO'):
                         ecr_text = box['ECO']
                         if box.get('ECO Phone'): ecr_text += f": Tel {box['ECO Phone']}"
 
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="How to contact the Signaller* in an emergency").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.cell(row=row, column=1).alignment = wrap_top
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=25)
-                ws.cell(row=row, column=6, value=sb_text).font = normal_font
-                ws.cell(row=row, column=6).alignment = wrap_top
-                style_range(ws, row, row, 1, 25, border=border_all)
-                ws.row_dimensions[row].height = 22
+                MC(row, 1, 5, "How to contact the\nSignaller* in an\nemergency", fn_b, grey, wt, 30)
+                MC(row, 6, 25, sb_text, fn_n, None, wt)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # ECR
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Phone Number of Electrical Control\nRoom").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.cell(row=row, column=1).alignment = wrap_top
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=25)
-                ws.cell(row=row, column=6, value=ecr_text).font = normal_font
-                style_range(ws, row, row, 1, 25, border=border_all)
-                ws.row_dimensions[row].height = 28
+                MC(row, 1, 5, "Phone Number of\nElectrical Control\nRoom", fn_b, grey, wt, 30)
+                MC(row, 6, 25, ecr_text, fn_n, None, wt)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
                 # Lines at site table
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                ws.cell(row=row, column=1, value="Lines at the Site*").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=11)
-                ws.cell(row=row, column=6, value="Direction (any SLW etc?)").font = label_font
-                ws.cell(row=row, column=6).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=12, end_row=row, end_column=17)
-                ws.cell(row=row, column=12, value="Open or Blocked*").font = label_font
-                ws.cell(row=row, column=12).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=18, end_row=row, end_column=25)
-                ws.cell(row=row, column=18, value="Speed (Line or T/ESR)").font = label_font
-                ws.cell(row=row, column=18).fill = grey_fill
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 5, "Lines at the Site*", fn_b, grey, wt)
+                MC(row, 6, 11, "Direction (any SLW etc?)", fn_lb, grey)
+                MC(row, 12, 17, "Open or Blocked*", fn_lb, grey)
+                MC(row, 18, 25, "Speed (Line or T/ESR)", fn_lb, grey)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
                 for ld in swp_line_data:
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=5)
-                    ws.cell(row=row, column=1, value=f"{ld['Abbreviation']}").font = normal_font
-                    ws.merge_cells(start_row=row, start_column=6, end_row=row, end_column=11)
-                    ws.merge_cells(start_row=row, start_column=12, end_row=row, end_column=17)
-                    ws.cell(row=row, column=12, value=ld['Status']).font = normal_font
-                    ws.merge_cells(start_row=row, start_column=18, end_row=row, end_column=25)
-                    style_range(ws, row, row, 1, 25, border=border_all)
+                    MC(row, 1, 5, ld['Abbreviation'], fn_n)
+                    MC(row, 6, 11, "", fn_n)
+                    MC(row, 12, 17, ld['Status'], fn_n)
+                    MC(row, 18, 25, "", fn_n)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
-                # Blank line rows to fill to at least a few
                 for _ in range(max(0, 3 - len(swp_line_data))):
                     for c1, c2 in [(1,5),(6,11),(12,17),(18,25)]:
-                        ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                        style_range(ws, row, row, c1, c2, border=border_all)
+                        MC(row, c1, c2, "", fn_n)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 # RT9909 detail fields
                 rt_fields = [
-                    ("Task Key Risks and Controls* (Include Risks from Other parties)", swp_task_risks),
-                    ("Permits Required ( Lifting Plans , Electrical , Isolation ,Hot works ,Confined Spaces)", swp_permits),
+                    ("Task Key Risks and Controls*\n(Include Risks from Other parties)", swp_task_risks),
+                    ("Permits Required ( Lifting Plans , Electrical ,\nIsolation ,Hot works ,Confined Spaces)", swp_permits),
                     ("Welfare Arrangements and their location*", "Local Welfare Facilities / As Per Task Brief"),
                 ]
-                # First aid
                 fa_text = "First Aider on Site:"
                 if swp_nearest_ae:
                     h = swp_nearest_ae[0]
                     fa_text += f"\nNearest A&E: {h['Hospital']}, {h['Address']}, {h['Postcode']}"
                 rt_fields.append(("First Aid Arrangements*", fa_text))
-
-                # Access
                 access_text = ", ".join(swp_access_selected) if swp_access_selected else ""
                 if swp_access_manual:
                     access_text += ("\n" if access_text else "") + swp_access_manual
-                rt_fields.append(("Access & Egress Arrangements to/from working area *", access_text))
-                rt_fields.append(("Hazards associated with access/egress (conductor rails, tripping, vegetation, overhead cables or OLE, etc.)*", swp_access_hazards))
-                rt_fields.append(("Hazards associated with the site (conductor rails, tripping, vegetation, overhead cables or OLE, etc.)*", swp_site_hazards))
+                rt_fields.append(("Access & Egress Arrangements to/from\nworking area *", access_text))
+                rt_fields.append(("Hazards associated with access/egress\n(conductor rails, tripping, vegetation,\noverhead cables or OLE, etc.)*", swp_access_hazards))
+                rt_fields.append(("Hazards associated with the site\n(conductor rails, tripping, vegetation,\noverhead cables or OLE, etc.)*", swp_site_hazards))
 
                 for label, val in rt_fields:
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=10)
-                    ws.cell(row=row, column=1, value=label).font = bold_font
-                    ws.cell(row=row, column=1).fill = grey_fill
-                    ws.cell(row=row, column=1).alignment = wrap_top
-                    ws.merge_cells(start_row=row, start_column=11, end_row=row+1, end_column=25)
-                    ws.cell(row=row, column=11, value=val).font = normal_font
-                    ws.cell(row=row, column=11).alignment = wrap_top
-                    style_range(ws, row, row+1, 1, 25, border=border_all)
+                    MC(row, 1, 10, label, fn_b, grey, wt, None, r2=row+1)
+                    MC(row, 11, 25, val, fn_n, None, wt, None, r2=row+1)
+                    SR(row, row+1, 1, 25, border=brd)
                     row += 2
 
-                row = add_footer(ws, row)
+                row = footer(row)
                 row += 1
-                row = page_break(ws, row)
+                row = PB(row)
 
-                # ════════════════════════════════════════════════════════
+                # ═══════════════════════════════════════
                 # PAGE 7 — SSOW & DECLARATIONS
-                # ════════════════════════════════════════════════════════
+                # ═══════════════════════════════════════
 
                 # Limits
-                ws.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=10)
-                ws.cell(row=row, column=1, value="Limits of the working area and how these are defined*").font = bold_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.cell(row=row, column=1).alignment = wrap_top
-                ws.merge_cells(start_row=row, start_column=11, end_row=row+1, end_column=25)
-                ws.cell(row=row, column=11, value=swp_limits).font = normal_font
-                ws.cell(row=row, column=11).alignment = wrap_top
-                style_range(ws, row, row+1, 1, 25, border=border_all)
-                ws.row_dimensions[row].height = 30
+                MC(row, 1, 10, "Limits of the working area and how\nthese are defined*", fn_b, grey, wt, 36, r2=row+1)
+                MC(row, 11, 25, swp_limits, fn_n, None, wt, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
                 row += 2
 
                 row += 1
-                row = merged_cell(ws, row, 1, 25, "SAFE SYSTEM OF WORK", bold_font, grey_fill, center, 20)
+                row = MC(row, 1, 25, "SAFE SYSTEM OF WORK", fn_b, grey, cc, 20)
 
                 # SSOW tick table
                 all_methods = [
@@ -2865,195 +2615,144 @@ else:
                     "5  Warning System Portable Train Operated",
                     "6  Lookout Warning"
                 ]
-
                 walking_num = int(swp_ssow_walking[0]) if swp_ssow_walking else prot_num
                 working_num = int(swp_ssow_working[0]) if swp_ssow_working else prot_num
 
-                # Column headers
-                ws.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=8)
-                ws.cell(row=row, column=1, value='Tick the relevant box. Only tick the "Planned" column if you have been provided with a planned safe system of work').font = small_font
-                ws.cell(row=row, column=1).alignment = wrap_top
-                ws.merge_cells(start_row=row, start_column=9, end_row=row, end_column=14)
-                ws.cell(row=row, column=9, value="Walking on or near the line to/from the working area").font = small_font
-                ws.cell(row=row, column=9).alignment = wrap_top
-                ws.merge_cells(start_row=row, start_column=15, end_row=row, end_column=25)
-                ws.cell(row=row, column=15, value="Whilst carrying out the work").font = small_font
-                ws.cell(row=row, column=15).alignment = wrap_top
-                style_range(ws, row, row, 1, 25, border=border_all)
+                # Headers
+                MC(row, 1, 8, 'Tick the relevant box. Only tick the "Planned" column if you have been provided with a planned safe system of work', fn_s, grey, wt, None, r2=row+1)
+                MC(row, 9, 14, "Walking on or near the line to/from the working area", fn_s, None, wt, None, r2=row)
+                MC(row, 15, 25, "Whilst carrying out the work", fn_s, None, wt, None, r2=row)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                style_range(ws, row, row, 1, 25, border=border_all)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # Sub headers: Planned / Actual
-                ws.merge_cells(start_row=row, start_column=9, end_row=row, end_column=11)
-                ws.cell(row=row, column=9, value="Planned*").font = label_font
-                ws.cell(row=row, column=9).alignment = center
-                ws.merge_cells(start_row=row, start_column=12, end_row=row, end_column=14)
-                ws.cell(row=row, column=12, value="Actual").font = label_font
-                ws.cell(row=row, column=12).alignment = center
-                ws.merge_cells(start_row=row, start_column=15, end_row=row, end_column=19)
-                ws.cell(row=row, column=15, value="Planned*").font = label_font
-                ws.cell(row=row, column=15).alignment = center
-                ws.merge_cells(start_row=row, start_column=20, end_row=row, end_column=25)
-                ws.cell(row=row, column=20, value="Actual").font = label_font
-                ws.cell(row=row, column=20).alignment = center
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 9, 11, "Planned*", fn_lb, grey, cc)
+                MC(row, 12, 14, "Actual", fn_lb, grey, cc)
+                MC(row, 15, 19, "Planned*", fn_lb, grey, cc)
+                MC(row, 20, 25, "Actual", fn_lb, grey, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
                 for m in all_methods:
                     num = int(m[0])
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=8)
-                    ws.cell(row=row, column=1, value=m).font = normal_font
-                    ws.merge_cells(start_row=row, start_column=9, end_row=row, end_column=11)
-                    walk_tick = "Y" if num == walking_num else ""
-                    ws.cell(row=row, column=9, value=walk_tick).font = tick_green
-                    ws.cell(row=row, column=9).alignment = center
-                    ws.merge_cells(start_row=row, start_column=12, end_row=row, end_column=14)
-                    ws.merge_cells(start_row=row, start_column=15, end_row=row, end_column=19)
-                    work_tick = "Y" if num == working_num else ""
-                    ws.cell(row=row, column=15, value=work_tick).font = tick_green
-                    ws.cell(row=row, column=15).alignment = center
-                    ws.merge_cells(start_row=row, start_column=20, end_row=row, end_column=25)
-                    style_range(ws, row, row, 1, 25, border=border_all)
+                    MC(row, 1, 8, m, fn_b if num == walking_num or num == working_num else fn_n)
+                    MC(row, 9, 11, "\u2713" if num == walking_num else "", fn_tg, green_f if num == walking_num else None, cc)
+                    MC(row, 12, 14, "", fn_n, None, cc)
+                    MC(row, 15, 19, "\u2713" if num == working_num else "", fn_tg, green_f if num == working_num else None, cc)
+                    MC(row, 20, 25, "", fn_n, None, cc)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 row += 1
-                # 1-3 working only
-                row = merged_cell(ws, row, 1, 25, "1 to 3 WORKING ONLY (complete as applicable)*", bold_font, grey_fill, None, 20)
+                row = MC(row, 1, 25, "1 to 3 WORKING ONLY (complete as applicable)*", fn_b, grey, None, 20)
 
-                fence_details = [
+                for label, val in [
                     ("Type of Fence (fenced only)", swp_fence_type if prot_num == 2 else "N/A"),
                     ("Distance from the Line (fenced only)", swp_fence_dist if prot_num == 2 else "N/A"),
                     ("Separation distance (Site Warden only)", swp_sep_dist if prot_num == 3 else "N/A"),
                     ("How Site Warden will give the warning", swp_sep_warning if prot_num == 3 else "N/A"),
-                ]
-                for label, val in fence_details:
-                    ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=8)
-                    ws.cell(row=row, column=1, value=label).font = normal_font
-                    ws.cell(row=row, column=1).fill = grey_fill
-                    ws.merge_cells(start_row=row, start_column=9, end_row=row, end_column=25)
-                    ws.cell(row=row, column=9, value=val).font = normal_font
-                    style_range(ws, row, row, 1, 25, border=border_all)
+                ]:
+                    MC(row, 1, 8, label, fn_n, grey)
+                    MC(row, 9, 25, val, fn_n)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
-                # 4-6 working only
-                row = merged_cell(ws, row, 1, 25, "4 to 6 WORKING ONLY", bold_font, grey_fill, None, 20)
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=8)
-                ws.cell(row=row, column=1, value="How the warning will be given*").font = normal_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=9, end_row=row, end_column=25)
-                style_range(ws, row, row, 1, 25, border=border_all)
+                row = MC(row, 1, 25, "4 to 6 WORKING ONLY", fn_b, grey, None, 20)
+                MC(row, 1, 8, "How the warning will be given*", fn_n, grey)
+                MC(row, 9, 25, "", fn_n)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=8)
-                ws.cell(row=row, column=1, value="Location(s) of position(s) of Safety").font = normal_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=9, end_row=row, end_column=25)
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 8, "Location(s) of position(s) of Safety", fn_n, grey)
+                MC(row, 9, 25, "", fn_n)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                # Wardens/Lookouts table
-                row = merged_cell(ws, row, 1, 25, "Details of any use of Site Wardens, ATWS Operator or Lookout(s), First Aiders, Banksmen\n(TOWS, LOWS, Pee Wee, Distant, Intermediate, Site, Machine or Touch)", small_font, grey_fill, wrap_top, 30)
+                # Wardens table
+                row = MC(row, 1, 25, "Details of any use of Site Wardens, ATWS Operator or Lookout(s), First Aiders, Banksmen\n(TOWS, LOWS, Pee Wee, Distant, Intermediate, Site, Machine or Touch)", fn_s, grey, wt, 30)
 
                 for lbl, c1, c2 in [("Name",1,8),("Sentinel Card No.",9,13),("Location/Position",14,18),("Role",19,25)]:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                    ws.cell(row=row, column=c1, value=lbl).font = label_font
-                    ws.cell(row=row, column=c1).fill = grey_fill
-                    ws.cell(row=row, column=c1).alignment = center
-                    style_range(ws, row, row, c1, c2, border=border_all)
+                    MC(row, c1, c2, lbl, fn_lb, grey, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
                 for _ in range(3):
                     for c1, c2 in [(1,8),(9,13),(14,18),(19,25)]:
-                        ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                        style_range(ws, row, row, c1, c2, border=border_all)
+                        MC(row, c1, c2, "", fn_n)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 row += 1
-                # Declaration
-                row = merged_cell(ws, row, 1, 25, "DECLARATION (Each member of the group to sign and confirm they have been briefed and understand the safe system of work arrangements to be implemented and the Site and Task risks briefed contained within this Safe Work Pack)", small_font, grey_fill, wrap_top, 30)
+                row = MC(row, 1, 25, "DECLARATION (Each member of the group to sign and confirm they have been briefed and understand the safe system of work arrangements to be implemented and the Site and Task risks briefed contained within this Safe Work Pack)", fn_s, grey, wt, 30)
 
                 row += 1
                 for lbl, c1, c2 in [("Name & Signature",1,8),("Sentinel Card No.",9,13),("Name & Signature",14,18),("Sentinel Card No.",19,25)]:
-                    ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                    ws.cell(row=row, column=c1, value=lbl).font = label_font
-                    ws.cell(row=row, column=c1).fill = grey_fill
-                    ws.cell(row=row, column=c1).alignment = center
-                    style_range(ws, row, row, c1, c2, border=border_all)
+                    MC(row, c1, c2, lbl, fn_lb, grey, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
                 for _ in range(8):
                     for c1, c2 in [(1,8),(9,13),(14,18),(19,25)]:
-                        ws.merge_cells(start_row=row, start_column=c1, end_row=row, end_column=c2)
-                        style_range(ws, row, row, c1, c2, border=border_all)
+                        MC(row, c1, c2, "", fn_n)
+                    SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 row += 1
-                # COSS/IWA Declaration
-                row = merged_cell_2row(ws, row, 1, 25, "COSS/IWA DECLARATION. I have made the above arrangements and am satisfied that all members of the work group understand the safe system of work.", normal_font, None, wrap_top)
-
-                row += 1
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
-                ws.cell(row=row, column=1, value="Name & Signature").font = label_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=11, end_row=row, end_column=25)
-                style_range(ws, row, row, 1, 25, border=border_all)
-                row += 1
-
-                ws.merge_cells(start_row=row, start_column=1, end_row=row+1, end_column=10)
-                ws.cell(row=row, column=1, value="COSS/IWA MUST identify how he/she has verified & confirmed his/her location").font = label_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.cell(row=row, column=1).alignment = wrap_top
-                ws.merge_cells(start_row=row, start_column=11, end_row=row+1, end_column=25)
-                style_range(ws, row, row+1, 1, 25, border=border_all)
+                # COSS Declaration
+                MC(row, 1, 25, "COSS/IWA DECLARATION. I have made the above arrangements and am satisfied that all members of the work group understand the safe system of work.", fn_n, None, wt, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd)
                 row += 2
 
                 row += 1
-                # Relief COSS section
-                row = merged_cell_2row(ws, row, 1, 25, "I have relieved the above COSS/IWA and I am satisfied with the safe system. I have re-briefed the work group and am satisfied that all members of the work group understand the safe system of work.", normal_font, None, wrap_top)
+                MC(row, 1, 10, "Name & Signature", fn_lb, grey, None, 30, r2=row+1)
+                MC(row, 11, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
+                row += 2
 
-                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
-                ws.cell(row=row, column=1, value="Name & Signature").font = label_font
-                ws.cell(row=row, column=1).fill = grey_fill
-                ws.merge_cells(start_row=row, start_column=14, end_row=row, end_column=17)
-                ws.cell(row=row, column=14, value="Name & Signature").font = label_font
-                ws.cell(row=row, column=14).fill = grey_fill
-                style_range(ws, row, row, 1, 25, border=border_all)
+                MC(row, 1, 10, "COSS/IWA MUST identify how he/she has\nverified & confirmed his/her location", fn_lb, grey, wt, 30, r2=row+1)
+                MC(row, 11, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
+                row += 2
+
                 row += 1
+                MC(row, 1, 25, "I have relieved the above COSS/IWA and I am satisfied with the safe system. I have re-briefed the work group and am satisfied that all members of the work group understand the safe system of work.", fn_n, None, wt, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd)
+                row += 2
 
-                row = add_footer(ws, row)
+                MC(row, 1, 10, "Name & Signature", fn_lb, grey, None, 30, r2=row+1)
+                MC(row, 11, 13, "", fn_n, None, None, None, r2=row+1)
+                MC(row, 14, 17, "Name & Signature", fn_lb, grey, None, None, r2=row+1)
+                MC(row, 18, 25, "", fn_n, None, None, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
+                row += 2
 
-                # ════════════════════════════════════════════════════════
-                # SAVE EXCEL AND CONVERT TO PDF
-                # ════════════════════════════════════════════════════════
-                import tempfile
-                import subprocess
+                row = footer(row)
 
+                # ═══════════════════════════════════════
+                # SAVE AND CONVERT TO PDF
+                # ═══════════════════════════════════════
                 safe_ref = re.sub(r'[^a-zA-Z0-9_-]', '_', swp_ref) if swp_ref else 'SWP'
 
-                # Save Excel to a temp file
                 tmp_dir = tempfile.mkdtemp()
                 xlsx_path = os.path.join(tmp_dir, f"SWP_{safe_ref}.xlsx")
                 wb.save(xlsx_path)
 
-                # Convert Excel to PDF using LibreOffice
-                pdf_path = None
+                # Convert to PDF
                 pdf_bytes = None
                 try:
                     subprocess.run([
                         'libreoffice', '--headless', '--convert-to', 'pdf',
                         '--outdir', tmp_dir, xlsx_path
                     ], capture_output=True, timeout=60)
-                    expected_pdf = os.path.join(tmp_dir, f"SWP_{safe_ref}.pdf")
-                    if os.path.exists(expected_pdf):
-                        with open(expected_pdf, 'rb') as pf:
+                    pdf_path = os.path.join(tmp_dir, f"SWP_{safe_ref}.pdf")
+                    if os.path.exists(pdf_path):
+                        with open(pdf_path, 'rb') as pf:
                             pdf_bytes = pf.read()
-                        pdf_path = expected_pdf
                 except Exception as conv_err:
                     st.warning(f"PDF conversion issue: {conv_err}")
 
-                # Also load Excel bytes for the backup download
                 with open(xlsx_path, 'rb') as xf:
                     xlsx_bytes = xf.read()
 
-                # PRIMARY: PDF download (this is what planners use)
+                # PRIMARY: PDF
                 if pdf_bytes:
                     st.download_button(
                         label="\U0001F4C4  Download SWP (PDF)",
@@ -3063,9 +2762,9 @@ else:
                         key="swp_pdf_dl"
                     )
 
-                # SECONDARY: Excel backup (for edits only)
+                # SECONDARY: Excel backup
                 st.download_button(
-                    label="\U0001F4DD  Download SWP (Excel — editable backup)",
+                    label="\U0001F4DD  Download SWP (Excel \u2014 editable backup)",
                     data=xlsx_bytes,
                     file_name=f"SWP_{safe_ref}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -3083,16 +2782,16 @@ else:
                     st.markdown(f"""
                     <div class="pps-card pps-card-amber" style="margin-top:1rem">
                       <span class="badge badge-amber">Excel Only</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">PDF conversion not available — download Excel and print to PDF from your PC. Ref: {swp_ref}</span>
+                      <span style="margin-left:1rem;font-size:0.85rem">PDF conversion not available \u2014 download Excel and print to PDF. Ref: {swp_ref}</span>
                     </div>
                     """, unsafe_allow_html=True)
 
-                # Clean up temp files
                 try:
                     import shutil
                     shutil.rmtree(tmp_dir, ignore_errors=True)
                 except Exception:
                     pass
+
 
 
         else:
