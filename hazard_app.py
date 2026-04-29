@@ -2008,6 +2008,11 @@ else:
                 fn_big = Font(name='Arial', bold=True, size=12)
                 fn_num = Font(name='Arial', bold=True, size=14)
 
+                # Page 5 RT9909 — bigger fonts for trackside readability
+                fn_p5_label = Font(name='Arial', bold=True, size=11)
+                fn_p5_val = Font(name='Arial', size=12)
+                fn_p5_hdr = Font(name='Arial', bold=True, size=10)
+
                 wt = Alignment(wrap_text=True, vertical='top')
                 wc = Alignment(wrap_text=True, vertical='center')
                 cc = Alignment(horizontal='center', vertical='center')
@@ -2543,13 +2548,13 @@ else:
                 row = MC(row, 1, 25, "GENERAL INFORMATION *where the work is pre-planned, these parts of the form should be completed before it is provided to the COSS/IWA.", fn_s, None, wt, 24)
 
                 # COSS / Sentinel — labels row
-                MC(row, 1, 10, "Name of COSS/IWA", fn_b, grey)
-                MC(row, 11, 25, "Sentinel Card No.", fn_b, grey)
+                MC(row, 1, 10, "Name of COSS/IWA", fn_p5_label, grey)
+                MC(row, 11, 25, "Sentinel Card No.", fn_p5_label, grey)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
                 # Values row
                 ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
-                ws.cell(row=row, column=1, value=swp_coss_name).font = fn_n
+                ws.cell(row=row, column=1, value=swp_coss_name).font = fn_p5_val
                 ws.merge_cells(start_row=row, start_column=11, end_row=row, end_column=25)
                 ws.row_dimensions[row].height = 30
                 for c_tmp in range(1, 26):
@@ -2559,20 +2564,20 @@ else:
                     cell.border = Border(left=l, right=ri, top=Side(style=None), bottom=med)
                 row += 1
 
-                MC(row, 1, 5, "Date", fn_b, grey)
-                MC(row, 6, 25, "", fn_n)
+                MC(row, 1, 5, "Date", fn_p5_label, grey)
+                MC(row, 6, 25, "", fn_p5_val)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                MC(row, 1, 5, "Nature of Work*", fn_b, grey, wt)
-                MC(row, 6, 25, swp_nature_of_work, fn_n, None, wt)
+                MC(row, 1, 5, "Nature of Work*", fn_p5_label, grey, wt)
+                MC(row, 6, 25, swp_nature_of_work, fn_p5_val, None, wt)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                MC(row, 1, 5, "Time Work Started", fn_b, grey, wt)
-                MC(row, 6, 9, "", fn_n)
-                MC(row, 10, 12, "Time Work Finished", fn_lb, grey, wt)
-                MC(row, 13, 25, "", fn_n)
+                MC(row, 1, 5, "Time Work Started", fn_p5_label, grey, wt)
+                MC(row, 6, 9, "", fn_p5_val)
+                MC(row, 10, 12, "Time Work Finished", fn_p5_label, grey, wt)
+                MC(row, 13, 25, "", fn_p5_val)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
@@ -2580,8 +2585,8 @@ else:
                 lines_affected = elr_location
                 if swp_line_data:
                     lines_affected += " / " + ", ".join([ld['Line Name'] for ld in swp_line_data[:2]])
-                MC(row, 1, 5, "Location and Lines\nAffected*", fn_b, grey, wt, 22)
-                MC(row, 6, 25, lines_affected, fn_n, None, wt)
+                MC(row, 1, 5, "Location and Lines\nAffected*", fn_p5_label, grey, wt, 26)
+                MC(row, 6, 25, lines_affected, fn_p5_val, None, wt)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
@@ -2598,35 +2603,35 @@ else:
                         ecr_text = box['ECO']
                         if box.get('ECO Phone'): ecr_text += f": Tel {box['ECO Phone']}"
 
-                MC(row, 1, 5, "How to contact the\nSignaller* in an\nemergency", fn_b, grey, wt, 30)
-                MC(row, 6, 25, sb_text, fn_n, None, wt)
+                MC(row, 1, 5, "How to contact the\nSignaller* in an\nemergency", fn_p5_label, grey, wt, 36)
+                MC(row, 6, 25, sb_text, fn_p5_val, None, wt)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                MC(row, 1, 5, "Phone Number of\nElectrical Control\nRoom", fn_b, grey, wt, 30)
-                MC(row, 6, 25, ecr_text, fn_n, None, wt)
+                MC(row, 1, 5, "Phone Number of\nElectrical Control\nRoom", fn_p5_label, grey, wt, 36)
+                MC(row, 6, 25, ecr_text, fn_p5_val, None, wt)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
                 # Lines at site table
-                MC(row, 1, 5, "Lines at the Site*", fn_b, grey, wt)
-                MC(row, 6, 11, "Direction (any SLW etc?)", fn_lb, grey)
-                MC(row, 12, 17, "Open or Blocked*", fn_lb, grey)
-                MC(row, 18, 25, "Speed (Line or T/ESR)", fn_lb, grey)
+                MC(row, 1, 5, "Lines at the Site*", fn_p5_label, grey, wt)
+                MC(row, 6, 11, "Direction (any SLW etc?)", fn_p5_hdr, grey)
+                MC(row, 12, 17, "Open or Blocked*", fn_p5_hdr, grey)
+                MC(row, 18, 25, "Speed (Line or T/ESR)", fn_p5_hdr, grey)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
                 for ld in swp_line_data:
-                    MC(row, 1, 5, ld['Abbreviation'], fn_n)
-                    MC(row, 6, 11, "", fn_n)
-                    MC(row, 12, 17, ld['Status'], fn_n)
-                    MC(row, 18, 25, "", fn_n)
+                    MC(row, 1, 5, ld['Abbreviation'], fn_p5_val)
+                    MC(row, 6, 11, "", fn_p5_val)
+                    MC(row, 12, 17, ld['Status'], fn_p5_val)
+                    MC(row, 18, 25, "", fn_p5_val)
                     SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 for _ in range(max(0, 3 - len(swp_line_data))):
                     for c1, c2 in [(1,5),(6,11),(12,17),(18,25)]:
-                        MC(row, c1, c2, "", fn_n)
+                        MC(row, c1, c2, "", fn_p5_val)
                     SR(row, row, 1, 25, border=brd)
                     row += 1
 
@@ -2650,15 +2655,15 @@ else:
 
                 for label, val in rt_fields:
                     # Taller rows for fields with multi-line labels
-                    h = 40 if '\n' in label else 30
-                    MC(row, 1, 10, label, fn_b, grey, wt, h, r2=row+1)
-                    MC(row, 11, 25, val, fn_n, None, wt, None, r2=row+1)
+                    h = 44 if '\n' in label else 34
+                    MC(row, 1, 10, label, fn_p5_label, grey, wt, h, r2=row+1)
+                    MC(row, 11, 25, val, fn_p5_val, None, wt, None, r2=row+1)
                     SR(row, row+1, 1, 25, border=brd)
                     row += 2
 
                 # Limits — on Page 5 with RT9909
-                MC(row, 1, 10, "Limits of the working area and how\nthese are defined*", fn_b, grey, wt, 36, r2=row+1)
-                MC(row, 11, 25, swp_limits, fn_n, None, wt, None, r2=row+1)
+                MC(row, 1, 10, "Limits of the working area and how\nthese are defined*", fn_p5_label, grey, wt, 40, r2=row+1)
+                MC(row, 11, 25, swp_limits, fn_p5_val, None, wt, None, r2=row+1)
                 SR(row, row+1, 1, 25, border=brd_m)
                 row += 2
 
