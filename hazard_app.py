@@ -1878,6 +1878,15 @@ else:
                 key="swp_limits"
             )
 
+            # ── Planner Comments / Instructions ──
+            st.markdown(f'<div class="section-header" style="font-size:0.95rem">📝  Planner Comments / Instructions</div>', unsafe_allow_html=True)
+            swp_planner_comments = st.text_area(
+                "Additional comments or instructions for the COSS (shown in yellow on Page 1)",
+                value=swp_comments if swp_comments else "",
+                height=80,
+                key="swp_planner_comments"
+            )
+
             # ══════════════════════════════════════════════════════
             # STEP 3: AUTO-POPULATED DATA (read-only display)
             # ══════════════════════════════════════════════════════
@@ -1993,6 +2002,7 @@ else:
                 white_f = PatternFill('solid', fgColor='FFFFFF')
                 green_f = PatternFill('solid', fgColor='C6EFCE')
                 nwr_f = PatternFill('solid', fgColor='003366')
+                yellow_f = PatternFill('solid', fgColor='FFFF00')
 
                 fn_b = Font(name='Arial', bold=True, size=10)
                 fn_n = Font(name='Arial', size=10)
@@ -2008,10 +2018,14 @@ else:
                 fn_big = Font(name='Arial', bold=True, size=12)
                 fn_num = Font(name='Arial', bold=True, size=14)
 
-                # Page 5 RT9909 — bigger fonts for trackside readability
-                fn_p5_label = Font(name='Arial', bold=True, size=11)
-                fn_p5_val = Font(name='Arial', size=12)
-                fn_p5_hdr = Font(name='Arial', bold=True, size=10)
+                # Page 5 RT9909 — size 14 fonts for trackside readability
+                fn_p5_label = Font(name='Arial', bold=True, size=14)
+                fn_p5_val = Font(name='Arial', size=14)
+                fn_p5_hdr = Font(name='Arial', bold=True, size=12)
+
+                # Page 1 Cover — size 14 fonts
+                fn_p1_label = Font(name='Arial', bold=True, size=14)
+                fn_p1_val = Font(name='Arial', size=14)
 
                 wt = Alignment(wrap_text=True, vertical='top')
                 wc = Alignment(wrap_text=True, vertical='center')
@@ -2106,35 +2120,42 @@ else:
                     ("WEEK NO & DATE(S) OF WORKS", f"WK{swp_week} : {swp_from_date} - {swp_to_date}", None, None),
                 ]
                 for label, val, l2, v2 in job:
-                    MC(row, 1, 8, f"  {label}", fn_b, grey, wc, 20)
+                    MC(row, 1, 8, f"  {label}", fn_p1_label, grey, wc, 24)
                     if l2:
-                        MC(row, 9, 16, val, fn_n, None, wt)
-                        MC(row, 17, 19, l2, fn_b, grey, wc)
-                        MC(row, 20, 25, v2, fn_n)
+                        MC(row, 9, 16, val, fn_p1_val, None, wt)
+                        MC(row, 17, 19, l2, fn_p1_label, grey, wc)
+                        MC(row, 20, 25, v2, fn_p1_val)
                         SR(row, row, 1, 25, border=brd)
                     else:
-                        MC(row, 9, 25, val, fn_n, None, wt)
+                        MC(row, 9, 25, val, fn_p1_val, None, wt)
                         SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 # Shift Contact Numbers — FULL WIDTH
-                row = MC(row, 1, 25, "SHIFT CONTACT NUMBERS", fn_b, grey, cc, 20)
+                row = MC(row, 1, 25, "SHIFT CONTACT NUMBERS", fn_p1_label, grey, cc, 24)
 
                 for lbl, c1, c2 in [("Name",1,7),("Duty",8,11),("Phone Number",12,18),("Shift Times",19,25)]:
-                    MC(row, c1, c2, lbl, fn_b, grey, cc)
+                    MC(row, c1, c2, lbl, fn_p1_label, grey, cc)
                 row += 1
 
                 all_sc = list(shift_contacts) + [{'Name':'','Duty':'','Phone':'','Start':'','End':''}] * max(0, 5 - len(shift_contacts))
                 for sc in all_sc[:5]:
-                    MC(row, 1, 7, sc.get('Name',''), fn_n)
-                    MC(row, 8, 11, sc.get('Duty',''), fn_n, None, cc)
-                    MC(row, 12, 18, sc.get('Phone',''), fn_n, None, cc)
-                    MC(row, 19, 22, sc.get('Start',''), fn_n, None, cc)
-                    MC(row, 23, 25, sc.get('End',''), fn_n, None, cc)
+                    MC(row, 1, 7, sc.get('Name',''), fn_p1_val)
+                    MC(row, 8, 11, sc.get('Duty',''), fn_p1_val, None, cc)
+                    MC(row, 12, 18, sc.get('Phone',''), fn_p1_val, None, cc)
+                    MC(row, 19, 22, sc.get('Start',''), fn_p1_val, None, cc)
+                    MC(row, 23, 25, sc.get('End',''), fn_p1_val, None, cc)
                     SR(row, row, 1, 25, border=brd)
                     row += 1
 
                 row += 1
+
+                # Yellow Planner Comments Box — only shows if comments exist
+                if swp_planner_comments and swp_planner_comments.strip():
+                    MC(row, 1, 25, swp_planner_comments, fn_big, yellow_f, cw, None, r2=row+2)
+                    SR(row, row+2, 1, 25, border=brd_m)
+                    row += 3
+                    row += 1
 
                 # Change authority — FULL WIDTH
                 MC(row, 1, 10, "Reason and authority for change from\nplanned safe system of work", fn_s, grey, wc, 36, r2=row+1)
@@ -2574,7 +2595,7 @@ else:
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                MC(row, 1, 5, "Time Work Started", fn_p5_label, grey, wt)
+                MC(row, 1, 5, "Time Work Started", fn_p5_label, grey, wt, 38)
                 MC(row, 6, 9, "", fn_p5_val)
                 MC(row, 10, 12, "Time Work Finished", fn_p5_label, grey, wt)
                 MC(row, 13, 25, "", fn_p5_val)
@@ -2585,7 +2606,7 @@ else:
                 lines_affected = elr_location
                 if swp_line_data:
                     lines_affected += " / " + ", ".join([ld['Line Name'] for ld in swp_line_data[:2]])
-                MC(row, 1, 5, "Location and Lines\nAffected*", fn_p5_label, grey, wt, 26)
+                MC(row, 1, 5, "Location and Lines\nAffected*", fn_p5_label, grey, wt, 40)
                 MC(row, 6, 25, lines_affected, fn_p5_val, None, wt)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
@@ -2603,12 +2624,12 @@ else:
                         ecr_text = box['ECO']
                         if box.get('ECO Phone'): ecr_text += f": Tel {box['ECO Phone']}"
 
-                MC(row, 1, 5, "How to contact the\nSignaller* in an\nemergency", fn_p5_label, grey, wt, 36)
+                MC(row, 1, 5, "How to contact the\nSignaller* in an\nemergency", fn_p5_label, grey, wt, 56)
                 MC(row, 6, 25, sb_text, fn_p5_val, None, wt)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                MC(row, 1, 5, "Phone Number of\nElectrical Control\nRoom", fn_p5_label, grey, wt, 36)
+                MC(row, 1, 5, "Phone Number of\nElectrical Control\nRoom", fn_p5_label, grey, wt, 56)
                 MC(row, 6, 25, ecr_text, fn_p5_val, None, wt)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
@@ -2654,15 +2675,15 @@ else:
                 rt_fields.append(("Hazards associated with the site\n(conductor rails, tripping, vegetation,\noverhead cables or OLE, etc.)*", swp_site_hazards))
 
                 for label, val in rt_fields:
-                    # Taller rows for fields with multi-line labels
-                    h = 44 if '\n' in label else 34
+                    # Taller rows for size 14 fonts
+                    h = 50 if '\n' in label else 38
                     MC(row, 1, 10, label, fn_p5_label, grey, wt, h, r2=row+1)
                     MC(row, 11, 25, val, fn_p5_val, None, wt, None, r2=row+1)
                     SR(row, row+1, 1, 25, border=brd)
                     row += 2
 
                 # Limits — on Page 5 with RT9909
-                MC(row, 1, 10, "Limits of the working area and how\nthese are defined*", fn_p5_label, grey, wt, 40, r2=row+1)
+                MC(row, 1, 10, "Limits of the working area and how\nthese are defined*", fn_p5_label, grey, wt, 44, r2=row+1)
                 MC(row, 11, 25, swp_limits, fn_p5_val, None, wt, None, r2=row+1)
                 SR(row, row+1, 1, 25, border=brd_m)
                 row += 2
