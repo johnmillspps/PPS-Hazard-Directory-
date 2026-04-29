@@ -1775,14 +1775,17 @@ else:
             swp_line_data = []
             if swp_lines:
                 for i, line in enumerate(swp_lines):
-                    lc1, lc2, lc3 = st.columns([2, 3, 2])
+                    lc0, lc1, lc2, lc3 = st.columns([0.3, 2, 3, 2])
+                    with lc0:
+                        include = st.checkbox("", value=True, key=f"swp_ln_inc_{i}", label_visibility="collapsed")
                     with lc1:
                         abbr = st.text_input("Abbrev", value=line['Abbreviation'], key=f"swp_ln_a_{i}", label_visibility="collapsed")
                     with lc2:
                         name = st.text_input("Line Name", value=line['Line Name'], key=f"swp_ln_n_{i}", label_visibility="collapsed")
                     with lc3:
                         status = st.selectbox("Status", ["Open", "Blocked", "Blocked in between trains"], key=f"swp_ln_s_{i}", label_visibility="collapsed")
-                    swp_line_data.append({'Abbreviation': abbr, 'Line Name': name, 'Status': status})
+                    if include:
+                        swp_line_data.append({'Abbreviation': abbr, 'Line Name': name, 'Status': status})
             else:
                 st.markdown(f"<div style='font-size:0.85rem;color:{COLOURS['muted']}'>No line data found. Add manually below.</div>", unsafe_allow_html=True)
 
@@ -2167,44 +2170,46 @@ else:
                 # ═══════════════════════════════════════
                 # PAGE 2 — VALIDATION
                 # ═══════════════════════════════════════
-                row = MC(row, 3, 23, "SWP Validation Form", fn_h, None, Alignment(horizontal='left'), 24)
+                row = MC(row, 1, 25, "SWP Validation Form", fn_h, None, Alignment(horizontal='left'), 24)
 
-                # Rejected / Errors — tidy bordered layout
-                MC(row, 2, 8, "Rejected", fn_b, grey, cc, 22)
-                MC(row, 9, 15, "YES", fn_b, None, cc)
-                MC(row, 17, 23, "NO", fn_b, None, cc)
-                SR(row, row, 2, 23, border=brd)
+                # Rejected / Errors — full width 1-25
+                MC(row, 1, 8, "Rejected", fn_b, grey, cc, 22)
+                MC(row, 9, 16, "YES", fn_b, None, cc)
+                MC(row, 17, 25, "NO", fn_b, None, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                MC(row, 2, 8, "Errors / Changes", fn_b, grey, cc, 22)
-                MC(row, 9, 15, "YES", fn_b, None, cc)
-                MC(row, 17, 23, "NO", fn_b, None, cc)
-                SR(row, row, 2, 23, border=brd)
+                MC(row, 1, 8, "Errors / Changes", fn_b, grey, cc, 22)
+                MC(row, 9, 16, "YES", fn_b, None, cc)
+                MC(row, 17, 25, "NO", fn_b, None, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 2
 
-                # Cyclical / Non-Cyclical / Repeat — highlight selected
-                cyc_opts = ["Cyclical", "Non-Cyclical", "Repeat"]
-                for i, (lbl, c1, c2) in enumerate([("Cyclical",2,8),("Non-Cyclical",9,15),("Repeat",16,23)]):
+                # Cyclical / Non-Cyclical / Repeat — full width 1-25
+                for i, (lbl, c1, c2) in enumerate([("Cyclical",1,8),("Non-Cyclical",9,17),("Repeat",18,25)]):
                     is_sel = (swp_type == lbl)
                     MC(row, c1, c2, lbl, fn_b, green_f if is_sel else None, cc, 22)
                     SR(row, row, c1, c2, border=brd)
                 row += 1
 
-                # SWP Ref / Expiry / Dates — wider columns
-                MC(row, 2, 8, "SWP Ref.", fn_b, None, None, 22, r2=row+1)
-                MC(row, 9, 12, swp_ref, fn_n, None, wt, None, r2=row+1)
-                MC(row, 13, 15, "SWP expiry date", fn_lb, None, None)
-                MC(row, 16, 19, swp_to_date, fn_n)
-                MC(row, 20, 21, "Date & Time of Work", fn_lb, None, wt)
-                MC(row, 22, 25, f"{swp_from_date}-{swp_to_date}", fn_n, None, wt)
-                SR(row, row, 2, 25, border=brd)
+                # SWP Ref / Expiry / Date — row 1 (dates)
+                MC(row, 1, 4, "SWP Ref.", fn_b, grey, cc, 22)
+                MC(row, 5, 9, swp_ref, fn_n, None, cc)
+                MC(row, 10, 14, "SWP expiry date", fn_lb, grey, cc)
+                MC(row, 15, 18, swp_to_date, fn_n, None, cc)
+                MC(row, 19, 21, "Date of Work", fn_lb, grey, cc)
+                MC(row, 22, 25, f"{swp_from_date} - {swp_to_date}", fn_n, None, cw)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
-                MC(row, 22, 25, f"{swp_from_time} - {swp_to_time}", fn_n, None, wt)
-                SR(row, row, 2, 25, border=brd)
+                # SWP Ref / Expiry / Date — row 2 (times)
+                MC(row, 1, 18, "", fn_n, None, None, 22)
+                MC(row, 19, 21, "Time of Work", fn_lb, grey, cc)
+                MC(row, 22, 25, f"{swp_from_time} - {swp_to_time}", fn_n, None, cc)
+                SR(row, row, 1, 25, border=brd)
                 row += 1
 
-                MC(row, 2, 8, "Brief Description of Work", fn_b, None, None, 20, r2=row+1)
+                MC(row, 1, 8, "Brief Description of Work", fn_b, None, None, 20, r2=row+1)
                 MC(row, 9, 25, swp_nature_of_work, fn_n, None, wt, None, r2=row+1)
-                SR(row, row+1, 2, 25, border=brd)
+                SR(row, row+1, 1, 25, border=brd)
                 row += 2
 
                 row += 1
@@ -2314,24 +2319,36 @@ else:
                 # ═══════════════════════════════════════
                 # PAGE 3 — RISKS & RUNAWAY
                 # ═══════════════════════════════════════
-                MC(row, 1, 7, "SWP Ref.", fn_b, grey)
-                MC(row, 8, 12, swp_ref, fn_n, None, None, 20, r2=row+1)
+                MC(row, 1, 7, "SWP Ref.", fn_b, grey, None, 20, r2=row+1)
+                # Force right border on column 7
+                for r_tmp in [row, row+1]:
+                    ws.cell(row=r_tmp, column=7).border = Border(right=thin, top=thin if r_tmp == row else Side(style=None), bottom=thin if r_tmp == row+1 else Side(style=None))
+                MC(row, 8, 12, swp_ref, fn_n, None, cc, None, r2=row+1)
+                # Clean value area - outer border only
+                for r_tmp in [row, row+1]:
+                    for c_tmp in range(8, 13):
+                        cell = ws.cell(row=r_tmp, column=c_tmp)
+                        l = thin if c_tmp == 8 else Side(style=None)
+                        ri = thin if c_tmp == 12 else Side(style=None)
+                        t = thin if r_tmp == row else Side(style=None)
+                        b = thin if r_tmp == row+1 else Side(style=None)
+                        cell.border = Border(left=l, right=ri, top=t, bottom=b)
                 MC(row, 13, 16, "Date & Time of", fn_lb, grey)
-                MC(row, 17, 25, f"{swp_from_date}-{swp_to_date}", fn_n, None, wt)
-                SR(row, row, 1, 25, border=brd)
+                MC(row, 17, 25, f"{swp_from_date} - {swp_to_date}", fn_n, None, wt)
+                SR(row, row, 13, 25, border=brd)
                 row += 1
                 MC(row, 13, 16, "Work", fn_lb, grey)
                 MC(row, 17, 25, f"{swp_from_time} - {swp_to_time}", fn_n)
-                SR(row, row, 1, 25, border=brd)
+                SR(row, row, 13, 25, border=brd)
                 row += 1
 
-                MC(row, 1, 7, "Brief Description of work", fn_b, grey, None, 20)
+                MC(row, 1, 7, "Brief Description of work", fn_b, grey, None, 20, r2=row+1)
                 MC(row, 8, 25, swp_nature_of_work, fn_n, None, wt, None, r2=row+1)
                 SR(row, row+1, 1, 25, border=brd)
                 row += 2
 
                 row += 1
-                row = MC(row, 4, 25, "Risk Identified and controls to be applied (Not applicable where task briefing sheets are included)", fn_b, grey, wt, 20)
+                row = MC(row, 1, 25, "Risk Identified and controls to be applied (Not applicable where task briefing sheets are included)", fn_b, grey, wt, 20)
 
                 # Risk table — 5 columns
                 for lbl, c1, c2 in [("Specific Risk Requiring Control",1,8),("Control to be applied",9,13),("Person in charge /RM initials",14,16),("Control Delegated to: (name)",17,19),("Acceptance of Control by:",20,25)]:
@@ -2367,8 +2384,40 @@ else:
                     row += 1
 
                 row = MC(row, 1, 25, "Responsible Manager and PIC or Site Manager review of Runaway Risk Review", fn_b, grey, wt, 20)
-                row = MC(row, 1, 25, f"{swp_rm_name} (Responsible Manager)", fn_n)
-                row = MC(row, 1, 25, f"{swp_coss_name} (Site PIC)", fn_n)
+
+                # RM - labels row
+                MC(row, 1, 13, "RM Name:", fn_lb, grey)
+                MC(row, 14, 25, "Signature:", fn_lb, grey)
+                SR(row, row, 1, 25, border=brd)
+                row += 1
+                # RM - value row
+                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=13)
+                ws.cell(row=row, column=1, value=swp_rm_name).font = fn_n
+                ws.merge_cells(start_row=row, start_column=14, end_row=row, end_column=25)
+                ws.row_dimensions[row].height = 36
+                for c_tmp in range(1, 26):
+                    cell = ws.cell(row=row, column=c_tmp)
+                    l = med if c_tmp == 1 else (med if c_tmp == 14 else Side(style=None))
+                    ri = med if c_tmp == 25 else (med if c_tmp == 13 else Side(style=None))
+                    cell.border = Border(left=l, right=ri, top=Side(style=None), bottom=med)
+                row += 1
+
+                # PIC - labels row
+                MC(row, 1, 13, "PIC Name:", fn_lb, grey)
+                MC(row, 14, 25, "Signature:", fn_lb, grey)
+                SR(row, row, 1, 25, border=brd)
+                row += 1
+                # PIC - value row
+                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=13)
+                ws.cell(row=row, column=1, value=swp_coss_name).font = fn_n
+                ws.merge_cells(start_row=row, start_column=14, end_row=row, end_column=25)
+                ws.row_dimensions[row].height = 36
+                for c_tmp in range(1, 26):
+                    cell = ws.cell(row=row, column=c_tmp)
+                    l = med if c_tmp == 1 else (med if c_tmp == 14 else Side(style=None))
+                    ri = med if c_tmp == 25 else (med if c_tmp == 13 else Side(style=None))
+                    cell.border = Border(left=l, right=ri, top=Side(style=None), bottom=med)
+                row += 1
 
                 row = footer(row)
                 row += 1
@@ -2476,7 +2525,8 @@ else:
                 for num, name in warn:
                     is_sel = prot_num == num
                     MC(row, 1, 3, str(num), fn_num, None, cc, None, r2=row+2)
-                    MC(row, 4, 21, f"{name} If this method is NOT selected, please give reasons here.", fn_n, None, wt, None, r2=row+2)
+                    reason_text = f"{name} If this method is NOT selected, please give reasons here." if num < 6 else name
+                    MC(row, 4, 21, reason_text, fn_n, None, wt, None, r2=row+2)
                     MC(row, 22, 22, "\u2713" if is_sel else "", fn_tk, green_f if is_sel else None, cc, None, r2=row+2)
                     MC(row, 23, 25, "\u2713" if not is_sel else "", fn_tk, None, cc, None, r2=row+2)
                     SR(row, row+2, 1, 25, border=brd)
@@ -2492,12 +2542,21 @@ else:
                 row = MC(row, 1, 25, "RECORD OF ARRANGEMENTS AND BRIEFING FORM RT9909", fn_h, None, None, 24)
                 row = MC(row, 1, 25, "GENERAL INFORMATION *where the work is pre-planned, these parts of the form should be completed before it is provided to the COSS/IWA.", fn_s, None, wt, 24)
 
-                # COSS / Sentinel
-                MC(row, 1, 5, "Name of COSS/IWA", fn_b, grey, wt)
-                MC(row, 6, 9, swp_coss_name, fn_n)
-                MC(row, 10, 12, "Sentinel Card No.", fn_lb, grey)
-                MC(row, 13, 25, "", fn_n)
+                # COSS / Sentinel — labels row
+                MC(row, 1, 10, "Name of COSS/IWA", fn_b, grey)
+                MC(row, 11, 25, "Sentinel Card No.", fn_b, grey)
                 SR(row, row, 1, 25, border=brd)
+                row += 1
+                # Values row
+                ws.merge_cells(start_row=row, start_column=1, end_row=row, end_column=10)
+                ws.cell(row=row, column=1, value=swp_coss_name).font = fn_n
+                ws.merge_cells(start_row=row, start_column=11, end_row=row, end_column=25)
+                ws.row_dimensions[row].height = 30
+                for c_tmp in range(1, 26):
+                    cell = ws.cell(row=row, column=c_tmp)
+                    l = med if c_tmp == 1 else (med if c_tmp == 11 else Side(style=None))
+                    ri = med if c_tmp == 25 else (med if c_tmp == 10 else Side(style=None))
+                    cell.border = Border(left=l, right=ri, top=Side(style=None), bottom=med)
                 row += 1
 
                 MC(row, 1, 5, "Date", fn_b, grey)
@@ -2590,10 +2649,18 @@ else:
                 rt_fields.append(("Hazards associated with the site\n(conductor rails, tripping, vegetation,\noverhead cables or OLE, etc.)*", swp_site_hazards))
 
                 for label, val in rt_fields:
-                    MC(row, 1, 10, label, fn_b, grey, wt, None, r2=row+1)
+                    # Taller rows for fields with multi-line labels
+                    h = 40 if '\n' in label else 30
+                    MC(row, 1, 10, label, fn_b, grey, wt, h, r2=row+1)
                     MC(row, 11, 25, val, fn_n, None, wt, None, r2=row+1)
                     SR(row, row+1, 1, 25, border=brd)
                     row += 2
+
+                # Limits — on Page 5 with RT9909
+                MC(row, 1, 10, "Limits of the working area and how\nthese are defined*", fn_b, grey, wt, 36, r2=row+1)
+                MC(row, 11, 25, swp_limits, fn_n, None, wt, None, r2=row+1)
+                SR(row, row+1, 1, 25, border=brd_m)
+                row += 2
 
                 row = footer(row)
                 row += 1
@@ -2602,12 +2669,6 @@ else:
                 # ═══════════════════════════════════════
                 # PAGE 7 — SSOW & DECLARATIONS
                 # ═══════════════════════════════════════
-
-                # Limits
-                MC(row, 1, 10, "Limits of the working area and how\nthese are defined*", fn_b, grey, wt, 36, r2=row+1)
-                MC(row, 11, 25, swp_limits, fn_n, None, wt, None, r2=row+1)
-                SR(row, row+1, 1, 25, border=brd_m)
-                row += 2
 
                 row += 1
                 row = MC(row, 1, 25, "SAFE SYSTEM OF WORK", fn_b, grey, cc, 20)
@@ -2622,29 +2683,41 @@ else:
                 walking_num = int(swp_ssow_walking[0]) if swp_ssow_walking else prot_num
                 working_num = int(swp_ssow_working[0]) if swp_ssow_working else prot_num
 
-                # Headers
-                MC(row, 1, 8, 'Tick the relevant box. Only tick the "Planned" column if you have been provided with a planned safe system of work', fn_s, grey, wt, None, r2=row+1)
-                MC(row, 9, 14, "Walking on or near the line to/from the working area", fn_s, None, wt, None, r2=row)
-                MC(row, 15, 25, "Whilst carrying out the work", fn_s, None, wt, None, r2=row)
-                SR(row, row, 1, 25, border=brd)
-                row += 1
-                SR(row, row, 1, 25, border=brd)
-                row += 1
+                # Headers — match template layout
+                MC(row, 1, 8, 'Tick the relevant box.  Only tick the \u201cPlanned\u201d column if you have been provided with a planned safe system of work', fn_n, grey, cw, 40, r2=row+1)
+                MC(row, 9, 16, "Walking on or near the line to/from the working area", fn_n, None, cw, None, r2=row+1)
+                MC(row, 17, 25, "Whilst carrying out the work", fn_n, None, cw, None, r2=row+1)
+                SR(row, row+1, 9, 25, border=brd)
+                ws.cell(row=row, column=9).alignment = cw
+                ws.cell(row=row, column=17).alignment = cw
+                # Clean instruction text box
+                for r_tmp in [row, row+1]:
+                    for c_tmp in range(1, 9):
+                        cell = ws.cell(row=r_tmp, column=c_tmp)
+                        l = thin if c_tmp == 1 else Side(style=None)
+                        ri = thin if c_tmp == 8 else Side(style=None)
+                        t = thin if r_tmp == row else Side(style=None)
+                        b = thin if r_tmp == row+1 else Side(style=None)
+                        cell.border = Border(left=l, right=ri, top=t, bottom=b)
+                        cell.fill = grey
+                row += 2
 
-                MC(row, 9, 11, "Planned*", fn_lb, grey, cc)
-                MC(row, 12, 14, "Actual", fn_lb, grey, cc)
-                MC(row, 15, 19, "Planned*", fn_lb, grey, cc)
-                MC(row, 20, 25, "Actual", fn_lb, grey, cc)
+                # Planned / Actual sub-headers — equal widths
+                MC(row, 1, 8, "", fn_n, grey)
+                MC(row, 9, 12, "Planned*", fn_lb, grey, cc)
+                MC(row, 13, 16, "Actual", fn_lb, grey, cc)
+                MC(row, 17, 21, "Planned*", fn_lb, grey, cc)
+                MC(row, 22, 25, "Actual", fn_lb, grey, cc)
                 SR(row, row, 1, 25, border=brd)
                 row += 1
 
                 for m in all_methods:
                     num = int(m[0])
                     MC(row, 1, 8, m, fn_b if num == walking_num or num == working_num else fn_n)
-                    MC(row, 9, 11, "\u2713" if num == walking_num else "", fn_tg, green_f if num == walking_num else None, cc)
-                    MC(row, 12, 14, "", fn_n, None, cc)
-                    MC(row, 15, 19, "\u2713" if num == working_num else "", fn_tg, green_f if num == working_num else None, cc)
-                    MC(row, 20, 25, "", fn_n, None, cc)
+                    MC(row, 9, 12, "\u2713" if num == walking_num else "", fn_tg, green_f if num == walking_num else None, cc)
+                    MC(row, 13, 16, "", fn_n, None, cc)
+                    MC(row, 17, 21, "\u2713" if num == working_num else "", fn_tg, green_f if num == working_num else None, cc)
+                    MC(row, 22, 25, "", fn_n, None, cc)
                     SR(row, row, 1, 25, border=brd)
                     row += 1
 
@@ -2697,6 +2770,7 @@ else:
                     for c1, c2 in [(1,8),(9,13),(14,18),(19,25)]:
                         MC(row, c1, c2, "", fn_n)
                     SR(row, row, 1, 25, border=brd)
+                    ws.row_dimensions[row].height = 28
                     row += 1
 
                 row += 1
