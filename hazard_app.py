@@ -1964,11 +1964,20 @@ else:
             # ══════════════════════════════════════════════════════
             st.markdown("<br/>", unsafe_allow_html=True)
 
-            gen_col1, gen_col2 = st.columns(2)
+            gen_col1, gen_col2, gen_col3, gen_col4 = st.columns(4)
             with gen_col1:
                 generate_btn = st.button("📥  GENERATE SWP (Excel + PDF)", key="generate_swp_btn")
             with gen_col2:
-                haz_pdf_btn = st.button("📋  Download Hazard Directory & Access Points PDF", key="swp_haz_pdf_btn")
+                haz_pdf_btn = st.button("📋  Hazard Directory & Access Points", key="swp_haz_pdf_btn")
+            with gen_col3:
+                sa_btn = st.button("📐  Sectional Appendix", key="swp_sa_btn")
+            with gen_col4:
+                sd_btn = st.button("🚦  Signal Diagram", key="swp_sd_btn")
+
+            if sa_btn:
+                st.info("Coming soon")
+            if sd_btn:
+                st.info("Coming soon")
 
             if haz_pdf_btn:
                 swp_elr_label = swp_elr_from if swp_elr_from == swp_elr_to else f"{swp_elr_from} to {swp_elr_to}"
