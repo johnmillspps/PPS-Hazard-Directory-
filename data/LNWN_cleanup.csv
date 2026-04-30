@@ -1,0 +1,106 @@
+﻿page,elrs,lor,line_of_route_description,n_lines,duplicate_rows,abbreviations,problem
+154,"LEC2, LEC3",NW1001,Armitage Jn (lncl.) to Preston Fylde Jn,12,12,"ASN, DP, DS1, DSF, DSS, DSta, LZ, SGL, UP, USF, USS, USta",multi-ELR duplication - needs diagram review
+156,"LEC3, LEC4, LEC6",NW1001,Armitage Jn (lncl.) to Preston Fylde Jn.,9,18,"DF, DSF, DSS, NBEC, UF, UNB, US, USF, USS",multi-ELR duplication - needs diagram review
+157,"LEC4, LEC6",NW1001,Armitage Jn (lncl.) to Preston Fylde Jn,8,8,"DF, DNB, DS, MU, NBEC, UF, UNB, US",multi-ELR duplication - needs diagram review
+159,"LEC4, LEC5",NW1001,Armitage Jn (lncl.) to Preston Fylde Jn,15,15,"AID, CSYTSdg, DED AID, DF, DS, DSGL, P1, P2, P3, P3&4, P4, U&DL, U&DPL, UF, US",multi-ELR duplication - needs diagram review
+164,"CGJ1, CGJ2",NW1001,Armitage Jn (lncl.) to Preston Fylde Jn,2,2,"DM, UM",lines genuinely span both ELRs - no fix needed
+166,"CGJ2, CGJ3",NW1001,Armitage Jn (lncl.) to Preston Fylde Jn,11,11,"ADTS, DF, DM, DS, P1, P2, P3, P4, UF, UM, US",multi-ELR duplication - needs diagram review
+180,"HCM2, HCM3",NW1003,Silverdale to Madeley,1,1,D&U,lines genuinely span both ELRs - no fix needed
+202,"CHW1, CHW2",NW1019,Acton Grange Jn to Warrington South Jn (Helsby Lines),5,5,"Bank, DH, Quay, UH, UTS",multi-ELR duplication - needs diagram review
+203,"DSE, WEE",NW1021,Winwick Jn to Golborne Jn (via Earlestown),6,6,"DCM, P1, P2, UCM, UF, US",multi-ELR duplication - needs diagram review
+204,"DSE, NGJ",NW1021,Winwick Jn to Golborne Jn (via Earlestown),8,8,"DCM, DL, PDEC, PDWC, PUEC, PUWC, UCM, UL",multi-ELR duplication - needs diagram review
+232,"WJL1, WJL2",NW2001,Weaver Jn. to Liverpool Lime Street,9,9,"DD, DDF, DIT W HS, DLG, ODS, UD, UDF, UDS, ULG",multi-ELR duplication - needs diagram review
+233,"WJL2, WJL3",NW2001,Weaver Jn. to Liverpool Lime Street,5,5,"DDF, DDS, SCS, UDF, UDS",multi-ELR duplication - needs diagram review
+236,"WJL3, WJL4",NW2001,Weaver Jn. to Liverpool Lime Street,7,7,"DCMS, DDF, P1, P3, P4, UCMS, UDF",multi-ELR duplication - needs diagram review
+260,"SBH1, SBH2, SBH3",NW2023,Springs Branch Jn. to Huyton Jn. (St. Helens lines),2,4,"DSH, USH",lines genuinely span both ELRs - no fix needed
+262,"DSE, SBH1",NW2023,Springs Branch Jn. to Huyton Jn. (St. Helens lines),8,8,"DCM, DCMF, DCMS, DSH, UCM, UCMF, UCMS, USH",multi-ELR duplication - needs diagram review
+265,"BSJ, SCT1, SCT2",NW2027,Edge Hill Bootle Branch Jn to Liverpool Docks,7,14,"DB, DLG, DSPT, I2OL, UB, ULG, USPT",multi-ELR duplication - needs diagram review
+306,"CNH2, CNH3",NW3001,Crewe North Jn. to Holyhead,5,5,"DF, DM, DS, UF, US",multi-ELR duplication - needs diagram review
+339,"WDB1, WDB2",NW3007,Wrexham Central to Bidston West Jn,2,2,"DM, UM",lines genuinely span both ELRs - no fix needed
+342,"CWK3, WDB3",NW3007,Wrexham Central to Bidston West Jn,1,1,UM,lines genuinely span both ELRs - no fix needed
+360,"EJN, SJD, WJP1",NW3023,Edgeley Jn No.2 to Mickle Trafford,3,6,"DM, OM, UM",multi-ELR duplication - needs diagram review
+361,"CDM1, SJD",NW3023,Edgeley Jn. No.2 to Mickle Trafford,2,2,"DM, UM",lines genuinely span both ELRs - no fix needed
+362,"CDM1, CDM2",NW3023,Edgeley Jn. No.2 to Mickle Trafford,2,2,"DM, UM",lines genuinely span both ELRs - no fix needed
+375,"CMP1, SNJ",NW3029,Sandbach North Jn to Northwich West Jn,6,6,"Cll, For, OF, U&D MB, U&D PLAT, U&DMB",junk entries - parsing artifacts
+381,"HNO, HWG",NW3035,Hartford West Jn to Oakleigh Sidings (Winnington Branch),3,3,"D&UEG, D&UG, D&UWG",multi-ELR duplication - needs diagram review
+421,"CBC1, CGJ7",NW4001,Preston Ribble Jn to Cove L.C.,4,4,"DM, U&DGL, UM, UPL",multi-ELR duplication - needs diagram review
+431,"CGJ7, WCM1",NW4001,Preston Ribble Jn to Cove L.C.,13,13,"DM, M&C, NEW, P1, P2, P3, P4, P5, P6, P7, P8, SN, UM",multi-ELR duplication - needs diagram review
+433,"KMG1, WCM1",NW4001,Preston Ribble Jn to Cove L.C.,5,5,"ON ARR, UM, UP ARR, UPL, USN",multi-ELR duplication - needs diagram review
+434,"KMG1, KMG2, WCM1",NW4001,Preston Ribble Jn to Cove L.C.,4,8,"DD, DM, UA, UM",multi-ELR duplication - needs diagram review
+443,"KBS1, PBN",NW4007,Kirkham North Jn. to Blackpool South,7,7,"DFy, DL, P1, P2, P3, UFy, UL",multi-ELR duplication - needs diagram review
+465,"CBC1, CGJ7",NW4033,Carnforth North Jn to Carlisle South Jn (via Barrow),7,7,"DFG, DM, P1, P2, U&DF, U&DGL, UM",multi-ELR duplication - needs diagram review
+466,"CBC1, SJC",NW4033,Carnforth North Jn to Carlisle South Jn (via Barrow),4,4,"DFG, DM, DSS, UM",multi-ELR duplication - needs diagram review
+473,"CBC1, RDK1",NW4033,Carnforth North Jn to Carlisle South Jn (via Barrow),2,2,"DM, UM",lines genuinely span both ELRs - no fix needed
+487,"CBC1, CBC2",NW4033,Carnforth North Jn to Carlisle South Jn (via Barrow),5,5,"D&U, OM, P1, P2, UM",multi-ELR duplication - needs diagram review
+491,"CBC2, CBC3",NW4033,Carnforth North Jn to Carlisle South Jn (via Barrow),3,3,"D&U PT, OM, UM",multi-ELR duplication - needs diagram review
+496,"CBC3, CGJ7",NW4033,Carnforth North Jn to Carlisle South Jn (via Barrow),8,8,"DM, DM&C, DTG, ONG, U&D NEW, UM&C, UNG, UTG",multi-ELR duplication - needs diagram review
+531,"CMP1, CMP2",NW5001,Crewe North Jn to Manchester Piccadilly,5,5,"DHV, DM, U&D Ch, UHV, UM",multi-ELR duplication - needs diagram review
+535,"CMP2, LMD1, LMD2, LMD3, LMD4",NW5001,Crewe North Jn to Manchester Piccadilly,16,64,"ARR, CMP2, DEP, DEP/REC, LMD1, LMD2, LMD3, LMD4, LMD5, LMD6, LMD8, NOTE, OF, U&DG, UF, WPL",junk entries - parsing artifacts
+543,"NBS, NBS1",NW5008,Norton Bridge to Stone Jn,3,3,"DNB, NBEC, UNB",multi-ELR duplication - needs diagram review
+544,"NBS, NBS1",NW5008,Norton Bridge to Stone Jn,4,4,"DNB, P1, P2, UNB",multi-ELR duplication - needs diagram review
+552,"CMD1, CMD2",NW5009,Colwich Jn to Cheadle Hulme,6,6,"DM, P1, P2, P3, P4, UM",multi-ELR duplication - needs diagram review
+555,"CMD1, MCH",NW5009,Colwich Jn to Cheadle Hulme,7,7,"MD6001, MD6002, OSI, P1, P2, P3, USt",multi-ELR duplication - needs diagram review
+560,"SCQ1, SCQ2, SCQ3",NW5010,Glebe Street Jn to Caldon Quarry,2,4,"U&DB, U&DC",lines genuinely span both ELRs - no fix needed
+566,"AMJ, DJO1, DJO2",NW5013,Denton Jn to Ashton Moss North Jn,2,4,"Fold, NOTE",junk entries - parsing artifacts
+569,"GBN, GBS1, HAJ",NW5015,Hadfield to Ardwick Jn.,3,6,"D&U PL, DM, UM",multi-ELR duplication - needs diagram review
+570,"AYS, HAJ",NW5015,Hadfield to Ardwick Jn.,4,4,"DG, DM, UAS, UM",multi-ELR duplication - needs diagram review
+574,"GBN, GBS1, GBS2, SAJ",NW5021,Guide Bridge West Jn to Stalybridge,6,18,"DH, Down, For, NOTE, OF, UH",junk entries - parsing artifacts
+575,"GBS1, GBS2, SAJ",NW5021,Guide Bridge West Jn to Stalybridge,1,2,NOTE,junk entries - parsing artifacts
+601,"CMP2, COL",NW6001,Manchester Piccadilly East Jn. to Euxton Jn.,10,10,"DE, DF, DOX, DS, ES, Im, MG, UF, UOX, US",multi-ELR duplication - needs diagram review
+604,"COL, DSE",NW6001,Manchester Piccadilly East Jn. to Euxton Jn.,4,4,"DB, DCM, UB, UCM",multi-ELR duplication - needs diagram review
+605,"MVE1, OLW",NW6001,Manchester Piccadilly East Jn to Euxton Jn,3,3,"DB, U&DB, UB",multi-ELR duplication - needs diagram review
+608,"BBB, MVE1, MVE2",NW6001,Manchester Piccadilly East Jn to Euxton Jn,8,16,"DB, DD, MU, P1, P2, P5, UB, UD",multi-ELR duplication - needs diagram review
+612,"MAJ, TPS1, TPS2, TPS3",NW6003,Castlefield Jn to Allerton Jn,9,27,"CD, DC, DEP 1, DEP 2, ELRs, M.I.F.T, PL, TPS, UC",junk entries - parsing artifacts
+613,"MAJ, TPS2",NW6003,Castlefield Jn. to Allerton Jn.,3,3,"DC, Ml, UC",multi-ELR duplication - needs diagram review
+617,"AHX, MAJ",NW6003,Castlefield Jn to Allerton Jn,7,7,"DHC, DM, P1, P2, P3, UHC, UM",multi-ELR duplication - needs diagram review
+621,"MVE1, MVM",NW6005,Manchester Victoria East Jn. to Windsor Bridge South Jn.,4,4,"DRF, DRS, URF, URS",multi-ELR duplication - needs diagram review
+629,"WBS1, WBS2",NW6009,Windsor Bridge North Jn to Southport,6,6,"DA, DH, P1, P2, UA, UH",multi-ELR duplication - needs diagram review
+631,"WBS2, WBS3",NW6009,Windsor Bridge North Jn to Southport,4,4,"DM, DPlat, UM, UPlat",multi-ELR duplication - needs diagram review
+634,"HXS3, WBS3",NW6009,Windsor Bridge North Jn to Southport,9,9,"DSpt, DW, NOTE, P3, P4, P5, P6, USpt, UW",junk entries - parsing artifacts
+640,"WKL1, WKL2",NW6015,Wigan Wallgate to Headbolt Lane,4,4,"DL, P1, P2, UL",multi-ELR duplication - needs diagram review
+662,"MVE1, MVM",NW7001,Manchester Victoria West Jn to Hebden Bridge,6,6,"DRS, Deal, F5, ORF, URF, URS",multi-ELR duplication - needs diagram review
+663,"MPR1, MVM",NW7001,Manchester Victoria West Jn to Hebden Bridge,7,7,"DR, DRF, DRS, NOTE, UR, URF, URS",junk entries - parsing artifacts
+664,"MPR1, MVN2",NW7001,Manchester Victoria West Jn to Hebden Bridge,8,8,"DB, DG, DPL, DR, GMC, UB, UPL, UR",multi-ELR duplication - needs diagram review
+675,"CEH, CPL1, CPL2, CSD",NW7005,Castleton East Jn. to Hopwood G.F.,6,18,"CEH, CPl1, CPl2, East, U&D TS, U&DG",junk entries - parsing artifacts
+682,"FHR1, FHR2",NW7009,Farington Curve Jn. to Hall Royd Jn. (East Lanes lines),2,2,"DEL, UEL",lines genuinely span both ELRs - no fix needed
+683,"FHR3, FHR4",NW7009,Farington Curve Jn. to Hall Royd Jn. (East Lanes lines),2,2,"DEL, UEL",lines genuinely span both ELRs - no fix needed
+686,"FHR4, FHR5",NW7009,Farington Curve Jn to Hall Royd Jn (East Lanes lines),13,13,"AS, BBS3, BBS4, DEL, FHR4, FHR5, KSS, OS, P1, P2, P3, P4, UEL",junk entries - parsing artifacts
+689,"FHR5, FHR6",NW7009,Farington Curve Jn. to Hall Royd Jn. (East Lanes lines),2,2,"DEL, UEL",lines genuinely span both ELRs - no fix needed
+695,"DJH, HOK",NW7013,Daisyfield Jn to Hellifield,4,4,"OM, P1, P2, UM",multi-ELR duplication - needs diagram review
+704,"MVL1, MVM",NW7021,Miles Platting Jn to Marsden,16,16,"ARR/DEP, DA, DAb, DB, DR, DRS, For, NOTE, OF, ORF, UA, UAb, UB, UR, URF, URS",junk entries - parsing artifacts
+707,"MVL1, MVL2, MVL3",NW7021,Miles Platting Jn to Marsden,10,20,"DA, DH, P1, P2, P3, P4, P5, U&D ML, UA, UH",multi-ELR duplication - needs diagram review
+713,"PPA1, PPA2, PPA3",NW7025,Philips Park West Jn to Ashburys West Jn,2,4,"Arr / Dep, Ash RS",lines genuinely span both ELRs - no fix needed
+715,"PPP1, PPP2",NW7027,Baguley Fold Jn to Philips Park South Jn,1,1,NOTE,junk entries - parsing artifacts
+741,"HXS1, HXS2",NW8001,Hunts Cross West Jn. to Southport,3,3,"DSP, RS, USP",multi-ELR duplication - needs diagram review
+743,"HXS2, HXS3",NW8001,Hunts Cross West Jn. to Southport,2,2,"DSP, USP",lines genuinely span both ELRs - no fix needed
+744,"BSJ, HXS3",NW8001,Hunts Cross West Jn to Southport,4,4,"D&UG, DC, DSP, USP",multi-ELR duplication - needs diagram review
+750,"MIR1, SIL",NW8003,Paradise Jn to James Street (Stock Interchange I Holding Line),4,4,"DWK, P2, P3, UWK",multi-ELR duplication - needs diagram review
+752,"SJO1, SJO2",NW8005,Sandhills Jn to Ormskirk,4,4,"DH, DO, UH, UO",multi-ELR duplication - needs diagram review
+755,"HXS3, NMM",NW8007,Bootle Jn. to Aintree Emergency G.F.,5,5,"DC, DSP, Edge, Hill, UR",multi-ELR duplication - needs diagram review
+756,"AFL, NMB",NW8007,Bootle Jn. to Aintree Emergency G.F.,2,2,"DC, If",lines genuinely span both ELRs - no fix needed
+759,"WJK, WKL2",NW8009,Walton Jn to Headbolt Lane,10,10,"Arr & Dep, CD, D&U, DHB, HBS, NOTE, P1, P2, P3, UHB",junk entries - parsing artifacts
+761,"MIR1, MIR2",NW8011,Mann Island Jn to West Kirby (via Loop),6,6,"DWK, LOOP, P2, P3, SI / HL, UWK",multi-ELR duplication - needs diagram review
+762,"CWK1, MIR2",NW8011,Mann Island Jn. to West Kirby (Via Loop),2,2,"DWK, UWK",lines genuinely span both ELRs - no fix needed
+765,"BOS, CWK3",NW8011,Mann Island Jn. to West Kirby (Via Loop),2,2,"DWK, UWK",lines genuinely span both ELRs - no fix needed
+769,"CRR2, MIR2",NW8013,Canning Street Jn. to Hooton South Jn.,3,3,"DC, DUCS, UC",multi-ELR duplication - needs diagram review
+772,"BEN, CWK3",NW8015,Bidston East Jn. to New Brighton (New Brighton lines),2,2,"DNB, UNB",lines genuinely span both ELRs - no fix needed
+774,"CCS1, CCS2",NW8017,Canning Street North to Rock Ferry South Jn.,1,1,DC,lines genuinely span both ELRs - no fix needed
+798,"DWS, MAS",NW9001,Dore West Jn to Edgeley Jn No.1 (Hope Valley lines),5,5,"DHV, OM, OS, UHV, UM",multi-ELR duplication - needs diagram review
+803,"MAS, TTA1",NW9001,Dore West Jn to Edgeley Jn No.1 (Hope Valley lines),8,8,"D&UC, D&UG, DM, MU, P1, P2, RO1, UM",multi-ELR duplication - needs diagram review
+804,"NMC1, TTA1",NW9001,Dore West Jn to Edgeley Jn No.1 (Hope Valley lines),6,6,"DM, DRm, IQ, UGL, UM, URm",multi-ELR duplication - needs diagram review
+805,"HGC, NMC1",NW9001,Dore West Jn to Edgeley Jn No.1 (Hope Valley lines),8,8,"DCL, DHV, DM, LL, U&DC, U&DHV, UHV, UM",multi-ELR duplication - needs diagram review
+806,"BEJ, HGC",NW9001,Dore West Jn to Edgeley Jn No.1 (Hope Valley lines),7,7,"DB, DHV, P1, P2, U&DHV, UB, UHV",multi-ELR duplication - needs diagram review
+814,"CNB1, CNB2, CNB3",NW9005,Chinley North Jn to Buxton,1,2,D&UG,lines genuinely span both ELRs - no fix needed
+815,"CNB3, CNB4",NW9005,Chinley North Jn to Buxton,4,4,"D&UH, Ej, HS, U&DGR",multi-ELR duplication - needs diagram review
+820,"TTA1, TTA2",NW9007,New Mills South Jn to Ashburys East Jn,2,2,"DRB, URB",lines genuinely span both ELRs - no fix needed
+822,"RYH1, RYH2",NW9011,Romiley Jn to Hyde Jn,8,8,"DRm, DWB, ORB, P1, P2, URB, URm, UWB",multi-ELR duplication - needs diagram review
+824,"GMC, WJP1",NW9013,Woodley Jn to Bred bury Sidings,4,4,"DN RB, East, Hyde, UP RB",multi-ELR duplication - needs diagram review
+826,"NMC1, NMC2, WJP1",NW9017,Hazel Grove High Level Jn to Northenden Jn,2,4,"High, U&DC",lines genuinely span both ELRs - no fix needed
+856,"SAC, SKW1",NW9901,Gargrave to Carlisle South Jn,5,5,"CD, OM, P1, P2, UM",multi-ELR duplication - needs diagram review
+858,"AQL, SAC",NW9901,Gargrave to Carlisle South Jn,4,4,"DM, P1, P2, UM",multi-ELR duplication - needs diagram review
+865,"SAC, WAR",NW9901,Gargrave to Carlisle South Jn,3,3,"D&UTS, DM, UM",multi-ELR duplication - needs diagram review
+871,"NEC2, SAC",NW9901,Gargrave to Carlisle South Jn,7,7,"DMid, DN, ONG, U&DN, UMid, UN, UNG",multi-ELR duplication - needs diagram review
+872,"CGJ7, NEC2",NW9901,Gargrave to Carlisle South Jn,3,3,"DNG, U&DN, UNG",multi-ELR duplication - needs diagram review
+876,"SJC, SKW1",NW9903,Settle Jn to Carnforth Station Jn,2,2,"DB, UB",lines genuinely span both ELRs - no fix needed
+877,"CEC, SJC",NW9903,Settle Jn to Carnforth Station Jn,2,2,"DB, UB",lines genuinely span both ELRs - no fix needed
+878,"EDE, WAR",NW9907,Warcop to Appleby,1,1,D&UTS,lines genuinely span both ELRs - no fix needed
