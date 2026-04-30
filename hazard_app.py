@@ -464,6 +464,7 @@ def load_line_names():
         return None
     try:
         df = pd.read_csv(csv_path, encoding='utf-8-sig')
+        df = df[df['full_name'].notna()]
         return df
     except Exception:
         return None
@@ -2172,7 +2173,7 @@ else:
                 sa_btn = st.button("📐  Sectional Appendix", key="swp_sa_btn")
                 if sa_btn:
                     # Find matching line_names rows for worksite ELR(s) and mileage
-                    sa_pages = set()
+                    sa_pages_by_doc = {}
                     sa_source_docs = set()
                     if ln_df is not None and not ln_df.empty and swp_from_dec is not None and swp_to_dec is not None:
                         sa_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
@@ -2205,41 +2206,45 @@ else:
                                 (ln_df['mileage_to_ch'] >= q_from_ch)
                             ]
                             for _, row in matches.iterrows():
-                                if pd.notna(row.get('source_page')):
-                                    sa_pages.add(int(row['source_page']))
-                                if pd.notna(row.get('source_doc')):
-                                    sa_source_docs.add(str(row['source_doc']))
+                                if pd.notna(row.get('source_page')) and pd.notna(row.get('source_doc')):
+                                    doc_name = str(row['source_doc'])
+                                    sa_source_docs.add(doc_name)
+                                    if doc_name not in sa_pages_by_doc:
+                                        sa_pages_by_doc[doc_name] = set()
+                                    sa_pages_by_doc[doc_name].add(int(row['source_page']))
+
+                    # Determine which PDF to use and only use pages from that doc
+                    sa_pdf_path = None
+                    sa_pdf_dir = os.path.join(os.path.dirname(__file__), 'data', 'sectional_appendix')
+                    sa_matched_doc = None
+                    for doc_name in sa_source_docs:
+                        if 'London North Western (North)' in doc_name:
+                            sa_pdf_path = os.path.join(sa_pdf_dir, 'London North Western (North) Sectional Appendix March 2026.pdf')
+                            sa_matched_doc = doc_name
+                            break
+                    sa_pages = sa_pages_by_doc.get(sa_matched_doc, set()) if sa_matched_doc else set()
 
                     if not sa_pages:
                         st.info("No Sectional Appendix pages found for this worksite.")
+                    elif sa_pdf_path is None or not os.path.exists(sa_pdf_path):
+                        st.warning("Sectional Appendix PDF not available for this region.")
                     else:
-                        # Map source_doc to local PDF path
-                        sa_pdf_path = None
-                        sa_pdf_dir = os.path.join(os.path.dirname(__file__), 'data', 'sectional_appendix')
-                        for doc_name in sa_source_docs:
-                            if 'London North Western (North)' in doc_name:
-                                sa_pdf_path = os.path.join(sa_pdf_dir, 'London North Western (North) Sectional Appendix March 2026.pdf')
-                                break
-
-                        if sa_pdf_path is None or not os.path.exists(sa_pdf_path):
-                            st.warning("Sectional Appendix PDF not available for this region.")
-                        else:
-                            import fitz as _fitz
-                            sa_doc = _fitz.open(sa_pdf_path)
-                            sa_out = _fitz.open()
-                            for pg in sorted(sa_pages):
-                                if 0 < pg <= len(sa_doc):
-                                    sa_out.insert_pdf(sa_doc, from_page=pg-1, to_page=pg-1)
-                            sa_bytes = sa_out.tobytes()
-                            sa_out.close()
-                            sa_doc.close()
-                            sa_ts = datetime.now().strftime("%Y%m%d_%H%M")
-                            st.download_button(
-                                f"⬇  Download {len(sa_pages)} SA pages",
-                                data=sa_bytes,
-                                file_name=f"Sectional_Appendix_{swp_elr_from}_{sa_ts}.pdf",
-                                mime="application/pdf",
-                                key="swp_sa_dl")
+                        import fitz as _fitz
+                        sa_doc = _fitz.open(sa_pdf_path)
+                        sa_out = _fitz.open()
+                        for pg in sorted(sa_pages):
+                            if 0 < pg <= len(sa_doc):
+                                sa_out.insert_pdf(sa_doc, from_page=pg-1, to_page=pg-1)
+                        sa_bytes = sa_out.tobytes()
+                        sa_out.close()
+                        sa_doc.close()
+                        sa_ts = datetime.now().strftime("%Y%m%d_%H%M")
+                        st.download_button(
+                            f"⬇  Download {len(sa_pages)} SA pages",
+                            data=sa_bytes,
+                            file_name=f"Sectional_Appendix_{swp_elr_from}_{sa_ts}.pdf",
+                            mime="application/pdf",
+                            key="swp_sa_dl")
             with gen_col4:
                 sd_btn = st.button("🚦  Signal Diagram", key="swp_sd_btn")
                 if sd_btn:
@@ -2247,12 +2252,17 @@ else:
                     dl_signals = st.session_state.get('daily_list_signals')
 
                     if dl_signals and sig_ref_df is not None and not sig_ref_df.empty:
-                        # Daily list mode: look up signal refs
+                        # Daily list mode: look up signal refs (one doc per signal to avoid duplicates)
                         for sig in dl_signals:
                             sig_matches = sig_ref_df[sig_ref_df['signal_ref'] == sig]
+                            first_doc = None
                             for _, row in sig_matches.iterrows():
                                 if pd.notna(row.get('diagram_doc')) and pd.notna(row.get('diagram_page')):
-                                    sd_pages.append((str(row['diagram_doc']), int(row['diagram_page'])))
+                                    doc = str(row['diagram_doc'])
+                                    if first_doc is None:
+                                        first_doc = doc
+                                    if doc == first_doc:
+                                        sd_pages.append((doc, int(row['diagram_page'])))
                         # Fill in pages between min and max per diagram_doc
                         if sd_pages:
                             from collections import defaultdict
@@ -3300,7 +3310,7 @@ else:
                             ex_elr = extra.get('elr', '').strip().upper()
                             if ex_elr and ex_elr not in pk_elrs:
                                 pk_elrs.append(ex_elr)
-                        pk_sa_pages = set()
+                        pk_sa_pages_by_doc = {}
                         pk_sa_docs = set()
                         for elr_q in pk_elrs:
                             q_f, q_t = pk_from_ch, pk_to_ch
@@ -3313,18 +3323,22 @@ else:
                                         q_t = int(et)*80 + round((et-int(et))*10000/22)
                                     break
                             for _, row in ln_df[(ln_df['elr']==elr_q)&(ln_df['mileage_from_ch']<=q_t)&(ln_df['mileage_to_ch']>=q_f)].iterrows():
-                                if pd.notna(row.get('source_page')):
-                                    pk_sa_pages.add(int(row['source_page']))
-                                if pd.notna(row.get('source_doc')):
-                                    pk_sa_docs.add(str(row['source_doc']))
-                        if pk_sa_pages:
-                            pk_sa_path = None
-                            pk_sa_dir = os.path.join(os.path.dirname(__file__), 'data', 'sectional_appendix')
-                            for dn in pk_sa_docs:
-                                if 'London North Western (North)' in dn:
-                                    pk_sa_path = os.path.join(pk_sa_dir, 'London North Western (North) Sectional Appendix March 2026.pdf')
-                                    break
-                            if pk_sa_path and os.path.exists(pk_sa_path):
+                                if pd.notna(row.get('source_page')) and pd.notna(row.get('source_doc')):
+                                    dn = str(row['source_doc'])
+                                    pk_sa_docs.add(dn)
+                                    if dn not in pk_sa_pages_by_doc:
+                                        pk_sa_pages_by_doc[dn] = set()
+                                    pk_sa_pages_by_doc[dn].add(int(row['source_page']))
+                        pk_sa_path = None
+                        pk_sa_dir = os.path.join(os.path.dirname(__file__), 'data', 'sectional_appendix')
+                        pk_sa_matched_doc = None
+                        for dn in pk_sa_docs:
+                            if 'London North Western (North)' in dn:
+                                pk_sa_path = os.path.join(pk_sa_dir, 'London North Western (North) Sectional Appendix March 2026.pdf')
+                                pk_sa_matched_doc = dn
+                                break
+                        pk_sa_pages = pk_sa_pages_by_doc.get(pk_sa_matched_doc, set()) if pk_sa_matched_doc else set()
+                        if pk_sa_pages and pk_sa_path and os.path.exists(pk_sa_path):
                                 sa_src = _fitz.open(pk_sa_path)
                                 for pg in sorted(pk_sa_pages):
                                     if 0 < pg <= len(sa_src):
@@ -3336,9 +3350,14 @@ else:
                     pk_dl_sigs = st.session_state.get('daily_list_signals')
                     if pk_dl_sigs and sig_ref_df is not None and not sig_ref_df.empty:
                         for sig in pk_dl_sigs:
+                            first_doc = None
                             for _, row in sig_ref_df[sig_ref_df['signal_ref']==sig].iterrows():
                                 if pd.notna(row.get('diagram_doc')) and pd.notna(row.get('diagram_page')):
-                                    pk_sd_pages.append((str(row['diagram_doc']), int(row['diagram_page'])))
+                                    doc = str(row['diagram_doc'])
+                                    if first_doc is None:
+                                        first_doc = doc
+                                    if doc == first_doc:
+                                        pk_sd_pages.append((doc, int(row['diagram_page'])))
                         if pk_sd_pages:
                             from collections import defaultdict
                             dpgs = defaultdict(set)
