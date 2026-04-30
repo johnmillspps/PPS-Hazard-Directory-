@@ -4996,86 +4996,6 @@
 36156,TS,Through Siding,CMP2,NW5001,14902.0,14957.0,London North Western (North) Sectional Appendix March 2026.pdf,534,2026-04-30T10:47:49.403070
 36157,UF,Up Fast,CMP2,NW5001,14902.0,14957.0,London North Western (North) Sectional Appendix March 2026.pdf,534,2026-04-30T10:47:49.403070
 36158,US,Up Slow,CMP2,NW5001,14902.0,14957.0,London North Western (North) Sectional Appendix March 2026.pdf,534,2026-04-30T10:47:49.403070
-36159,ARR,Arrival Road,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36160,CMP2,"Fast lines, Slow lines, Goods lines,",CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36161,DEP,Departure Road,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36162,DEP/REC,Departure I Reception Line,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36163,LMD1,"Up Shed, Down Shed, all Carriage Shed",CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36164,LMD2,Up Freight Sidings,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36165,LMD3,North Shed Sidings,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36166,LMD4,South Shed Sidings,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36167,LMD5,Hyde Road Sidings,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36168,LMD6,"Washing Plant Line, New Washer Road",CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36169,LMD8,"Arrival Road and Departure Road, including",CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36170,NOTE,TPWS not provided on the Down Goods,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36171,OF,,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36172,U&DG,Up & Down Goods,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36173,UF,Up Fast,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36174,WPL,Washing Plant Line,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36175,ARR,Arrival Road,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36176,CMP2,"Fast lines, Slow lines, Goods lines,",LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36177,DEP,Departure Road,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36178,DEP/REC,Departure I Reception Line,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36179,LMD1,"Up Shed, Down Shed, all Carriage Shed",LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36180,LMD2,Up Freight Sidings,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36181,LMD3,North Shed Sidings,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36182,LMD4,South Shed Sidings,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36183,LMD5,Hyde Road Sidings,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36184,LMD6,"Washing Plant Line, New Washer Road",LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36185,LMD8,"Arrival Road and Departure Road, including",LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36186,NOTE,TPWS not provided on the Down Goods,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36187,OF,,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36188,U&DG,Up & Down Goods,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36189,UF,Up Fast,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36190,WPL,Washing Plant Line,LMD1,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36191,ARR,Arrival Road,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36192,CMP2,"Fast lines, Slow lines, Goods lines,",LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36193,DEP,Departure Road,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36194,DEP/REC,Departure I Reception Line,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36195,LMD1,"Up Shed, Down Shed, all Carriage Shed",LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36196,LMD2,Up Freight Sidings,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36197,LMD3,North Shed Sidings,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36198,LMD4,South Shed Sidings,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36199,LMD5,Hyde Road Sidings,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36200,LMD6,"Washing Plant Line, New Washer Road",LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36201,LMD8,"Arrival Road and Departure Road, including",LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36202,NOTE,TPWS not provided on the Down Goods,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36203,OF,,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36204,U&DG,Up & Down Goods,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36205,UF,Up Fast,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36206,WPL,Washing Plant Line,LMD2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36207,ARR,Arrival Road,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36208,CMP2,"Fast lines, Slow lines, Goods lines,",LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36209,DEP,Departure Road,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36210,DEP/REC,Departure I Reception Line,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36211,LMD1,"Up Shed, Down Shed, all Carriage Shed",LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36212,LMD2,Up Freight Sidings,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36213,LMD3,North Shed Sidings,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36214,LMD4,South Shed Sidings,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36215,LMD5,Hyde Road Sidings,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36216,LMD6,"Washing Plant Line, New Washer Road",LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36217,LMD8,"Arrival Road and Departure Road, including",LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36218,NOTE,TPWS not provided on the Down Goods,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36219,OF,,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36220,U&DG,Up & Down Goods,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36221,UF,Up Fast,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36222,WPL,Washing Plant Line,LMD3,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36223,ARR,Arrival Road,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36224,CMP2,"Fast lines, Slow lines, Goods lines,",LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36225,DEP,Departure Road,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36226,DEP/REC,Departure I Reception Line,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36227,LMD1,"Up Shed, Down Shed, all Carriage Shed",LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36228,LMD2,Up Freight Sidings,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36229,LMD3,North Shed Sidings,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36230,LMD4,South Shed Sidings,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36231,LMD5,Hyde Road Sidings,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36232,LMD6,"Washing Plant Line, New Washer Road",LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36233,LMD8,"Arrival Road and Departure Road, including",LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36234,NOTE,TPWS not provided on the Down Goods,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36235,OF,,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36236,U&DG,Up & Down Goods,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36237,UF,Up Fast,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
-36238,WPL,Washing Plant Line,LMD4,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
 36239,AR Sdg,Ardwick Reception Siding,CMP2,NW5001,15037.0,15070.0,London North Western (North) Sectional Appendix March 2026.pdf,536,2026-04-30T10:47:49.403070
 36240,DG,Down Goods,CMP2,NW5001,15037.0,15070.0,London North Western (North) Sectional Appendix March 2026.pdf,536,2026-04-30T10:47:49.403070
 36241,DS,Down Slow,CMP2,NW5001,15037.0,15070.0,London North Western (North) Sectional Appendix March 2026.pdf,536,2026-04-30T10:47:49.403070
@@ -6363,3 +6283,9 @@
 37526,DN,Down Newcastle,NGD,NW9911,87.0,4769.0,London North Western (North) Sectional Appendix March 2026.pdf,880,2026-04-30T10:47:49.403070
 37527,Rome,,NGD,NW9911,87.0,4769.0,London North Western (North) Sectional Appendix March 2026.pdf,880,2026-04-30T10:47:49.403070
 37528,UN,Up Newcastle,NGD,NW9911,87.0,4769.0,London North Western (North) Sectional Appendix March 2026.pdf,880,2026-04-30T10:47:49.403070
+36159,UF,Up Fast,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,U&DG,Up & Down Goods,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,DEP/REC,Departure I Reception Line,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,WPL,Washing Plant Line,LMD6,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,ARR,Arrival Road,LMD8,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,DEP,Departure Road,LMD8,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
