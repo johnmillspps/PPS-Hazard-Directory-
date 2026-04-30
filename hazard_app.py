@@ -2121,10 +2121,6 @@ else:
             # Complete Pack button (below the row)
             st.markdown("")
             pack_btn = st.button("📦  Download Complete Pack", key="swp_pack_btn")
-
-            # If Complete Pack is clicked, also trigger SWP generation
-            if pack_btn:
-                generate_btn = True
             with gen_col2:
                 haz_pdf_btn = st.button("📋  Hazard Directory & Access Points", key="swp_haz_pdf_btn")
                 if haz_pdf_btn:
@@ -2342,7 +2338,7 @@ else:
                         else:
                             sd_out.close()
 
-            if generate_btn:
+            if generate_btn or pack_btn:
                 import io
                 import tempfile
                 import subprocess
@@ -3234,39 +3230,40 @@ else:
                 if pdf_bytes:
                     st.session_state['swp_pdf_bytes'] = pdf_bytes
 
-                # PRIMARY: PDF
-                if pdf_bytes:
+                if generate_btn:
+                    # PRIMARY: PDF
+                    if pdf_bytes:
+                        st.download_button(
+                            label="\U0001F4C4  Download SWP (PDF)",
+                            data=pdf_bytes,
+                            file_name=f"SWP_{safe_ref}.pdf",
+                            mime="application/pdf",
+                            key="swp_pdf_dl"
+                        )
+
+                    # SECONDARY: Excel backup
                     st.download_button(
-                        label="\U0001F4C4  Download SWP (PDF)",
-                        data=pdf_bytes,
-                        file_name=f"SWP_{safe_ref}.pdf",
-                        mime="application/pdf",
-                        key="swp_pdf_dl"
+                        label="\U0001F4DD  Download SWP (Excel \u2014 editable backup)",
+                        data=xlsx_bytes,
+                        file_name=f"SWP_{safe_ref}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        key="swp_excel_dl"
                     )
 
-                # SECONDARY: Excel backup
-                st.download_button(
-                    label="\U0001F4DD  Download SWP (Excel \u2014 editable backup)",
-                    data=xlsx_bytes,
-                    file_name=f"SWP_{safe_ref}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    key="swp_excel_dl"
-                )
-
-                if pdf_bytes:
-                    st.markdown(f"""
-                    <div class="pps-card pps-card-green" style="margin-top:1rem">
-                      <span class="badge badge-green">&#10003; SWP Generated</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">PDF + Excel ready. Ref: {swp_ref}</span>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.markdown(f"""
-                    <div class="pps-card pps-card-amber" style="margin-top:1rem">
-                      <span class="badge badge-amber">Excel Only</span>
-                      <span style="margin-left:1rem;font-size:0.85rem">PDF conversion not available \u2014 download Excel and print to PDF. Ref: {swp_ref}</span>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    if pdf_bytes:
+                        st.markdown(f"""
+                        <div class="pps-card pps-card-green" style="margin-top:1rem">
+                          <span class="badge badge-green">&#10003; SWP Generated</span>
+                          <span style="margin-left:1rem;font-size:0.85rem">PDF + Excel ready. Ref: {swp_ref}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"""
+                        <div class="pps-card pps-card-amber" style="margin-top:1rem">
+                          <span class="badge badge-amber">Excel Only</span>
+                          <span style="margin-left:1rem;font-size:0.85rem">PDF conversion not available \u2014 download Excel and print to PDF. Ref: {swp_ref}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
 
                 try:
                     import shutil
@@ -3274,14 +3271,14 @@ else:
                 except Exception:
                     pass
 
-                # ── Complete Pack assembly (runs when pack_btn triggered generate_btn) ──
-                if pack_btn and st.session_state.get('swp_pdf_bytes'):
+                # ── Complete Pack assembly ──
+                if pack_btn and pdf_bytes:
                     import fitz as _fitz
                     pack_pdf = _fitz.open()
                     pack_ts = datetime.now().strftime("%Y%m%d_%H%M")
 
                     # 1. SWP PDF
-                    swp_src = _fitz.open(stream=st.session_state['swp_pdf_bytes'], filetype="pdf")
+                    swp_src = _fitz.open(stream=pdf_bytes, filetype="pdf")
                     pack_pdf.insert_pdf(swp_src)
                     swp_src.close()
 
