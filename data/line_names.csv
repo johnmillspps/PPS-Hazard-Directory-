@@ -2906,627 +2906,6 @@
 32711,UC,Up Cambois,,LN706,0.0,262.0,London North Eastern (NCS) Sectional Appendix March 2026.pdf,1021,2026-04-28T02:39:44.087948
 32712,1,Up Slow line,,,,,London North Eastern (NCS) Sectional Appendix March 2026.pdf,1305,2026-04-28T02:40:13.475309
 32713,Ex,West Riding Jn,,,,,London North Eastern (NCS) Sectional Appendix March 2026.pdf,1319,2026-04-28T02:40:14.531890
-33367,on,Trent),,,,,London North Western (South) Sectional Appendix March 2026.pdf,108,2026-04-28T02:41:50.179652
-33368,40,down direction,LEC1,MD101,61.0,68.0,London North Western (South) Sectional Appendix March 2026.pdf,123,2026-04-28T02:41:50.911313
-33369,40,down direction 40 down direction,LEC1,MD101,61.0,68.0,London North Western (South) Sectional Appendix March 2026.pdf,123,2026-04-28T02:41:50.911313
-33370,DE,Down DC Electric,TCB,MD101,90.0,190.0,London North Western (South) Sectional Appendix March 2026.pdf,124,2026-04-28T02:41:50.994513
-33371,UE,Up DC Electric,TCB,MD101,90.0,190.0,London North Western (South) Sectional Appendix March 2026.pdf,124,2026-04-28T02:41:50.994513
-33372,UWL,Up West London,LEC1,MD101,220.0,447.0,London North Western (South) Sectional Appendix March 2026.pdf,125,2026-04-28T02:41:51.102541
-33373,DWL,Down West London,LEC1,MD101,220.0,447.0,London North Western (South) Sectional Appendix March 2026.pdf,125,2026-04-28T02:41:51.102541
-33374,UWR,Up Willesden Relief,LEC1,MD101,220.0,447.0,London North Western (South) Sectional Appendix March 2026.pdf,125,2026-04-28T02:41:51.102541
-33375,DWR,Down Willesden Relief,LEC1,MD101,220.0,447.0,London North Western (South) Sectional Appendix March 2026.pdf,125,2026-04-28T02:41:51.102541
-33376,DG1,UpandDownGoods No .1,WTS,MD101,447.0,535.0,London North Western (South) Sectional Appendix March 2026.pdf,126,2026-04-28T02:41:51.231234
-33377,DG2,UpandDownGoodsNo.2,WTS,MD101,447.0,535.0,London North Western (South) Sectional Appendix March 2026.pdf,126,2026-04-28T02:41:51.231234
-33378,UWR,UpWill esdenRe lief,WTS,MD101,447.0,535.0,London North Western (South) Sectional Appendix March 2026.pdf,126,2026-04-28T02:41:51.231234
-33379,DWR,Down Willesden Relief,WTS,MD101,447.0,535.0,London North Western (South) Sectional Appendix March 2026.pdf,126,2026-04-28T02:41:51.231234
-33380,UHLG,UpHig hLevelG oods,WTS,MD101,447.0,535.0,London North Western (South) Sectional Appendix March 2026.pdf,126,2026-04-28T02:41:51.231234
-33381,DHLG,Down High Level Goods,WTS,MD101,447.0,535.0,London North Western (South) Sectional Appendix March 2026.pdf,126,2026-04-28T02:41:51.231234
-33382,DG1,Up and Down Goods No.1,WTS,MD101,535.0,600.0,London North Western (South) Sectional Appendix March 2026.pdf,127,2026-04-28T02:41:51.337727
-33383,DG2,Up and Down Goods No.2,WTS,MD101,535.0,600.0,London North Western (South) Sectional Appendix March 2026.pdf,127,2026-04-28T02:41:51.337727
-33384,UWR,Up Willesden Relief,WTS,MD101,535.0,600.0,London North Western (South) Sectional Appendix March 2026.pdf,127,2026-04-28T02:41:51.337727
-33385,DWR,Down Willesden Relief,WTS,MD101,535.0,600.0,London North Western (South) Sectional Appendix March 2026.pdf,127,2026-04-28T02:41:51.337727
-33386,DHLG,Up & Down High Level Goods,WTS,MD101,535.0,600.0,London North Western (South) Sectional Appendix March 2026.pdf,127,2026-04-28T02:41:51.337727
-33387,SA,South Arrival Line,WTS,MD101,535.0,600.0,London North Western (South) Sectional Appendix March 2026.pdf,127,2026-04-28T02:41:51.337727
-33388,SD,South Departure Line,WTS,MD101,535.0,600.0,London North Western (South) Sectional Appendix March 2026.pdf,127,2026-04-28T02:41:51.337727
-33389,DWR,Up&DownWillesdenR elief,LEC1,MD101,600.0,640.0,London North Western (South) Sectional Appendix March 2026.pdf,128,2026-04-28T02:41:51.488712
-33390,UWR,UpWillesdenRelief,LEC1,MD101,600.0,640.0,London North Western (South) Sectional Appendix March 2026.pdf,128,2026-04-28T02:41:51.488712
-33391,DWR,DownWill esdenRelief,LEC1,MD101,600.0,640.0,London North Western (South) Sectional Appendix March 2026.pdf,128,2026-04-28T02:41:51.488712
-33392,ND,NorthDepartureL ine,LEC1,MD101,600.0,640.0,London North Western (South) Sectional Appendix March 2026.pdf,128,2026-04-28T02:41:51.488712
-33393,,NorthArrivalLin e,LEC1,MD101,600.0,640.0,London North Western (South) Sectional Appendix March 2026.pdf,128,2026-04-28T02:41:51.488712
-33394,UB,Up Bletchley,LEC1,MD101,3710.0,3743.0,London North Western (South) Sectional Appendix March 2026.pdf,142,2026-04-28T02:41:52.764846
-33395,DB,Down Bletchley,LEC1,MD101,3710.0,3743.0,London North Western (South) Sectional Appendix March 2026.pdf,142,2026-04-28T02:41:52.764846
-33396,DV,Down Vale,LEC1,MD101,3710.0,3743.0,London North Western (South) Sectional Appendix March 2026.pdf,142,2026-04-28T02:41:52.764846
-33397,UV,UpVale,LEC1,MD101,3710.0,3743.0,London North Western (South) Sectional Appendix March 2026.pdf,142,2026-04-28T02:41:52.764846
-33398,DB,Down Bletchley,LEC1,MD101,3743.0,3818.0,London North Western (South) Sectional Appendix March 2026.pdf,143,2026-04-28T02:41:52.877711
-33399,UB,Up Bletchley,LEC1,MD101,3743.0,3818.0,London North Western (South) Sectional Appendix March 2026.pdf,143,2026-04-28T02:41:52.877711
-33400,UF,Up Fast,LEC1,MD101,4229.0,4880.0,London North Western (South) Sectional Appendix March 2026.pdf,147,2026-04-28T02:41:53.283804
-33401,OF,Down Fast,LEC1,MD101,4229.0,4880.0,London North Western (South) Sectional Appendix March 2026.pdf,147,2026-04-28T02:41:53.283804
-33402,UM,Up Main,LEC1,MD101,4229.0,4880.0,London North Western (South) Sectional Appendix March 2026.pdf,147,2026-04-28T02:41:53.283804
-33403,OM,Down Main,LEC1,MD101,4229.0,4880.0,London North Western (South) Sectional Appendix March 2026.pdf,147,2026-04-28T02:41:53.283804
-33404,UN,Up Northampton,LEC1,MD101,4229.0,4880.0,London North Western (South) Sectional Appendix March 2026.pdf,147,2026-04-28T02:41:53.283804
-33405,ON,Down Northampton,LEC1,MD101,4229.0,4880.0,London North Western (South) Sectional Appendix March 2026.pdf,147,2026-04-28T02:41:53.283804
-33406,UN,Up Northampton,LEC1,MD101,6460.0,6600.0,London North Western (South) Sectional Appendix March 2026.pdf,150,2026-04-28T02:41:53.555715
-33407,DN,Down Northampton,LEC1,MD101,6460.0,6600.0,London North Western (South) Sectional Appendix March 2026.pdf,150,2026-04-28T02:41:53.555715
-33408,UC,Up Coventry,LEC2,MD101,6600.0,6699.0,London North Western (South) Sectional Appendix March 2026.pdf,151,2026-04-28T02:41:53.649600
-33409,DTVF,Down Trent Valley Fast,LEC2,MD101,6600.0,6699.0,London North Western (South) Sectional Appendix March 2026.pdf,151,2026-04-28T02:41:53.649600
-33410,UTVF,UpTrentValleyFast,LEC2,MD101,6600.0,6699.0,London North Western (South) Sectional Appendix March 2026.pdf,151,2026-04-28T02:41:53.649600
-33411,VS,UpTrentValleySlo w,LEC2,MD101,6600.0,6699.0,London North Western (South) Sectional Appendix March 2026.pdf,151,2026-04-28T02:41:53.649600
-33412,UN,Up Northampton,LEC2,MD101,6600.0,6699.0,London North Western (South) Sectional Appendix March 2026.pdf,151,2026-04-28T02:41:53.649600
-33413,UTVS,Up Trent Valley Slow,LEC2,MD101,6699.0,6960.0,London North Western (South) Sectional Appendix March 2026.pdf,152,2026-04-28T02:41:53.732254
-33414,UTVF,Up Trent Valley Fast,LEC2,MD101,6699.0,6960.0,London North Western (South) Sectional Appendix March 2026.pdf,152,2026-04-28T02:41:53.732254
-33415,DTVS,Down Trent Valley Slow,LEC2,MD101,6699.0,6960.0,London North Western (South) Sectional Appendix March 2026.pdf,152,2026-04-28T02:41:53.732254
-33416,DTVF,Down Trent Valley Fast,LEC2,MD101,6699.0,6960.0,London North Western (South) Sectional Appendix March 2026.pdf,152,2026-04-28T02:41:53.732254
-33417,VS,UpTrentValleySlo w,LEC2,MD101,6960.0,7100.0,London North Western (South) Sectional Appendix March 2026.pdf,153,2026-04-28T02:41:53.808395
-33418,UTVF,UpTrentValleyFast,LEC2,MD101,6960.0,7100.0,London North Western (South) Sectional Appendix March 2026.pdf,153,2026-04-28T02:41:53.808395
-33419,DTVS,Down Trent Valley Slow,LEC2,MD101,6960.0,7100.0,London North Western (South) Sectional Appendix March 2026.pdf,153,2026-04-28T02:41:53.808395
-33420,DTVF,Down Trent Valley Fast,LEC2,MD101,6960.0,7100.0,London North Western (South) Sectional Appendix March 2026.pdf,153,2026-04-28T02:41:53.808395
-33421,DTV,Down Trent Valley,LEC2,MD101,6960.0,7100.0,London North Western (South) Sectional Appendix March 2026.pdf,153,2026-04-28T02:41:53.808395
-33422,UTVS,Up Trent Valley Slow,LEC2,MD101,7100.0,7360.0,London North Western (South) Sectional Appendix March 2026.pdf,154,2026-04-28T02:41:53.890198
-33423,UTVF,Up Trent Valley Fast,LEC2,MD101,7100.0,7360.0,London North Western (South) Sectional Appendix March 2026.pdf,154,2026-04-28T02:41:53.890198
-33424,DTV,Down Trent Valley,LEC2,MD101,7100.0,7360.0,London North Western (South) Sectional Appendix March 2026.pdf,154,2026-04-28T02:41:53.890198
-33425,DTV,Down Trent Valley,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33426,DTVS,Down Trent Valley Slow,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33427,DTVF,Down Trent Valley Fast,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33428,UTVS,Up Trent Valley Slow,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33429,UTVF,Up Trent Valley Fast,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33430,UPL,Down & Up Platform Line,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33431,DH,Down Hinckley,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33432,UH,Up Hinckley,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33433,UR,Up Relief,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33434,DA,Down Arley,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33435,UA,UpArley,LEC2,MD101,7360.0,7770.0,London North Western (South) Sectional Appendix March 2026.pdf,155,2026-04-28T02:41:53.992046
-33436,DTVS,Down Trent Valley Slow,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33437,DTVF,Down Trent Valley Fast,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33438,UTVS,Up Trent Valley Slow,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33439,UTVF,Up Trent Valley Fast,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33440,UPL,Down & Up Platform Line,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33441,DNC,Down Nuneaton Chord,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33442,UNC,Up Nuneaton Chord,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33443,UR,Up Relief,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33444,UA,Up Arley,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33445,DA,Down Arley,LEC2,MD101,7770.0,8125.0,London North Western (South) Sectional Appendix March 2026.pdf,156,2026-04-28T02:41:54.095366
-33446,UTVS,Up Trent Valley Slow,LEC2,MD101,8125.0,8513.0,London North Western (South) Sectional Appendix March 2026.pdf,157,2026-04-28T02:41:54.195042
-33447,UTVF,Up Trent Valley Fast,LEC2,MD101,8125.0,8513.0,London North Western (South) Sectional Appendix March 2026.pdf,157,2026-04-28T02:41:54.195042
-33448,DTVF,Down Trent Valley Fast,LEC2,MD101,8125.0,8513.0,London North Western (South) Sectional Appendix March 2026.pdf,157,2026-04-28T02:41:54.195042
-33449,DTVS,Down Trent Valley Slow,LEC2,MD101,8125.0,8513.0,London North Western (South) Sectional Appendix March 2026.pdf,157,2026-04-28T02:41:54.195042
-33450,DTVF,Down Trent Valley Fast,LEC2,MD101,8513.0,9080.0,London North Western (South) Sectional Appendix March 2026.pdf,158,2026-04-28T02:41:54.287137
-33451,DTVS,Down Trent Valley Slow,LEC2,MD101,8513.0,9080.0,London North Western (South) Sectional Appendix March 2026.pdf,158,2026-04-28T02:41:54.287137
-33452,UTVS,Up Trent Valley Slow,LEC2,MD101,8513.0,9080.0,London North Western (South) Sectional Appendix March 2026.pdf,158,2026-04-28T02:41:54.287137
-33453,UTVF,Up Trent Valley Fast,LEC2,MD101,8513.0,9080.0,London North Western (South) Sectional Appendix March 2026.pdf,158,2026-04-28T02:41:54.287137
-33454,DTVF,Down Trent Valley Fast,LEC2,MD101,9180.0,9330.0,London North Western (South) Sectional Appendix March 2026.pdf,159,2026-04-28T02:41:54.379319
-33455,DTVS,Down Trent Valley Slow,LEC2,MD101,9180.0,9330.0,London North Western (South) Sectional Appendix March 2026.pdf,159,2026-04-28T02:41:54.379319
-33456,UTVS,Up Trent Valley Slow,LEC2,MD101,9180.0,9330.0,London North Western (South) Sectional Appendix March 2026.pdf,159,2026-04-28T02:41:54.379319
-33457,UTVF,Up Trent Valley Fast,LEC2,MD101,9180.0,9330.0,London North Western (South) Sectional Appendix March 2026.pdf,159,2026-04-28T02:41:54.379319
-33458,UF,Up Fast,HNR,MD105,4509.0,5035.0,London North Western (South) Sectional Appendix March 2026.pdf,162,2026-04-28T02:41:54.584486
-33459,DF,Down Fast,HNR,MD105,4509.0,5035.0,London North Western (South) Sectional Appendix March 2026.pdf,162,2026-04-28T02:41:54.584486
-33460,SH,South Headshunt,HNR,MD105,4509.0,5035.0,London North Western (South) Sectional Appendix March 2026.pdf,162,2026-04-28T02:41:54.584486
-33461,NGS,Northampton Gateway South,HNR,MD105,4509.0,5035.0,London North Western (South) Sectional Appendix March 2026.pdf,162,2026-04-28T02:41:54.584486
-33462,ON,Down Northampton,HNR,MD105,5240.0,5291.0,London North Western (South) Sectional Appendix March 2026.pdf,164,2026-04-28T02:41:54.777854
-33463,UN,Up Northampton,HNR,MD105,5240.0,5291.0,London North Western (South) Sectional Appendix March 2026.pdf,164,2026-04-28T02:41:54.777854
-33464,DTS,Up & Down Through Sidings,HNR,MD105,5240.0,5291.0,London North Western (South) Sectional Appendix March 2026.pdf,164,2026-04-28T02:41:54.777854
-33465,DNF,Down Northampton Fast,HNR,MD105,5240.0,5291.0,London North Western (South) Sectional Appendix March 2026.pdf,164,2026-04-28T02:41:54.777854
-33466,DNF,Down Northampton Fast,HNR,MD105,5291.0,5394.0,London North Western (South) Sectional Appendix March 2026.pdf,165,2026-04-28T02:41:54.870043
-33467,UNF,Up Northampton Fast,HNR,MD105,5291.0,5394.0,London North Western (South) Sectional Appendix March 2026.pdf,165,2026-04-28T02:41:54.870043
-33468,DS,Up & Down Slow,HNR,MD105,5291.0,5394.0,London North Western (South) Sectional Appendix March 2026.pdf,165,2026-04-28T02:41:54.870043
-33469,DGL,Down Goods Loop,HNR,MD105,5291.0,5394.0,London North Western (South) Sectional Appendix March 2026.pdf,165,2026-04-28T02:41:54.870043
-33470,DGL,Down Goods Loop 823 metres,HNR,MD105,5291.0,5394.0,London North Western (South) Sectional Appendix March 2026.pdf,165,2026-04-28T02:41:54.870043
-33471,UN,Up Northampton,HNR,MD105,6576.0,6694.0,London North Western (South) Sectional Appendix March 2026.pdf,168,2026-04-28T02:41:55.133761
-33472,DN,Down Northampton,HNR,MD105,6576.0,6694.0,London North Western (South) Sectional Appendix March 2026.pdf,168,2026-04-28T02:41:55.133761
-33473,DNL,Down North London DC Electric,CWJ,MD120,116.0,241.0,London North Western (South) Sectional Appendix March 2026.pdf,169,2026-04-28T02:41:55.228511
-33474,UNL,Up North London DC Electric,CWJ,MD120,116.0,241.0,London North Western (South) Sectional Appendix March 2026.pdf,169,2026-04-28T02:41:55.228511
-33475,DSA,Up & Down St Albans,WSA,MD130,15.0,1380.0,London North Western (South) Sectional Appendix March 2026.pdf,178,2026-04-28T02:41:56.047462
-33476,DSA,Up & Down St Albans,WSA,MD130,33.0,440.0,London North Western (South) Sectional Appendix March 2026.pdf,179,2026-04-28T02:41:56.136152
-33477,DHLG,Down High Level Goods,WCL,MD136,80.0,100.0,London North Western (South) Sectional Appendix March 2026.pdf,183,2026-04-28T02:41:56.326800
-33478,UHLG,Up High Level Goods,WCL,MD136,80.0,100.0,London North Western (South) Sectional Appendix March 2026.pdf,183,2026-04-28T02:41:56.326800
-33479,HLG,Up & Down High Level Goods,WCL,MD136,80.0,100.0,London North Western (South) Sectional Appendix March 2026.pdf,183,2026-04-28T02:41:56.326800
-33480,UCL,Up Carriage Line,WCL,MD136,80.0,100.0,London North Western (South) Sectional Appendix March 2026.pdf,183,2026-04-28T02:41:56.326800
-33481,DCL,Down Carriage Line,WCL,MD136,80.0,100.0,London North Western (South) Sectional Appendix March 2026.pdf,183,2026-04-28T02:41:56.326800
-33482,DWR,Down Willesden Relief,WCL,MD136,80.0,100.0,London North Western (South) Sectional Appendix March 2026.pdf,183,2026-04-28T02:41:56.326800
-33483,UWR,Up Willesden Relief,WCL,MD136,80.0,100.0,London North Western (South) Sectional Appendix March 2026.pdf,183,2026-04-28T02:41:56.326800
-33484,NAL,North Arrival Line,WGS4,MD136,93.0,3470.0,London North Western (South) Sectional Appendix March 2026.pdf,187,2026-04-28T02:41:56.623685
-33485,NOL,North Departure Line,WGS4,MD136,93.0,3470.0,London North Western (South) Sectional Appendix March 2026.pdf,187,2026-04-28T02:41:56.623685
-33486,DHLG,Down High Level Goods,UHL,MD137,80.0,91.0,London North Western (South) Sectional Appendix March 2026.pdf,188,2026-04-28T02:41:56.675189
-33487,UHLG,Up High Level Goods,UHL,MD137,80.0,91.0,London North Western (South) Sectional Appendix March 2026.pdf,188,2026-04-28T02:41:56.675189
-33488,HLG,Up & Down High Level Goods,UHL,MD137,80.0,91.0,London North Western (South) Sectional Appendix March 2026.pdf,188,2026-04-28T02:41:56.675189
-33489,UCL,Up Carriage Line,UHL,MD137,80.0,91.0,London North Western (South) Sectional Appendix March 2026.pdf,188,2026-04-28T02:41:56.675189
-33490,DCL,Down Carriage Line,UHL,MD137,80.0,91.0,London North Western (South) Sectional Appendix March 2026.pdf,188,2026-04-28T02:41:56.675189
-33491,DWR,Down Willesden Relief,UHL,MD137,80.0,91.0,London North Western (South) Sectional Appendix March 2026.pdf,188,2026-04-28T02:41:56.675189
-33492,UWR,Up Willesden Relief,UHL,MD137,80.0,91.0,London North Western (South) Sectional Appendix March 2026.pdf,188,2026-04-28T02:41:56.675189
-33493,DHLG,Up&DownHighLevelGoods,UHL,MD137,115.0,128.0,London North Western (South) Sectional Appendix March 2026.pdf,189,2026-04-28T02:41:56.782814
-33494,UCL,Up Carriage Line,UHL,MD137,115.0,128.0,London North Western (South) Sectional Appendix March 2026.pdf,189,2026-04-28T02:41:56.782814
-33495,DCL,Down Carriage Line,UHL,MD137,115.0,128.0,London North Western (South) Sectional Appendix March 2026.pdf,189,2026-04-28T02:41:56.782814
-33496,UWR,Up Willesden Relief,UHL,MD137,115.0,128.0,London North Western (South) Sectional Appendix March 2026.pdf,189,2026-04-28T02:41:56.782814
-33497,DWR,Down Willesden Relief,UHL,MD137,115.0,128.0,London North Western (South) Sectional Appendix March 2026.pdf,189,2026-04-28T02:41:56.782814
-33498,SDL,SouthDepartureL ine,WEF1,MD137,21.0,23.0,London North Western (South) Sectional Appendix March 2026.pdf,191,2026-04-28T02:41:57.016505
-33499,L,SouthArri valLin e,WEF1,MD137,21.0,23.0,London North Western (South) Sectional Appendix March 2026.pdf,191,2026-04-28T02:41:57.016505
-33500,NDL,North Departure Line,WEF1,MD137,67.0,93.0,London North Western (South) Sectional Appendix March 2026.pdf,192,2026-04-28T02:41:57.125577
-33501,NAL,North Arrival Line,WEF1,MD137,67.0,93.0,London North Western (South) Sectional Appendix March 2026.pdf,192,2026-04-28T02:41:57.125577
-33502,DV,Up & Down Vale,BLT2,MD140,24.0,97.0,London North Western (South) Sectional Appendix March 2026.pdf,194,2026-04-28T02:41:57.349728
-33503,DV,Up & Down Vale,BBM,MD140,97.0,341.0,London North Western (South) Sectional Appendix March 2026.pdf,195,2026-04-28T02:41:57.431934
-33504,DM,Down Main,BBM,MD140,975.0,1285.0,London North Western (South) Sectional Appendix March 2026.pdf,199,2026-04-28T02:41:57.772869
-33505,UM,Up Main,BBM,MD140,975.0,1285.0,London North Western (South) Sectional Appendix March 2026.pdf,199,2026-04-28T02:41:57.772869
-33506,UCL,Up City line,KGC,MD155,0.0,410.0,London North Western (South) Sectional Appendix March 2026.pdf,203,2026-04-28T02:41:58.014620
-33507,DNL,DownNorth Lo ndon,KGC,MD155,0.0,410.0,London North Western (South) Sectional Appendix March 2026.pdf,203,2026-04-28T02:41:58.014620
-33508,UNL,Up North London,KGC,MD155,0.0,410.0,London North Western (South) Sectional Appendix March 2026.pdf,203,2026-04-28T02:41:58.014620
-33509,UWL,Up West London line,WLL,MD166,335.0,448.0,London North Western (South) Sectional Appendix March 2026.pdf,210,2026-04-28T02:41:58.320469
-33510,OWL,Down West London line,WLL,MD166,335.0,448.0,London North Western (South) Sectional Appendix March 2026.pdf,210,2026-04-28T02:41:58.320469
-33511,UWL,Up West London,WLL,MD166,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,211,2026-04-28T02:41:58.413452
-33512,OWL,Down West London,WLL,MD166,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,211,2026-04-28T02:41:58.413452
-33513,UWR,Up Willesden Relief,WLL,MD166,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,211,2026-04-28T02:41:58.413452
-33514,DWR,Down Willesden Relief,WLL,MD166,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,211,2026-04-28T02:41:58.413452
-33515,SW,Up & Down South West,WLL,MD166,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,211,2026-04-28T02:41:58.413452
-33516,UHL,Up High Level,WLL,MD166,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,211,2026-04-28T02:41:58.413452
-33517,L,DownHighLevel,WLL,MD166,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,211,2026-04-28T02:41:58.413452
-33518,UWL,Up West London,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33519,OWL,Down West London,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33520,SW,Up & Down South West,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33521,SWG,Up & Down South West Goods,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33522,SWTS,South West Through Siding,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33523,DSW,Down South West,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33524,USW,Up South West,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33525,SWSdgs,South West Sidings,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33526,DNL,Down North London,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33527,UNL,Up North London,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33528,UWR,Up Willesden Relief,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33529,DWR,Down Willesden Relief,LLG,MD166,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,212,2026-04-28T02:41:58.500734
-33530,UWL,Up West London,WFL,MD166,41.0,41.0,London North Western (South) Sectional Appendix March 2026.pdf,213,2026-04-28T02:41:58.586939
-33531,DWL,Down West London,WFL,MD166,41.0,41.0,London North Western (South) Sectional Appendix March 2026.pdf,213,2026-04-28T02:41:58.586939
-33532,UWR,UpWil les denRe lief,WFL,MD166,41.0,41.0,London North Western (South) Sectional Appendix March 2026.pdf,213,2026-04-28T02:41:58.586939
-33533,DG1,Up & Down Goods No.1,LLG,MD166,105.0,115.0,London North Western (South) Sectional Appendix March 2026.pdf,215,2026-04-28T02:41:58.769189
-33534,DG2,Up & Down Goods No.2,LLG,MD166,105.0,115.0,London North Western (South) Sectional Appendix March 2026.pdf,215,2026-04-28T02:41:58.769189
-33535,R,UpWil les denRelie f,LLG,MD166,142.0,158.0,London North Western (South) Sectional Appendix March 2026.pdf,216,2026-04-28T02:41:58.855907
-33536,DWR,DownWil le sdenRel ief,LLG,MD166,142.0,158.0,London North Western (South) Sectional Appendix March 2026.pdf,216,2026-04-28T02:41:58.855907
-33537,DHLG,Up & Down High Level Goods,LLG,MD166,142.0,158.0,London North Western (South) Sectional Appendix March 2026.pdf,216,2026-04-28T02:41:58.855907
-33538,SDL,South Departure Line,LLG,MD166,142.0,158.0,London North Western (South) Sectional Appendix March 2026.pdf,216,2026-04-28T02:41:58.855907
-33539,SAL,South Arrival Line,LLG,MD166,142.0,158.0,London North Western (South) Sectional Appendix March 2026.pdf,216,2026-04-28T02:41:58.855907
-33540,DWR,Up & Down Willesden Relief,LLG,MD166,163.0,199.0,London North Western (South) Sectional Appendix March 2026.pdf,217,2026-04-28T02:41:58.959454
-33541,DWR,Down Willesden Relief,LLG,MD166,163.0,199.0,London North Western (South) Sectional Appendix March 2026.pdf,217,2026-04-28T02:41:58.959454
-33542,UWR,Up Willesden Relief,LLG,MD166,163.0,199.0,London North Western (South) Sectional Appendix March 2026.pdf,217,2026-04-28T02:41:58.959454
-33543,UWL,Up West London,WLL,MD167,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,219,2026-04-28T02:41:59.122852
-33544,OWL,Down West London,WLL,MD167,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,219,2026-04-28T02:41:59.122852
-33545,UHL,Up High Level,WLL,MD167,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,219,2026-04-28T02:41:59.122852
-33546,SW,Up & Down South West,WLL,MD167,467.0,472.0,London North Western (South) Sectional Appendix March 2026.pdf,219,2026-04-28T02:41:59.122852
-33547,UWL,Up West London,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33548,OWL,Down West London,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33549,SW,Up & Down South West,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33550,SWG,Up & Down South West Goods,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33551,SWTS,South West Through Siding,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33552,DSW,Down South West,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33553,USW,Up South West,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33554,DNL,Down North London,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33555,UNL,Up North London,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33556,R,UpWil les denRe lief,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33557,DWR,DownWil le sdenReli ef,WAW,MD167,493.0,499.0,London North Western (South) Sectional Appendix March 2026.pdf,220,2026-04-28T02:41:59.226805
-33558,TS,SouthWestThrough Siding,BOK4,MD167,63.0,64.0,London North Western (South) Sectional Appendix March 2026.pdf,221,2026-04-28T02:41:59.314883
-33559,DSW,DownSouth West,BOK4,MD167,63.0,64.0,London North Western (South) Sectional Appendix March 2026.pdf,221,2026-04-28T02:41:59.314883
-33560,USW,UpSouthWest,BOK4,MD167,63.0,64.0,London North Western (South) Sectional Appendix March 2026.pdf,221,2026-04-28T02:41:59.314883
-33561,DWR,Down Willesden Relief,ACW,MD170,0.0,35.0,London North Western (South) Sectional Appendix March 2026.pdf,222,2026-04-28T02:41:59.397765
-33562,UWR,Up Willesden Relief,ACW,MD170,0.0,35.0,London North Western (South) Sectional Appendix March 2026.pdf,222,2026-04-28T02:41:59.397765
-33563,UN,Up Nuneaton,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33564,ON,Down Nuneaton,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33565,UA,UpArley,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33566,DA,Down Arley,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33567,UTVS,Up Trent Valley Slow,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33568,UTVF,Up Trent Valley Fast,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33569,DTVF,Down Trent Valley Fast,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33570,DTVS,Down Trent Valley Slow,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33571,UPL,Down & Up Platform Line,PVS,MD232,5.0,184.0,London North Western (South) Sectional Appendix March 2026.pdf,227,2026-04-28T02:41:59.674405
-33572,UTVS,Up Trent Valley Slow,NMA,MD232,785.0,845.0,London North Western (South) Sectional Appendix March 2026.pdf,228,2026-04-28T02:41:59.768341
-33573,UTVF,Up Trent Valley Fast,NMA,MD232,785.0,845.0,London North Western (South) Sectional Appendix March 2026.pdf,228,2026-04-28T02:41:59.768341
-33574,DTVF,Down Trent Valley Fast,NMA,MD232,785.0,845.0,London North Western (South) Sectional Appendix March 2026.pdf,228,2026-04-28T02:41:59.768341
-33575,DTVS,Down Trent Valley Slow,NMA,MD232,785.0,845.0,London North Western (South) Sectional Appendix March 2026.pdf,228,2026-04-28T02:41:59.768341
-33576,UPL,Down & Up Platform Line,NMA,MD232,785.0,845.0,London North Western (South) Sectional Appendix March 2026.pdf,228,2026-04-28T02:41:59.768341
-33577,UN,Up Northampton,RBS1,MD301,6658.0,7228.0,London North Western (South) Sectional Appendix March 2026.pdf,230,2026-04-28T02:41:59.938351
-33578,UC,Up Coventry,RBS1,MD301,6658.0,7228.0,London North Western (South) Sectional Appendix March 2026.pdf,230,2026-04-28T02:41:59.938351
-33579,UTVS,Up Trent Valley Slow,RBS1,MD301,6658.0,7228.0,London North Western (South) Sectional Appendix March 2026.pdf,230,2026-04-28T02:41:59.938351
-33580,UTVF,Up Trent Valley Fast,RBS1,MD301,6658.0,7228.0,London North Western (South) Sectional Appendix March 2026.pdf,230,2026-04-28T02:41:59.938351
-33581,DTVS,Down Trent Valley Slow,RBS1,MD301,6658.0,7228.0,London North Western (South) Sectional Appendix March 2026.pdf,230,2026-04-28T02:41:59.938351
-33582,DTVF,Down Trent Valley Fast,RBS1,MD301,6658.0,7228.0,London North Western (South) Sectional Appendix March 2026.pdf,230,2026-04-28T02:41:59.938351
-33583,SN,South Neck,RBS1,MD301,7228.0,7541.0,London North Western (South) Sectional Appendix March 2026.pdf,231,2026-04-28T02:42:00.029781
-33584,UB,Up Bedworth,RBS1,MD301,7228.0,7541.0,London North Western (South) Sectional Appendix March 2026.pdf,231,2026-04-28T02:42:00.029781
-33585,DB,Down Bedworth,RBS1,MD301,7228.0,7541.0,London North Western (South) Sectional Appendix March 2026.pdf,231,2026-04-28T02:42:00.029781
-33586,DRS,Down Refuge Siding. 60 metres (66 yards),RBS1,MD301,7825.0,8320.0,London North Western (South) Sectional Appendix March 2026.pdf,233,2026-04-28T02:42:00.198249
-33587,UC,Up Coventry,RBS1,MD301,7825.0,8320.0,London North Western (South) Sectional Appendix March 2026.pdf,233,2026-04-28T02:42:00.198249
-33588,UC,Up Coventry,RBS1,MD301,8320.0,8450.0,London North Western (South) Sectional Appendix March 2026.pdf,234,2026-04-28T02:42:00.249154
-33589,UC,Up Coventry,RBS1,MD301,8450.0,8780.0,London North Western (South) Sectional Appendix March 2026.pdf,235,2026-04-28T02:42:00.338188
-33590,DGJ,Down Grand Junction,RBS1,MD301,8450.0,8780.0,London North Western (South) Sectional Appendix March 2026.pdf,235,2026-04-28T02:42:00.338188
-33591,UC,Up Coventry,RBS1,MD301,8780.0,8963.0,London North Western (South) Sectional Appendix March 2026.pdf,236,2026-04-28T02:42:00.440172
-33592,DCH,Up & Down Camp Hill,RBS1,MD301,8780.0,8963.0,London North Western (South) Sectional Appendix March 2026.pdf,236,2026-04-28T02:42:00.440172
-33593,UDby,Up Derby,RBS1,MD301,8780.0,8963.0,London North Western (South) Sectional Appendix March 2026.pdf,236,2026-04-28T02:42:00.440172
-33594,DDby,Down Derby,RBS1,MD301,8780.0,8963.0,London North Western (South) Sectional Appendix March 2026.pdf,236,2026-04-28T02:42:00.440172
-33595,DCH,Down Camp Hill,RBS1,MD301,8780.0,8963.0,London North Western (South) Sectional Appendix March 2026.pdf,236,2026-04-28T02:42:00.440172
-33596,DDby,Up & Down Derby,RBS1,MD301,8780.0,8963.0,London North Western (South) Sectional Appendix March 2026.pdf,236,2026-04-28T02:42:00.440172
-33597,UC,Up Coventry,RBS1,MD301,8963.0,8995.0,London North Western (South) Sectional Appendix March 2026.pdf,237,2026-04-28T02:42:00.512295
-33598,DDby,Up & Down Derby,RBS1,MD301,8963.0,8995.0,London North Western (South) Sectional Appendix March 2026.pdf,237,2026-04-28T02:42:00.512295
-33599,DDby,Down Derby,RBS1,MD301,8963.0,8995.0,London North Western (South) Sectional Appendix March 2026.pdf,237,2026-04-28T02:42:00.512295
-33600,UV,Up Vauxhall,RBS1,MD301,8963.0,8995.0,London North Western (South) Sectional Appendix March 2026.pdf,237,2026-04-28T02:42:00.512295
-33601,DV,Down Vauxhall,RBS1,MD301,8963.0,8995.0,London North Western (South) Sectional Appendix March 2026.pdf,237,2026-04-28T02:42:00.512295
-33602,DVC,Down Vauxhall Chord,RBS1,MD301,8963.0,8995.0,London North Western (South) Sectional Appendix March 2026.pdf,237,2026-04-28T02:42:00.512295
-33603,UDby,Up Derby,RBS1,MD301,8963.0,8995.0,London North Western (South) Sectional Appendix March 2026.pdf,237,2026-04-28T02:42:00.512295
-33604,UC,Up Coventry,RBS1,MD301,8995.0,9033.0,London North Western (South) Sectional Appendix March 2026.pdf,238,2026-04-28T02:42:00.606192
-33605,UDby,Up Derby,RBS1,MD301,8995.0,9033.0,London North Western (South) Sectional Appendix March 2026.pdf,238,2026-04-28T02:42:00.606192
-33606,DDby,Down Derby,RBS1,MD301,8995.0,9033.0,London North Western (South) Sectional Appendix March 2026.pdf,238,2026-04-28T02:42:00.606192
-33607,UST,Up Stour,RBS2,MD301,17.0,9033.0,London North Western (South) Sectional Appendix March 2026.pdf,239,2026-04-28T02:42:00.694288
-33608,DST,Down Stour,RBS2,MD301,17.0,9033.0,London North Western (South) Sectional Appendix March 2026.pdf,239,2026-04-28T02:42:00.694288
-33609,UST,Up Stour,RBS2,MD301,19.0,161.0,London North Western (South) Sectional Appendix March 2026.pdf,240,2026-04-28T02:42:00.790066
-33610,DST,Down Stour,RBS2,MD301,19.0,161.0,London North Western (South) Sectional Appendix March 2026.pdf,240,2026-04-28T02:42:00.790066
-33611,DMLL,Up & Down Monument Lane Loop,RBS2,MD301,19.0,161.0,London North Western (South) Sectional Appendix March 2026.pdf,240,2026-04-28T02:42:00.790066
-33612,CWBP,Carriage Washer By Pass Line,RBS2,MD301,162.0,215.0,London North Western (South) Sectional Appendix March 2026.pdf,241,2026-04-28T02:42:00.886765
-33613,DSC,Down Soho Curve,RBS2,MD301,162.0,215.0,London North Western (South) Sectional Appendix March 2026.pdf,241,2026-04-28T02:42:00.886765
-33614,DSGL,Down Soho Goods Loop,RBS2,MD301,162.0,215.0,London North Western (South) Sectional Appendix March 2026.pdf,241,2026-04-28T02:42:00.886765
-33615,USS,Up Stourbridge,RBS2,MD301,215.0,360.0,London North Western (South) Sectional Appendix March 2026.pdf,242,2026-04-28T02:42:00.990030
-33616,DSB,Down Stourbridge,RBS2,MD301,215.0,360.0,London North Western (South) Sectional Appendix March 2026.pdf,242,2026-04-28T02:42:00.990030
-33617,USH,Up Snow Hill,RBS2,MD301,215.0,360.0,London North Western (South) Sectional Appendix March 2026.pdf,242,2026-04-28T02:42:00.990030
-33618,DSH,Down Snow Hill,RBS2,MD301,215.0,360.0,London North Western (South) Sectional Appendix March 2026.pdf,242,2026-04-28T02:42:00.990030
-33619,USG,Up Stour Goods: 512 metres (559 yards),RBS2,MD301,620.0,690.0,London North Western (South) Sectional Appendix March 2026.pdf,244,2026-04-28T02:42:01.192765
-33620,DSG,Down Stour Goods: 694 metres (758 yards),RBS2,MD301,620.0,690.0,London North Western (South) Sectional Appendix March 2026.pdf,244,2026-04-28T02:42:01.192765
-33621,UST,Up Stour,RBS2,MD301,980.0,1060.0,London North Western (South) Sectional Appendix March 2026.pdf,246,2026-04-28T02:42:01.371777
-33622,DST,Down Stour,RBS2,MD301,980.0,1060.0,London North Western (South) Sectional Appendix March 2026.pdf,246,2026-04-28T02:42:01.371777
-33623,UST,Up Stour,RBS3,MD301,1060.0,1340.0,London North Western (South) Sectional Appendix March 2026.pdf,247,2026-04-28T02:42:01.461000
-33624,DST,Down Stour,RBS3,MD301,1060.0,1340.0,London North Western (South) Sectional Appendix March 2026.pdf,247,2026-04-28T02:42:01.461000
-33625,UM,Up Wellington,RBS3,MD301,1060.0,1340.0,London North Western (South) Sectional Appendix March 2026.pdf,247,2026-04-28T02:42:01.461000
-33626,OM,Down Wellington,RBS3,MD301,1060.0,1340.0,London North Western (South) Sectional Appendix March 2026.pdf,247,2026-04-28T02:42:01.461000
-33627,L,DownBushburyG oods Loop:,RBS3,MD301,1060.0,1340.0,London North Western (South) Sectional Appendix March 2026.pdf,247,2026-04-28T02:42:01.461000
-33628,UP,Up Penkridge,RBS3,MD301,1060.0,1340.0,London North Western (South) Sectional Appendix March 2026.pdf,247,2026-04-28T02:42:01.461000
-33629,DP,Down Penkridge,RBS3,MD301,1060.0,1340.0,London North Western (South) Sectional Appendix March 2026.pdf,247,2026-04-28T02:42:01.461000
-33630,UP,Up Penkridge,RBS3,MD301,1340.0,1872.0,London North Western (South) Sectional Appendix March 2026.pdf,248,2026-04-28T02:42:01.546339
-33631,DP,Down Penkridge,RBS3,MD301,1340.0,1872.0,London North Western (South) Sectional Appendix March 2026.pdf,248,2026-04-28T02:42:01.546339
-33632,DG,Down Gloucester,BAG1,MD306,5.0,3405.0,London North Western (South) Sectional Appendix March 2026.pdf,258,2026-04-28T02:42:01.735558
-33633,UG,Up Gloucester,BAG1,MD306,5.0,3405.0,London North Western (South) Sectional Appendix March 2026.pdf,258,2026-04-28T02:42:01.735558
-33634,DG,Down Gloucester,BAG1,MD306,3405.0,3470.0,London North Western (South) Sectional Appendix March 2026.pdf,259,2026-04-28T02:42:01.829010
-33635,UG,Up Gloucester,BAG1,MD306,3405.0,3470.0,London North Western (South) Sectional Appendix March 2026.pdf,259,2026-04-28T02:42:01.829010
-33636,ULC,Up Lifford Curve,BAG1,MD306,3668.0,3800.0,London North Western (South) Sectional Appendix March 2026.pdf,261,2026-04-28T02:42:02.000346
-33637,DLC,Down Lifford Curve,BAG1,MD306,3668.0,3800.0,London North Western (South) Sectional Appendix March 2026.pdf,261,2026-04-28T02:42:02.000346
-33638,UGS,Up Gloucester Slow,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33639,UGF,Up Gloucester Fast,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33640,DGF,Down Gloucester Fast,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33641,DGS,Down Gloucester Slow,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33642,UGS,Up Gloucester Slow,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33643,UGF,Up Gloucester Fast,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33644,DG,Down Gloucester,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33645,OGG,DownGlo ucesterGoods,BAG2,MD306,3880.0,4000.0,London North Western (South) Sectional Appendix March 2026.pdf,264,2026-04-28T02:42:02.294861
-33646,DGG,Down Gloucester Goods,BAG2,MD306,4000.0,4080.0,London North Western (South) Sectional Appendix March 2026.pdf,265,2026-04-28T02:42:02.371110
-33647,UG,Up Gloucester,BAG2,MD306,4080.0,4193.0,London North Western (South) Sectional Appendix March 2026.pdf,266,2026-04-28T02:42:02.458527
-33648,UBL,UpBromsgroveLoop,BAG2,MD306,4412.0,4490.0,London North Western (South) Sectional Appendix March 2026.pdf,268,2026-04-28T02:42:02.579593
-33649,UBN,UpBromsgr oveNeck,BAG2,MD306,4412.0,4490.0,London North Western (South) Sectional Appendix March 2026.pdf,268,2026-04-28T02:42:02.579593
-33650,DBL,DownBro msgroveLoop,BAG2,MD306,4412.0,4490.0,London North Western (South) Sectional Appendix March 2026.pdf,268,2026-04-28T02:42:02.579593
-33651,USGL,Up Spetchley Goods Loop,BAG2,MD306,5280.0,5491.0,London North Western (South) Sectional Appendix March 2026.pdf,271,2026-04-28T02:42:02.834692
-33652,DAGL,Down Abbotswood Goods Loop,BAG2,MD306,5280.0,5491.0,London North Western (South) Sectional Appendix March 2026.pdf,271,2026-04-28T02:42:02.834692
-33653,UAC,Up Abbotswood Curve,BAG2,MD306,5491.0,5920.0,London North Western (South) Sectional Appendix March 2026.pdf,272,2026-04-28T02:42:02.917494
-33654,DAC,Down Abbotswood Curve,BAG2,MD306,5491.0,5920.0,London North Western (South) Sectional Appendix March 2026.pdf,272,2026-04-28T02:42:02.917494
-33655,DAGL,Down Abbotswood Goods Loop,BAG2,MD306,5491.0,5920.0,London North Western (South) Sectional Appendix March 2026.pdf,272,2026-04-28T02:42:02.917494
-33656,UEGL,Up Eckington Goods Loop,BAG2,MD306,5920.0,6026.0,London North Western (South) Sectional Appendix March 2026.pdf,273,2026-04-28T02:42:02.994100
-33657,UGS,Up Gloucester Slow,BEA,MD310,4138.0,4260.0,London North Western (South) Sectional Appendix March 2026.pdf,275,2026-04-28T02:42:03.174160
-33658,DR,Down Redditch,BEA,MD310,4138.0,4260.0,London North Western (South) Sectional Appendix March 2026.pdf,275,2026-04-28T02:42:03.174160
-33659,UR,Up Redditch,BEA,MD310,4138.0,4260.0,London North Western (South) Sectional Appendix March 2026.pdf,275,2026-04-28T02:42:03.174160
-33660,NECK,Down Washwood Heath Neck,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33661,GDS,Down Derby Goods,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33662,FAST,Down Derby Fast,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33663,FAST,Up Derby Fast,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33664,SLOW,UP Derby Slow,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33665,DGJ,Down Grand Junction,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33666,UV,Up Vauxhall,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33667,DV,Down Vauxhall,SAS,MD315,120.0,176.0,London North Western (South) Sectional Appendix March 2026.pdf,279,2026-04-28T02:42:03.447536
-33668,DV,Down Vauxhall,PBJ,MD320,136.0,266.0,London North Western (South) Sectional Appendix March 2026.pdf,283,2026-04-28T02:42:03.773665
-33669,UV,Up Vauxhall,PBJ,MD320,136.0,266.0,London North Western (South) Sectional Appendix March 2026.pdf,283,2026-04-28T02:42:03.773665
-33670,DGJ,Down Grand Junction,PBJ,MD320,136.0,266.0,London North Western (South) Sectional Appendix March 2026.pdf,283,2026-04-28T02:42:03.773665
-33671,UGJ,Up Grand Junction,PBJ,MD320,136.0,266.0,London North Western (South) Sectional Appendix March 2026.pdf,283,2026-04-28T02:42:03.773665
-33672,US,Up Sutton,PBJ,MD320,136.0,266.0,London North Western (South) Sectional Appendix March 2026.pdf,283,2026-04-28T02:42:03.773665
-33673,DS,Down Sutton,PBJ,MD320,136.0,266.0,London North Western (South) Sectional Appendix March 2026.pdf,283,2026-04-28T02:42:03.773665
-33674,UPB,Up Perry Barr,PBJ,MD320,266.0,335.0,London North Western (South) Sectional Appendix March 2026.pdf,284,2026-04-28T02:42:03.860984
-33675,DPB,Down Perry Barr,PBJ,MD320,266.0,335.0,London North Western (South) Sectional Appendix March 2026.pdf,284,2026-04-28T02:42:03.860984
-33676,DPBGL,Down Perry Barr Goods Loop,PBJ,MD320,266.0,335.0,London North Western (South) Sectional Appendix March 2026.pdf,284,2026-04-28T02:42:03.860984
-33677,DPBGL,Down Perry Barr Goods Loop,PBJ,MD320,335.0,558.0,London North Western (South) Sectional Appendix March 2026.pdf,285,2026-04-28T02:42:03.954505
-33678,UBGL,Up Besco! Goods Loop,PBJ,MD320,623.0,667.0,London North Western (South) Sectional Appendix March 2026.pdf,287,2026-04-28T02:42:04.119367
-33679,DBGL,Down Besco! Goods Loop,PBJ,MD320,623.0,667.0,London North Western (South) Sectional Appendix March 2026.pdf,287,2026-04-28T02:42:04.119367
-33680,DLSN,Down Local Shunting Neck,PBJ,MD320,623.0,667.0,London North Western (South) Sectional Appendix March 2026.pdf,287,2026-04-28T02:42:04.119367
-33681,UBGL,Up Bescot Goods Loop,PBJ,MD320,667.0,715.0,London North Western (South) Sectional Appendix March 2026.pdf,288,2026-04-28T02:42:04.221182
-33682,UGJ,Up Grand Junction,PBJ,MD320,667.0,715.0,London North Western (South) Sectional Appendix March 2026.pdf,288,2026-04-28T02:42:04.221182
-33683,DBGL,Down Besco! Goods Loop,PBJ,MD320,667.0,715.0,London North Western (South) Sectional Appendix March 2026.pdf,288,2026-04-28T02:42:04.221182
-33684,DLSN,Down Local Shunting Neck,PBJ,MD320,667.0,715.0,London North Western (South) Sectional Appendix March 2026.pdf,288,2026-04-28T02:42:04.221182
-33685,UW,Up Walsall,PBJ,MD320,667.0,715.0,London North Western (South) Sectional Appendix March 2026.pdf,288,2026-04-28T02:42:04.221182
-33686,DW,Down Walsall,PBJ,MD320,667.0,715.0,London North Western (South) Sectional Appendix March 2026.pdf,288,2026-04-28T02:42:04.221182
-33687,DD,Down Darlaston,PBJ,MD320,715.0,930.0,London North Western (South) Sectional Appendix March 2026.pdf,289,2026-04-28T02:42:04.313451
-33688,UD,Up Darlaston,PBJ,MD320,715.0,930.0,London North Western (South) Sectional Appendix March 2026.pdf,289,2026-04-28T02:42:04.313451
-33689,DGJ,Down Grand Junction,PBJ,MD320,715.0,930.0,London North Western (South) Sectional Appendix March 2026.pdf,289,2026-04-28T02:42:04.313451
-33690,UGJ,Up Grand Junction,PBJ,MD320,715.0,930.0,London North Western (South) Sectional Appendix March 2026.pdf,289,2026-04-28T02:42:04.313451
-33691,DSH,Down Snow Hill,SSP,MD325,175.0,231.0,London North Western (South) Sectional Appendix March 2026.pdf,292,2026-04-28T02:42:04.554582
-33692,USH,Up Snow Hill,SSP,MD325,175.0,231.0,London North Western (South) Sectional Appendix March 2026.pdf,292,2026-04-28T02:42:04.554582
-33693,DPBGL,Down Perry Barr Goods Loop,PBL,MD325,0.0,140.0,London North Western (South) Sectional Appendix March 2026.pdf,293,2026-04-28T02:42:04.638747
-33694,USC,Up Soho Curve,RBS2,MD330,0.0,21.0,London North Western (South) Sectional Appendix March 2026.pdf,295,2026-04-28T02:42:04.723294
-33695,DSGL,Down Soho Goods Loop,RBS2,MD330,0.0,21.0,London North Western (South) Sectional Appendix March 2026.pdf,295,2026-04-28T02:42:04.723294
-33696,CWBP,Carriage Washer By Pass Line,RBS2,MD330,0.0,21.0,London North Western (South) Sectional Appendix March 2026.pdf,295,2026-04-28T02:42:04.723294
-33697,DGJ,Down Grand Junction,SSP,MD335,0.0,39.0,London North Western (South) Sectional Appendix March 2026.pdf,296,2026-04-28T02:42:04.802934
-33698,UGJ,Up Grand Junction,SSP,MD335,0.0,39.0,London North Western (South) Sectional Appendix March 2026.pdf,296,2026-04-28T02:42:04.802934
-33699,DGJ,Down Grand Junction,ALC1,MD340,14.0,120.0,London North Western (South) Sectional Appendix March 2026.pdf,297,2026-04-28T02:42:04.890003
-33700,UGJ,Up Grand Junction,ALC1,MD340,14.0,120.0,London North Western (South) Sectional Appendix March 2026.pdf,297,2026-04-28T02:42:04.890003
-33701,US,Up Sutton,ALC2,MD340,340.0,542.0,London North Western (South) Sectional Appendix March 2026.pdf,299,2026-04-28T02:42:05.057141
-33702,DS,Down Sutton,ALC2,MD340,340.0,542.0,London North Western (South) Sectional Appendix March 2026.pdf,299,2026-04-28T02:42:05.057141
-33703,USP,Up Sutton Park,ALC2,MD340,340.0,542.0,London North Western (South) Sectional Appendix March 2026.pdf,299,2026-04-28T02:42:05.057141
-33704,DSP,Down Sutton Park,ALC2,MD340,340.0,542.0,London North Western (South) Sectional Appendix March 2026.pdf,299,2026-04-28T02:42:05.057141
-33705,US,Up Sutton,ALC2,MD340,542.0,1040.0,London North Western (South) Sectional Appendix March 2026.pdf,300,2026-04-28T02:42:05.139172
-33706,OS,Down Sutton,ALC2,MD340,542.0,1040.0,London North Western (South) Sectional Appendix March 2026.pdf,300,2026-04-28T02:42:05.139172
-33707,US,Up Sutton,BJW3,MD340,1040.0,1390.0,London North Western (South) Sectional Appendix March 2026.pdf,301,2026-04-28T02:42:05.241488
-33708,OS,Down Sutton,BJW3,MD340,1040.0,1390.0,London North Western (South) Sectional Appendix March 2026.pdf,301,2026-04-28T02:42:05.241488
-33709,US,Up Sutton,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33710,DS,Down Sutton,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33711,DTVS,Down Trent Valley Slow,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33712,DTVF,Down Trent Valley Fast,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33713,UTVF,Up Trent Valley Fast,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33714,UTVS,Up Trent Valley Slow,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33715,UL,Up Lichfield,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33716,DL,Down Lichfield,BJW3,MD340,1390.0,1594.0,London North Western (South) Sectional Appendix March 2026.pdf,302,2026-04-28T02:42:05.343618
-33717,UDS,Up Dudley Siding,BJW2,MD345,35.0,494.0,London North Western (South) Sectional Appendix March 2026.pdf,304,2026-04-28T02:42:05.508027
-33718,DDRR,Down Dudley Run Round Line,BJW2,MD345,35.0,494.0,London North Western (South) Sectional Appendix March 2026.pdf,304,2026-04-28T02:42:05.508027
-33719,UWF,Up Walsall Fast,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33720,DWF,Down Walsall Fast,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33721,UWS,Up Walsall Slow,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33722,DWS,Down Walsall Slow,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33723,UW,Up Walsall,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33724,OW,Down Walsall,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33725,DSP,Down Sutton Park,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33726,USP,Up Sutton Park,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33727,UC,Up Cannock,RRN1,MD345,80.0,555.0,London North Western (South) Sectional Appendix March 2026.pdf,305,2026-04-28T02:42:05.589858
-33728,UC,Up Cannock,RRN2,MD345,680.0,1110.0,London North Western (South) Sectional Appendix March 2026.pdf,309,2026-04-28T02:42:05.894820
-33729,UST,Up Stour,PJW,MD365,0.0,139.0,London North Western (South) Sectional Appendix March 2026.pdf,313,2026-04-28T02:42:06.121073
-33730,DST,Down Stour,PJW,MD365,0.0,139.0,London North Western (South) Sectional Appendix March 2026.pdf,313,2026-04-28T02:42:06.121073
-33731,UDS,Up Dudley Siding,DPJ,MD370,393.0,442.0,London North Western (South) Sectional Appendix March 2026.pdf,314,2026-04-28T02:42:06.200716
-33732,DORR,Down Dudley Run Round Line,DPJ,MD370,393.0,442.0,London North Western (South) Sectional Appendix March 2026.pdf,314,2026-04-28T02:42:06.200716
-33733,UWS,Up Walsall Slow,DPJ,MD370,393.0,442.0,London North Western (South) Sectional Appendix March 2026.pdf,314,2026-04-28T02:42:06.200716
-33734,DWS,Down Walsall Slow,DPJ,MD370,393.0,442.0,London North Western (South) Sectional Appendix March 2026.pdf,314,2026-04-28T02:42:06.200716
-33735,UAGL,Up Aynho Goods Loop 807 metres (882,DCL,MD401,6240.0,6560.0,London North Western (South) Sectional Appendix March 2026.pdf,317,2026-04-28T02:42:06.382789
-33736,UCV,Up Cherwell Valley,DCL,MD401,6240.0,6560.0,London North Western (South) Sectional Appendix March 2026.pdf,317,2026-04-28T02:42:06.382789
-33737,DCV,Down Cherwell Valley,DCL,MD401,6240.0,6560.0,London North Western (South) Sectional Appendix March 2026.pdf,317,2026-04-28T02:42:06.382789
-33738,UCV,Up Cherwell Valley,DCL,MD401,6560.0,6820.0,London North Western (South) Sectional Appendix March 2026.pdf,318,2026-04-28T02:42:06.455865
-33739,DCV,Down Cherwell Valley,DCL,MD401,6560.0,6820.0,London North Western (South) Sectional Appendix March 2026.pdf,318,2026-04-28T02:42:06.455865
-33740,UCV,Up Cherwell Valley,DCL,MD401,6820.0,6896.0,London North Western (South) Sectional Appendix March 2026.pdf,319,2026-04-28T02:42:06.552497
-33741,DCV,Down Cherwell Valley,DCL,MD401,6820.0,6896.0,London North Western (South) Sectional Appendix March 2026.pdf,319,2026-04-28T02:42:06.552497
-33742,UBPL,Up Banbury Platform Line,DCL,MD401,6820.0,6896.0,London North Western (South) Sectional Appendix March 2026.pdf,319,2026-04-28T02:42:06.552497
-33743,UBL,Up Banbury Loop,DCL,MD401,6820.0,6896.0,London North Western (South) Sectional Appendix March 2026.pdf,319,2026-04-28T02:42:06.552497
-33744,SB,Siding 1 to Siding 8,DCL,MD401,6820.0,6896.0,London North Western (South) Sectional Appendix March 2026.pdf,319,2026-04-28T02:42:06.552497
-33745,UCV,Up Cherwell Valley,DCL,MD401,6896.0,7000.0,London North Western (South) Sectional Appendix March 2026.pdf,320,2026-04-28T02:42:06.649141
-33746,DCV,Down Cherwell Valley,DCL,MD401,6896.0,7000.0,London North Western (South) Sectional Appendix March 2026.pdf,320,2026-04-28T02:42:06.649141
-33747,UBPL,Up Banbury Platform Line,DCL,MD401,6896.0,7000.0,London North Western (South) Sectional Appendix March 2026.pdf,320,2026-04-28T02:42:06.649141
-33748,UBL,Up Banbury Loop,DCL,MD401,6896.0,7000.0,London North Western (South) Sectional Appendix March 2026.pdf,320,2026-04-28T02:42:06.649141
-33749,DBL,Down Banbury Loop,DCL,MD401,6896.0,7000.0,London North Western (South) Sectional Appendix March 2026.pdf,320,2026-04-28T02:42:06.649141
-33750,DBGL,Down Banbury Goods Loop,DCL,MD401,6896.0,7000.0,London North Western (South) Sectional Appendix March 2026.pdf,320,2026-04-28T02:42:06.649141
-33751,UCV,Up Cherwell Valley,DCL,MD401,7000.0,7440.0,London North Western (South) Sectional Appendix March 2026.pdf,321,2026-04-28T02:42:06.730405
-33752,DCV,Down Cherwell Valley,DCL,MD401,7000.0,7440.0,London North Western (South) Sectional Appendix March 2026.pdf,321,2026-04-28T02:42:06.730405
-33753,UCV,Up Cherwell Valley,DCL,MD401,7440.0,7640.0,London North Western (South) Sectional Appendix March 2026.pdf,322,2026-04-28T02:42:06.810229
-33754,DCV,Down Cherwell Valley,DCL,MD401,7440.0,7640.0,London North Western (South) Sectional Appendix March 2026.pdf,322,2026-04-28T02:42:06.810229
-33755,DFCGL,Down Fenny Compton Goods Loop,DCL,MD401,7440.0,7640.0,London North Western (South) Sectional Appendix March 2026.pdf,322,2026-04-28T02:42:06.810229
-33756,UFCGL,Up Fenny Compton Goods Loop,DCL,MD401,7440.0,7640.0,London North Western (South) Sectional Appendix March 2026.pdf,322,2026-04-28T02:42:06.810229
-33757,UCV,Up Cherwell Valley,DCL,MD401,7640.0,8463.0,London North Western (South) Sectional Appendix March 2026.pdf,323,2026-04-28T02:42:06.901018
-33758,DCV,Down Cherwell Valley,DCL,MD401,7640.0,8463.0,London North Western (South) Sectional Appendix March 2026.pdf,323,2026-04-28T02:42:06.901018
-33759,UCV,Up Cherwell Valley,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33760,DCV,Down Cherwell Valley,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33761,ULB,Up Leamington Bay,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33762,ULP,Up Leamington Platfonm,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33763,DLB,Down Leamington Bay,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33764,OLP,Down Leamington Platform,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33765,UD,Up Dorridge,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33766,DD,Down Dorridge,DCL,MD401,8463.0,8523.0,London North Western (South) Sectional Appendix March 2026.pdf,324,2026-04-28T02:42:06.945087
-33767,UD,Up Dorridge,DCL,MD401,8840.0,9040.0,London North Western (South) Sectional Appendix March 2026.pdf,327,2026-04-28T02:42:07.213243
-33768,DD,Down Dorridge,DCL,MD401,8840.0,9040.0,London North Western (South) Sectional Appendix March 2026.pdf,327,2026-04-28T02:42:07.213243
-33769,DHGL,Down Hatton Goods Loop,DCL,MD401,8840.0,9040.0,London North Western (South) Sectional Appendix March 2026.pdf,327,2026-04-28T02:42:07.213243
-33770,UHPL,Down & Up Hatton Platform Line,DCL,MD401,8840.0,9040.0,London North Western (South) Sectional Appendix March 2026.pdf,327,2026-04-28T02:42:07.213243
-33771,UD,Up Dorridge,DCL,MD401,9440.0,9680.0,London North Western (South) Sectional Appendix March 2026.pdf,329,2026-04-28T02:42:07.401056
-33772,DD,Down Dorridge,DCL,MD401,9440.0,9680.0,London North Western (South) Sectional Appendix March 2026.pdf,329,2026-04-28T02:42:07.401056
-33773,DDGL,Up & Down Dorridge Goods Loop,DCL,MD401,9440.0,9680.0,London North Western (South) Sectional Appendix March 2026.pdf,329,2026-04-28T02:42:07.401056
-33774,DDPL,Up & Down Dorridge Passenger Loop,DCL,MD401,9440.0,9680.0,London North Western (South) Sectional Appendix March 2026.pdf,329,2026-04-28T02:42:07.401056
-33775,UDPL,Up Dorridge Passenger Loop,DCL,MD401,9440.0,9680.0,London North Western (South) Sectional Appendix March 2026.pdf,329,2026-04-28T02:42:07.401056
-33776,UD,Up Dorridge,DCL,MD401,9680.0,10045.0,London North Western (South) Sectional Appendix March 2026.pdf,330,2026-04-28T02:42:07.484819
-33777,DD,Down Dorridge,DCL,MD401,9680.0,10045.0,London North Western (South) Sectional Appendix March 2026.pdf,330,2026-04-28T02:42:07.484819
-33778,UD,Up Dorridge,BCV,MD401,10045.0,10100.0,London North Western (South) Sectional Appendix March 2026.pdf,331,2026-04-28T02:42:07.584053
-33779,DD,Down Dorridge ,BCV,MD401,10045.0,10100.0,London North Western (South) Sectional Appendix March 2026.pdf,331,2026-04-28T02:42:07.584053
-33780,DTC,Up & Down Tyseley Chord,BCV,MD401,10045.0,10100.0,London North Western (South) Sectional Appendix March 2026.pdf,331,2026-04-28T02:42:07.584053
-33781,DNW,Down North Warwick,BCV,MD401,10045.0,10100.0,London North Western (South) Sectional Appendix March 2026.pdf,331,2026-04-28T02:42:07.584053
-33782,UNW,Up North Warwick,BCV,MD401,10045.0,10100.0,London North Western (South) Sectional Appendix March 2026.pdf,331,2026-04-28T02:42:07.584053
-33783,CS,Carriage Sidings 1 -12,BCV,MD401,10045.0,10100.0,London North Western (South) Sectional Appendix March 2026.pdf,331,2026-04-28T02:42:07.584053
-33784,CS,Carriage Sidings 1 -12,BCV,MD401,10100.0,10134.0,London North Western (South) Sectional Appendix March 2026.pdf,332,2026-04-28T02:42:07.678489
-33785,DBGL,Down Bordesley Goods Loop,BCV,MD401,10134.0,10195.0,London North Western (South) Sectional Appendix March 2026.pdf,333,2026-04-28T02:42:07.802632
-33786,UBGL,Up Bordesley Goods Loop,BCV,MD401,10134.0,10195.0,London North Western (South) Sectional Appendix March 2026.pdf,333,2026-04-28T02:42:07.802632
-33787,SHG,Up & Down Small Heath Goods ,BCV,MD401,10134.0,10195.0,London North Western (South) Sectional Appendix March 2026.pdf,333,2026-04-28T02:42:07.802632
-33788,DBGL,Down Bordesley Goods Loop,BCV,MD401,10195.0,10251.0,London North Western (South) Sectional Appendix March 2026.pdf,334,2026-04-28T02:42:07.905802
-33789,UBGL,Up Bordesley Goods Loop,BCV,MD401,10195.0,10251.0,London North Western (South) Sectional Appendix March 2026.pdf,334,2026-04-28T02:42:07.905802
-33790,SHG,Up & Down Small Heath Goods ,BCV,MD401,10195.0,10251.0,London North Western (South) Sectional Appendix March 2026.pdf,334,2026-04-28T02:42:07.905802
-33791,UCV,Up Cherwell Valley,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33792,DCV,Down Cherwell Valley,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33793,ULB,Up Leamington Bay,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33794,ULP,Up Leamington Platform,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33795,DLB,Down Leamington Bay,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33796,DLP,Down Leamington Platform,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33797,DD,Down Dorridge,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33798,UD,Up Dorridge,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33799,DK,Up & Down Kenilworth,LSC2,MD405,10.0,8524.0,London North Western (South) Sectional Appendix March 2026.pdf,335,2026-04-28T02:42:07.984108
-33800,DK,Up & Down Kenilworth,LSC2,MD405,440.0,685.0,London North Western (South) Sectional Appendix March 2026.pdf,337,2026-04-28T02:42:08.135167
-33801,DS,Up & Down Slow,LSC2,MD405,440.0,685.0,London North Western (South) Sectional Appendix March 2026.pdf,337,2026-04-28T02:42:08.135167
-33802,DB,Down Bedworth,CNN,MD410,100.0,325.0,London North Western (South) Sectional Appendix March 2026.pdf,340,2026-04-28T02:42:08.308798
-33803,UB,Up Bedworth,CNN,MD410,100.0,325.0,London North Western (South) Sectional Appendix March 2026.pdf,340,2026-04-28T02:42:08.308798
-33804,DB,Down Bedworth,CNN,MD410,420.0,580.0,London North Western (South) Sectional Appendix March 2026.pdf,342,2026-04-28T02:42:08.465630
-33805,UB,Up Bedworth,CNN,MD410,420.0,580.0,London North Western (South) Sectional Appendix March 2026.pdf,342,2026-04-28T02:42:08.465630
-33806,UD,Up Dorridge,HSA,MD415,1360.0,8978.0,London North Western (South) Sectional Appendix March 2026.pdf,344,2026-04-28T02:42:08.635364
-33807,OD,Down Dorridge,HSA,MD415,1360.0,8978.0,London North Western (South) Sectional Appendix March 2026.pdf,344,2026-04-28T02:42:08.635364
-33808,DHGL,Down Hatton Goods Loop,HSA,MD415,1360.0,8978.0,London North Western (South) Sectional Appendix March 2026.pdf,344,2026-04-28T02:42:08.635364
-33809,UHPL,Down & Up Hatton Platform Line,HSA,MD415,1360.0,8978.0,London North Western (South) Sectional Appendix March 2026.pdf,344,2026-04-28T02:42:08.635364
-33810,UC,Up Claverdon,HSA,MD415,1360.0,8978.0,London North Western (South) Sectional Appendix March 2026.pdf,344,2026-04-28T02:42:08.635364
-33811,UNW,Up North Warwick,HSA,MD415,918.0,1070.0,London North Western (South) Sectional Appendix March 2026.pdf,346,2026-04-28T02:42:08.798489
-33812,DNW,Down North Warwick,HSA,MD415,918.0,1070.0,London North Western (South) Sectional Appendix March 2026.pdf,346,2026-04-28T02:42:08.798489
-33813,USH,Up Snow Hill,TSB,MD425,56.0,10073.0,London North Western (South) Sectional Appendix March 2026.pdf,349,2026-04-28T02:42:09.056601
-33814,DSH,Down Snow Hill,TSB,MD425,56.0,10073.0,London North Western (South) Sectional Appendix March 2026.pdf,349,2026-04-28T02:42:09.056601
-33815,DTC,Up & Down Tyseley Chord,TSB,MD425,56.0,10073.0,London North Western (South) Sectional Appendix March 2026.pdf,349,2026-04-28T02:42:09.056601
-33816,USB,Up Stoke Branch,,MD430,10101.0,10219.0,London North Western (South) Sectional Appendix March 2026.pdf,354,2026-04-28T02:42:09.401762
-33817,DSB,Down Stoke Branch,,MD430,10101.0,10219.0,London North Western (South) Sectional Appendix March 2026.pdf,354,2026-04-28T02:42:09.401762
-33818,DKGL,Down Kidderminster Goods Loop,,MD430,10775.0,10880.0,London North Western (South) Sectional Appendix March 2026.pdf,357,2026-04-28T02:42:09.637160
-33819,DBGL,Down Bordesley Goods Loop,DCL,MD435,10139.0,10174.0,London North Western (South) Sectional Appendix March 2026.pdf,361,2026-04-28T02:42:09.906875
-33820,TS,Through Siding,DCL,MD435,10195.0,10243.0,London North Western (South) Sectional Appendix March 2026.pdf,362,2026-04-28T02:42:10.016189
-33821,OCH,Down Camp Hill,DCL,MD435,10195.0,10243.0,London North Western (South) Sectional Appendix March 2026.pdf,362,2026-04-28T02:42:10.016189
-33822,UCH,Up Camp Hill,DCL,MD435,10195.0,10243.0,London North Western (South) Sectional Appendix March 2026.pdf,362,2026-04-28T02:42:10.016189
-33823,SHG,Up & Down Small Heath Goods,DCL,MD435,10279.0,10306.0,London North Western (South) Sectional Appendix March 2026.pdf,363,2026-04-28T02:42:10.106519
-33824,DDby,Down Derby. DSt: Down Stour,DCL,MD435,10279.0,10306.0,London North Western (South) Sectional Appendix March 2026.pdf,363,2026-04-28T02:42:10.106519
-33825,UDby,Up Derby. USt: Up Stour,DCL,MD435,10279.0,10306.0,London North Western (South) Sectional Appendix March 2026.pdf,363,2026-04-28T02:42:10.106519
-33826,UST,Up Stourbridge,GSJ2,MD435,10580.0,10700.0,London North Western (South) Sectional Appendix March 2026.pdf,367,2026-04-28T02:42:10.462184
-33827,DST,Down Stourbridge,GSJ2,MD435,10580.0,10700.0,London North Western (South) Sectional Appendix March 2026.pdf,367,2026-04-28T02:42:10.462184
-33828,URETS,Up Rood End Through Siding (Outof Use),GSJ2,MD435,10700.0,10875.0,London North Western (South) Sectional Appendix March 2026.pdf,368,2026-04-28T02:42:10.548955
-33829,DRRGL,Down Rowley Regis Goods Loop,GSJ2,MD435,10795.0,10975.0,London North Western (South) Sectional Appendix March 2026.pdf,369,2026-04-28T02:42:10.643262
-33830,URRGL,Up Rowley Regis Goods Loop,GSJ2,MD435,10795.0,10975.0,London North Western (South) Sectional Appendix March 2026.pdf,369,2026-04-28T02:42:10.643262
-33831,UST,Up Stourbridge,GSJ2,MD435,11287.0,11287.0,London North Western (South) Sectional Appendix March 2026.pdf,371,2026-04-28T02:42:10.804768
-33832,DST,Down Stourbridge,GSJ2,MD435,11287.0,11287.0,London North Western (South) Sectional Appendix March 2026.pdf,371,2026-04-28T02:42:10.804768
-33833,DK,Down Kidderminster,,MD450,11411.0,11520.0,London North Western (South) Sectional Appendix March 2026.pdf,375,2026-04-28T02:42:11.044798
-33834,UK,UpKidderminste r,,MD450,11411.0,11520.0,London North Western (South) Sectional Appendix March 2026.pdf,375,2026-04-28T02:42:11.044798
-33835,DST,Down Stourbridge,,MD450,11411.0,11520.0,London North Western (South) Sectional Appendix March 2026.pdf,375,2026-04-28T02:42:11.044798
-33836,UST,Up Stourbridge,,MD450,11411.0,11520.0,London North Western (South) Sectional Appendix March 2026.pdf,375,2026-04-28T02:42:11.044798
-33837,UD,Up Dudley,,MD450,11520.0,11640.0,London North Western (South) Sectional Appendix March 2026.pdf,376,2026-04-28T02:42:11.138053
-33838,DD,Down Dudley,,MD450,11520.0,11640.0,London North Western (South) Sectional Appendix March 2026.pdf,376,2026-04-28T02:42:11.138053
-33839,DROS1,Down Round Oak Siding 1,,MD450,11520.0,11640.0,London North Western (South) Sectional Appendix March 2026.pdf,376,2026-04-28T02:42:11.138053
-33840,UROS2,Up Round Oak Siding 2,,MD450,11520.0,11640.0,London North Western (South) Sectional Appendix March 2026.pdf,376,2026-04-28T02:42:11.138053
-33841,DROS1,Down Round Oak Siding 1,,MD450,11520.0,11640.0,London North Western (South) Sectional Appendix March 2026.pdf,376,2026-04-28T02:42:11.138053
-33842,UROS2,Up Round Oak Siding 2,,MD450,11520.0,11640.0,London North Western (South) Sectional Appendix March 2026.pdf,376,2026-04-28T02:42:11.138053
-33843,DFCGL,Down Fenny Compton Goods Loop,SJT1,MD460,1800.0,7580.0,London North Western (South) Sectional Appendix March 2026.pdf,379,2026-04-28T02:42:11.297515
-33844,UFCGL,Up Fenny Compton Goods Loop,SJT1,MD460,1800.0,7580.0,London North Western (South) Sectional Appendix March 2026.pdf,379,2026-04-28T02:42:11.297515
-33845,UT,Up Tamworth,DBP1,MD501,1720.0,2080.0,London North Western (South) Sectional Appendix March 2026.pdf,382,2026-04-28T02:42:11.470525
-33846,DT,Down Tamworth,DBP1,MD501,1720.0,2080.0,London North Western (South) Sectional Appendix March 2026.pdf,382,2026-04-28T02:42:11.470525
-33847,UD,Up Derby,DBP3,MD501,2790.0,2960.0,London North Western (South) Sectional Appendix March 2026.pdf,385,2026-04-28T02:42:11.749606
-33848,DD,Down Derby,DBP3,MD501,2790.0,2960.0,London North Western (South) Sectional Appendix March 2026.pdf,385,2026-04-28T02:42:11.749606
-33849,DW,DownWhit acre,DBP3,MD501,2790.0,2960.0,London North Western (South) Sectional Appendix March 2026.pdf,385,2026-04-28T02:42:11.749606
-33850,DOG,Down Derby Goods,DBP3,MD501,2790.0,2960.0,London North Western (South) Sectional Appendix March 2026.pdf,385,2026-04-28T02:42:11.749606
-33851,DDF,Down Derby Fast,DBP3,MD501,2790.0,2960.0,London North Western (South) Sectional Appendix March 2026.pdf,385,2026-04-28T02:42:11.749606
-33852,UDF,Up Derby Fast,DBP3,MD501,2790.0,2960.0,London North Western (South) Sectional Appendix March 2026.pdf,385,2026-04-28T02:42:11.749606
-33853,UDS,UpDerb ySlo w,DBP3,MD501,2790.0,2960.0,London North Western (South) Sectional Appendix March 2026.pdf,385,2026-04-28T02:42:11.749606
-33854,UWHAD1,UpWashwoodHeathA rrival/ Departure 1,DBP3,MD501,3075.0,3155.0,London North Western (South) Sectional Appendix March 2026.pdf,387,2026-04-28T02:42:11.942082
-33855,UWHAD2,Up Washwood Heath Arrival/ Departure 2,DBP3,MD501,3075.0,3155.0,London North Western (South) Sectional Appendix March 2026.pdf,387,2026-04-28T02:42:11.942082
-33856,UWHAD1,Up Washwood Heath Arrival / Departure 1,DBP3,MD501,3155.0,3200.0,London North Western (South) Sectional Appendix March 2026.pdf,388,2026-04-28T02:42:12.057063
-33857,UWHAD2,Up Washwood Heath Arrival / Departure 2,DBP3,MD501,3155.0,3200.0,London North Western (South) Sectional Appendix March 2026.pdf,388,2026-04-28T02:42:12.057063
-33858,S,Down Washwood Heath Through Siding,DBP3,MD501,3155.0,3200.0,London North Western (South) Sectional Appendix March 2026.pdf,388,2026-04-28T02:42:12.057063
-33859,UWHGL,Up Washwood Heath Goods Loop (PF),DBP3,MD501,3155.0,3200.0,London North Western (South) Sectional Appendix March 2026.pdf,388,2026-04-28T02:42:12.057063
-33860,DSGL,Down Saltley Goods Loop (PF),DBP3,MD501,3200.0,3243.0,London North Western (South) Sectional Appendix March 2026.pdf,389,2026-04-28T02:42:12.130630
-33861,UDS,Up Derby Slow,DBP3,MD501,3243.0,3275.0,London North Western (South) Sectional Appendix March 2026.pdf,390,2026-04-28T02:42:12.170262
-33862,UDF,Up Derby Fast,DBP3,MD501,3243.0,3275.0,London North Western (South) Sectional Appendix March 2026.pdf,390,2026-04-28T02:42:12.170262
-33863,DDF,Down Derby Fast,DBP3,MD501,3243.0,3275.0,London North Western (South) Sectional Appendix March 2026.pdf,390,2026-04-28T02:42:12.170262
-33864,DDG,Down Derby Goods,DBP3,MD501,3243.0,3275.0,London North Western (South) Sectional Appendix March 2026.pdf,390,2026-04-28T02:42:12.170262
-33865,UDG,Up Derby Goods,DBP3,MD501,3243.0,3275.0,London North Western (South) Sectional Appendix March 2026.pdf,390,2026-04-28T02:42:12.170262
-33866,DSA,Down St. Andrews,DBP3,MD501,3243.0,3275.0,London North Western (South) Sectional Appendix March 2026.pdf,390,2026-04-28T02:42:12.170262
-33867,USA,Up St. Andrews,DBP3,MD501,3243.0,3275.0,London North Western (South) Sectional Appendix March 2026.pdf,390,2026-04-28T02:42:12.170262
-33868,OD,Down Derby,KJW,MD545,2359.0,2549.0,London North Western (South) Sectional Appendix March 2026.pdf,393,2026-04-28T02:42:12.318426
-33869,DAGLH,Down Arley Goods Loop Headshunt,KJW,MD545,2359.0,2549.0,London North Western (South) Sectional Appendix March 2026.pdf,393,2026-04-28T02:42:12.318426
-33870,UTVS,Up Trent Valley Slow,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33871,UTVF,Up Trent Valley Fast,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33872,DTVF,Down Trent Valley Fast,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33873,DTVS,Down Trent Valley Slow,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33874,UPL,Down & Up Passenger Line,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33875,DS,Down Siding,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33876,UNC,Up Nuneaton Chord,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33877,DNC,Down Nuneaton Chord,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33878,DA,Down Arley,NWO,MD555,490.0,818.0,London North Western (South) Sectional Appendix March 2026.pdf,394,2026-04-28T02:42:12.419988
-33879,UW,Up Whitacre,DBP3,MD555,0.0,2566.0,London North Western (South) Sectional Appendix March 2026.pdf,396,2026-04-28T02:42:12.590417
-33880,OW,Down Whitacre,DBP3,MD555,0.0,2566.0,London North Western (South) Sectional Appendix March 2026.pdf,396,2026-04-28T02:42:12.590417
-33881,DAGL,Down Arley Goods Loop,DBP3,MD555,0.0,2566.0,London North Western (South) Sectional Appendix March 2026.pdf,396,2026-04-28T02:42:12.590417
-33882,DAGLH,Down Arley Goods Loop Headshunt,DBP3,MD555,0.0,2566.0,London North Western (South) Sectional Appendix March 2026.pdf,396,2026-04-28T02:42:12.590417
-33883,DD,Down Derby,DBP3,MD555,2720.0,2815.0,London North Western (South) Sectional Appendix March 2026.pdf,399,2026-04-28T02:42:12.853576
-33884,UDF,Up Derby Fast,DBP3,MD555,2720.0,2815.0,London North Western (South) Sectional Appendix March 2026.pdf,399,2026-04-28T02:42:12.853576
-33885,UDS,Up Derby Slow,DBP3,MD555,2720.0,2815.0,London North Western (South) Sectional Appendix March 2026.pdf,399,2026-04-28T02:42:12.853576
-33886,DOG,Down Derby Goods,LSS,MD570,3254.0,3295.0,London North Western (South) Sectional Appendix March 2026.pdf,404,2026-04-28T02:42:13.185943
-33887,UDG,Up Derby Goods,LSS,MD570,3254.0,3295.0,London North Western (South) Sectional Appendix March 2026.pdf,404,2026-04-28T02:42:13.185943
-33888,DSA,Down St. Andrews,LSS,MD570,3254.0,3295.0,London North Western (South) Sectional Appendix March 2026.pdf,404,2026-04-28T02:42:13.185943
-33889,USA,Up St. Andrews,LSS,MD570,3254.0,3295.0,London North Western (South) Sectional Appendix March 2026.pdf,404,2026-04-28T02:42:13.185943
-33890,UCH,Up Camp Hill,LSS,MD570,3254.0,3295.0,London North Western (South) Sectional Appendix March 2026.pdf,404,2026-04-28T02:42:13.185943
-33891,OCH,Down Camp Hill,LSS,MD570,3254.0,3295.0,London North Western (South) Sectional Appendix March 2026.pdf,404,2026-04-28T02:42:13.185943
-33892,DCH,Up & Down Camp Hill,LSS,MD570,3254.0,3295.0,London North Western (South) Sectional Appendix March 2026.pdf,404,2026-04-28T02:42:13.185943
-33893,DSA,Down St. Andrews,SKN,MD570,3295.0,3355.0,London North Western (South) Sectional Appendix March 2026.pdf,405,2026-04-28T02:42:13.523682
-33894,USA,Up St. Andrews,SKN,MD570,3295.0,3355.0,London North Western (South) Sectional Appendix March 2026.pdf,405,2026-04-28T02:42:13.523682
-33895,ULC,Up Lifford Curve,SKN,MD570,3684.0,3757.0,London North Western (South) Sectional Appendix March 2026.pdf,407,2026-04-28T02:42:13.696569
-33896,DLC,Down Lifford Curve,SKN,MD570,3684.0,3757.0,London North Western (South) Sectional Appendix March 2026.pdf,407,2026-04-28T02:42:13.696569
-33897,UGS,Up Gloucester Slow,SKN,MD570,3684.0,3757.0,London North Western (South) Sectional Appendix March 2026.pdf,407,2026-04-28T02:42:13.696569
-33898,UGF,Up Gloucester Fast,SKN,MD570,3684.0,3757.0,London North Western (South) Sectional Appendix March 2026.pdf,407,2026-04-28T02:42:13.696569
-33899,DGF,Down Gloucester Fast,SKN,MD570,3684.0,3757.0,London North Western (South) Sectional Appendix March 2026.pdf,407,2026-04-28T02:42:13.696569
-33900,DGS,DownGlo ucesterSlow,SKN,MD570,3684.0,3757.0,London North Western (South) Sectional Appendix March 2026.pdf,407,2026-04-28T02:42:13.696569
-33901,UCH,UpCampH ill,SAG,MD575,5.0,3299.0,London North Western (South) Sectional Appendix March 2026.pdf,409,2026-04-28T02:42:13.778826
-33902,CH,Up&D own Camp Hill,SAG,MD575,5.0,3299.0,London North Western (South) Sectional Appendix March 2026.pdf,409,2026-04-28T02:42:13.778826
-33903,DCH,Down Camp Hill,LEL,MD580,3691.0,3716.0,London North Western (South) Sectional Appendix March 2026.pdf,410,2026-04-28T02:42:13.850447
-33904,UCH,Up Camp Hill,LEL,MD580,3691.0,3716.0,London North Western (South) Sectional Appendix March 2026.pdf,410,2026-04-28T02:42:13.850447
-33905,UG,Up Gloucester,LEL,MD580,3691.0,3716.0,London North Western (South) Sectional Appendix March 2026.pdf,410,2026-04-28T02:42:13.850447
-33906,DG,Down Gloucester,LEL,MD580,3691.0,3716.0,London North Western (South) Sectional Appendix March 2026.pdf,410,2026-04-28T02:42:13.850447
-33907,DNL,Down Northolt Loop,NAJ2,MD701,0.0,110.0,London North Western (South) Sectional Appendix March 2026.pdf,414,2026-04-28T02:42:14.090224
-33908,Lockout,Down Northolt,NAJ2,MD701,0.0,110.0,London North Western (South) Sectional Appendix March 2026.pdf,414,2026-04-28T02:42:14.090224
-33909,Lockout,Up Main and Up,NAJ2,MD701,0.0,110.0,London North Western (South) Sectional Appendix March 2026.pdf,414,2026-04-28T02:42:14.090224
-33910,Lockout,Down Northolt,NAJ2,MD701,110.0,480.0,London North Western (South) Sectional Appendix March 2026.pdf,415,2026-04-28T02:42:14.171184
-33911,lengths,West Ruislip,NAJ2,MD701,110.0,480.0,London North Western (South) Sectional Appendix March 2026.pdf,415,2026-04-28T02:42:14.171184
-33912,Lockout,Up Main and Up,NAJ2,MD701,110.0,480.0,London North Western (South) Sectional Appendix March 2026.pdf,415,2026-04-28T02:42:14.171184
-33913,UWRL,Up West Ruislip Loop,NAJ2,MD701,110.0,480.0,London North Western (South) Sectional Appendix March 2026.pdf,415,2026-04-28T02:42:14.171184
-33914,UPRL,Up Princes Risborough Loop,THA,MD701,1937.0,2400.0,London North Western (South) Sectional Appendix March 2026.pdf,419,2026-04-28T02:42:14.516240
-33915,UBSWC,UpBic esterSouthWest Chord,NAJ3,MD701,8.0,2698.0,London North Western (South) Sectional Appendix March 2026.pdf,420,2026-04-28T02:42:14.637259
-33916,UW,Down & Up Wycombe,ANL,MD705,7.0,815.0,London North Western (South) Sectional Appendix March 2026.pdf,424,2026-04-28T02:42:14.905723
-33917,DNL,Down Northolt Loop,ANL,MD705,7.0,815.0,London North Western (South) Sectional Appendix March 2026.pdf,424,2026-04-28T02:42:14.905723
-33918,DB,Up & Down Branch,NJN,MD715,510.0,536.0,London North Western (South) Sectional Appendix March 2026.pdf,430,2026-04-28T02:42:15.307169
-33919,UPRL,Up Princes Risborough Loop,PRA,MD720,3383.0,3540.0,London North Western (South) Sectional Appendix March 2026.pdf,431,2026-04-28T02:42:15.335026
-33920,UM,Up Main,PRA,MD720,3383.0,3540.0,London North Western (South) Sectional Appendix March 2026.pdf,431,2026-04-28T02:42:15.335026
-33921,OM,Down Main,PRA,MD720,3383.0,3540.0,London North Western (South) Sectional Appendix March 2026.pdf,431,2026-04-28T02:42:15.335026
-33922,UA,Down & Up Aylesbury,PRA,MD720,3383.0,3540.0,London North Western (South) Sectional Appendix March 2026.pdf,431,2026-04-28T02:42:15.335026
-33923,UA,Down & Up Aylesbury,PRA,MD720,3540.0,3800.0,London North Western (South) Sectional Appendix March 2026.pdf,432,2026-04-28T02:42:15.411211
-33924,ylesbury,Up & Down Aylesbury,MCJ3,MD726,3360.0,12753.0,London North Western (South) Sectional Appendix March 2026.pdf,439,2026-04-28T02:42:15.690671
-33925,DAS,Up & Down Aylesbury Siding,MCJ3,MD726,3360.0,12753.0,London North Western (South) Sectional Appendix March 2026.pdf,439,2026-04-28T02:42:15.690671
-33926,DO,Down Oxford,OXD,MD736,2270.0,2420.0,London North Western (South) Sectional Appendix March 2026.pdf,443,2026-04-28T02:42:15.874655
-33927,UO,Up Oxford,OXD,MD736,2270.0,2420.0,London North Western (South) Sectional Appendix March 2026.pdf,443,2026-04-28T02:42:15.874655
-33928,UOR,Up Oxford Relief,OXD,MD736,2270.0,2420.0,London North Western (South) Sectional Appendix March 2026.pdf,443,2026-04-28T02:42:15.874655
-33929,DB,Down Bletchley,OXD,MD736,2160.0,2270.0,London North Western (South) Sectional Appendix March 2026.pdf,444,2026-04-28T02:42:15.961615
-33930,UB,Up Bletchley,OXD,MD736,2160.0,2270.0,London North Western (South) Sectional Appendix March 2026.pdf,444,2026-04-28T02:42:15.961615
-33931,UBSWC,Up Bicester South West Chord,OXD,MD736,1400.0,1540.0,London North Western (South) Sectional Appendix March 2026.pdf,447,2026-04-28T02:42:16.255776
-33932,DBSWC,Down Bicester South West Chord,OXD,MD736,1400.0,1540.0,London North Western (South) Sectional Appendix March 2026.pdf,447,2026-04-28T02:42:16.255776
-33933,UC,Up Claydon,OXD,MD736,880.0,1080.0,London North Western (South) Sectional Appendix March 2026.pdf,449,2026-04-28T02:42:16.422861
-33934,OF,Down Fast,DHF,MD736,10.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,452,2026-04-28T02:42:16.704805
-33935,UF,Up Fast,DHF,MD736,10.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,452,2026-04-28T02:42:16.704805
-33936,OS,DownSlow,DHF,MD736,10.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,452,2026-04-28T02:42:16.704805
-33937,US,UpSlow,DHF,MD736,10.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,452,2026-04-28T02:42:16.704805
-33938,UBC,Up Bletchley Chord,DHF,MD736,10.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,452,2026-04-28T02:42:16.704805
-33939,DBC,Down Bletchley Chord,DHF,MD736,10.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,452,2026-04-28T02:42:16.704805
-33940,UB,UpBle tc hley,DHF,MD736,105.0,153.0,London North Western (South) Sectional Appendix March 2026.pdf,454,2026-04-28T02:42:16.862117
-33941,DBC,Down Bletchley Chord,BFO,MD741,78.0,116.0,London North Western (South) Sectional Appendix March 2026.pdf,456,2026-04-28T02:42:16.960300
-33942,UBC,Up Bletchley Chord,BFO,MD741,78.0,116.0,London North Western (South) Sectional Appendix March 2026.pdf,456,2026-04-28T02:42:16.960300
-33943,DBC,Up & Down Bletchley Chord,BFO,MD741,78.0,116.0,London North Western (South) Sectional Appendix March 2026.pdf,456,2026-04-28T02:42:16.960300
-33944,DV,Up & Down Vale,BFO,MD741,78.0,116.0,London North Western (South) Sectional Appendix March 2026.pdf,456,2026-04-28T02:42:16.960300
-33945,DB,Down Bletchley,BFO,MD741,78.0,116.0,London North Western (South) Sectional Appendix March 2026.pdf,456,2026-04-28T02:42:16.960300
-33946,UB,Up Bletchley,BFO,MD741,78.0,116.0,London North Western (South) Sectional Appendix March 2026.pdf,456,2026-04-28T02:42:16.960300
-33947,DBSWC,Down Bicester South West Chord,BSG,MD745,56.0,663.0,London North Western (South) Sectional Appendix March 2026.pdf,457,2026-04-28T02:42:17.056082
-33948,UBSWC,Up Bicester South West Chord,BSG,MD745,56.0,663.0,London North Western (South) Sectional Appendix March 2026.pdf,457,2026-04-28T02:42:17.056082
-33949,UW,Up Wellington,WSJ2,MD801,11630.0,12160.0,London North Western (South) Sectional Appendix March 2026.pdf,459,2026-04-28T02:42:17.144923
-33950,DW,Down Wellington,WSJ2,MD801,11630.0,12160.0,London North Western (South) Sectional Appendix March 2026.pdf,459,2026-04-28T02:42:17.144923
-33951,DCGL,Down Cosford Goods Loop,WSJ2,MD801,11630.0,12160.0,London North Western (South) Sectional Appendix March 2026.pdf,459,2026-04-28T02:42:17.144923
-33952,UCGL,Up Cosford Goods Loop,WSJ2,MD801,11630.0,12160.0,London North Western (South) Sectional Appendix March 2026.pdf,459,2026-04-28T02:42:17.144923
-33953,OMS,Down Madeley Siding,WSJ2,MD801,12160.0,12620.0,London North Western (South) Sectional Appendix March 2026.pdf,460,2026-04-28T02:42:17.232975
-33954,IRON,Up lronbridge (OOU),WSJ2,MD801,12160.0,12620.0,London North Western (South) Sectional Appendix March 2026.pdf,460,2026-04-28T02:42:17.232975
-33955,DWP,Down Wellington Platform,WSJ2,MD801,12800.0,13000.0,London North Western (South) Sectional Appendix March 2026.pdf,462,2026-04-28T02:42:17.388294
-33956,UWP,Up Wellington Platform,WSJ2,MD801,12800.0,13000.0,London North Western (South) Sectional Appendix March 2026.pdf,462,2026-04-28T02:42:17.388294
-33957,UW,Up Wellington,,MD805,0.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,465,2026-04-28T02:42:17.577703
-33958,OW,Down Wellington,,MD805,0.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,465,2026-04-28T02:42:17.577703
-33959,DST,Down Stour,,MD805,0.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,465,2026-04-28T02:42:17.577703
-33960,UST,Up Stour,,MD805,0.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,465,2026-04-28T02:42:17.577703
-33961,UGJ,UpGrandJunctio n,,MD805,0.0,82.0,London North Western (South) Sectional Appendix March 2026.pdf,465,2026-04-28T02:42:17.577703
-33962,UW,Up Wellington,,MD810,12499.0,12531.0,London North Western (South) Sectional Appendix March 2026.pdf,466,2026-04-28T02:42:17.650645
-33963,OW,Down Wellington,,MD810,12499.0,12531.0,London North Western (South) Sectional Appendix March 2026.pdf,466,2026-04-28T02:42:17.650645
-33964,OMS,Down Madeley Siding,,MD810,12499.0,12531.0,London North Western (South) Sectional Appendix March 2026.pdf,466,2026-04-28T02:42:17.650645
-33965,UAC,Up Abbotswood Curve,ABW,MD900,4.0,9614.0,London North Western (South) Sectional Appendix March 2026.pdf,468,2026-04-28T02:42:17.836937
-33966,DAC,Down Abbotswood Curve,ABW,MD900,4.0,9614.0,London North Western (South) Sectional Appendix March 2026.pdf,468,2026-04-28T02:42:17.836937
-33967,US,Up Siding,ABW,MD900,4.0,9614.0,London North Western (South) Sectional Appendix March 2026.pdf,468,2026-04-28T02:42:17.836937
-33968,US,Up Siding,,MD900,9615.0,9654.0,London North Western (South) Sectional Appendix March 2026.pdf,469,2026-04-28T02:42:17.942554
-33969,UTS,Up Through Siding,,MD900,9655.0,10080.0,London North Western (South) Sectional Appendix March 2026.pdf,470,2026-04-28T02:42:18.025663
-33970,DTS,Down Through Siding,,MD900,9655.0,10080.0,London North Western (South) Sectional Appendix March 2026.pdf,470,2026-04-28T02:42:18.025663
-33971,DM,Down Main,STO,MD900,10080.0,10180.0,London North Western (South) Sectional Appendix March 2026.pdf,471,2026-04-28T02:42:18.111220
-33972,UM,Up Main,STO,MD900,10080.0,10180.0,London North Western (South) Sectional Appendix March 2026.pdf,471,2026-04-28T02:42:18.111220
-33973,USB,Up Stoke Branch,STO,MD900,10080.0,10180.0,London North Western (South) Sectional Appendix March 2026.pdf,471,2026-04-28T02:42:18.111220
-33974,DSB,Down Stoke Branch,STO,MD900,10080.0,10180.0,London North Western (South) Sectional Appendix March 2026.pdf,471,2026-04-28T02:42:18.111220
-33975,UTS,Up Through Siding,WAH,MD940,9642.0,9774.0,London North Western (South) Sectional Appendix March 2026.pdf,475,2026-04-28T02:42:18.352104
-33976,DTS,Down Through Siding,WAH,MD940,9642.0,9774.0,London North Western (South) Sectional Appendix March 2026.pdf,475,2026-04-28T02:42:18.352104
-33977,UM,Up Main,WAH,MD940,9642.0,9774.0,London North Western (South) Sectional Appendix March 2026.pdf,475,2026-04-28T02:42:18.352104
-33978,DM,Down Main,WAH,MD940,9642.0,9774.0,London North Western (South) Sectional Appendix March 2026.pdf,475,2026-04-28T02:42:18.352104
-33979,DB,Down Branch,WAH,MD940,9642.0,9774.0,London North Western (South) Sectional Appendix March 2026.pdf,475,2026-04-28T02:42:18.352104
-33980,DB,Up & Down Branch,WAH,MD940,9642.0,9774.0,London North Western (South) Sectional Appendix March 2026.pdf,475,2026-04-28T02:42:18.352104
-33981,DD,Up & Down Droitwich,WAH,MD940,9642.0,9774.0,London North Western (South) Sectional Appendix March 2026.pdf,475,2026-04-28T02:42:18.352104
-33982,DGL,Down Goods Loop 346m,WAH,MD940,10390.0,10448.0,London North Western (South) Sectional Appendix March 2026.pdf,477,2026-04-28T02:42:18.502286
-33983,D,Up & Down Main,WAH,MD940,10390.0,10448.0,London North Western (South) Sectional Appendix March 2026.pdf,477,2026-04-28T02:42:18.502286
-33984,DM,Up & Down Main,WAH,MD940,10815.0,11382.0,London North Western (South) Sectional Appendix March 2026.pdf,479,2026-04-28T02:42:18.645483
-33985,DS,Down Siding,WAH,MD940,10815.0,11382.0,London North Western (South) Sectional Appendix March 2026.pdf,479,2026-04-28T02:42:18.645483
-33986,DW,Up & Down Worcester,WAH,MD940,10815.0,11382.0,London North Western (South) Sectional Appendix March 2026.pdf,479,2026-04-28T02:42:18.645483
-33987,DW,Up & Down Worcester,WAH,MD940,11494.0,11808.0,London North Western (South) Sectional Appendix March 2026.pdf,480,2026-04-28T02:42:18.714231
 33988,UP,Up Platform Line,WCM1,SC001,5879.0,5889.0,Scotland Sectional Appendix March 2026.pdf,181,2026-04-28T02:42:52.205637
 33989,UPL,Up Passenger Loop,WCM1,SC001,5879.0,5889.0,Scotland Sectional Appendix March 2026.pdf,181,2026-04-28T02:42:52.205637
 33990,UM,Up Main,WCM1,SC001,5879.0,5889.0,Scotland Sectional Appendix March 2026.pdf,181,2026-04-28T02:42:52.205637
@@ -4338,21 +3717,17 @@
 34796,DF,Down Fast,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34797,DS,Down Slow,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34798,DU,Down Liverpool Independent,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
-34799,P1,Platform 1 line,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
-34800,P2,Platform 2 line,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34801,UF,Up Fast,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34802,UM,Up Main,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34803,US,Up Slow,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34804,Ull,Up Liverpool Independent,LEC5,NW1001,12681.0,12713.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34805,DF,Down Fast,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34806,DS,Down Slow,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
-34807,DU,Down Liverpool Independent,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34808,P1,Platform 1 line,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34809,P2,Platform 2 line,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34810,UF,Up Fast,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34811,UM,Up Main,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34812,US,Up Slow,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
-34813,Ull,Up Liverpool Independent,CGJ1,NW1001,13211.0,13280.0,London North Western (North) Sectional Appendix March 2026.pdf,161,2026-04-30T10:47:49.403070
 34814,MU,,CGJ1,NW1001,13280.0,13620.0,London North Western (North) Sectional Appendix March 2026.pdf,162,2026-04-30T10:47:49.403070
 34815,OM,Down Main,CGJ1,NW1001,13280.0,13620.0,London North Western (North) Sectional Appendix March 2026.pdf,162,2026-04-30T10:47:49.403070
 34816,P1,Platform 1 line,CGJ1,NW1001,13280.0,13620.0,London North Western (North) Sectional Appendix March 2026.pdf,162,2026-04-30T10:47:49.403070
@@ -4392,37 +3767,21 @@
 34850,UF,Up Fast,CGJ3,NW1001,564.0,14640.0,London North Western (North) Sectional Appendix March 2026.pdf,166,2026-04-30T10:47:49.403070
 34851,UM,Up Main,CGJ3,NW1001,564.0,14640.0,London North Western (North) Sectional Appendix March 2026.pdf,166,2026-04-30T10:47:49.403070
 34852,US,Up Slow,CGJ3,NW1001,564.0,14640.0,London North Western (North) Sectional Appendix March 2026.pdf,166,2026-04-30T10:47:49.403070
-34853,DE,Down Earlestown,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34854,DF,Down Fast,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34855,DM,Down Main,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34856,DS,Down Slow,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34857,UE,Up Earlestown,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34858,UF,Up Fast,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34859,UM,Up Main,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34860,US,Up Slow,CGJ3,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34861,DE,Down Earlestown,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34862,DF,Down Fast,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34863,DM,Down Main,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34864,DS,Down Slow,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34865,UE,Up Earlestown,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34866,UF,Up Fast,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
 34867,UM,Up Main,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34868,US,Up Slow,CGJ4,NW1001,14640.0,14860.0,London North Western (North) Sectional Appendix March 2026.pdf,167,2026-04-30T10:47:49.403070
-34869,DCM,Down Chat Moss,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
-34870,OF,,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34871,OM,Down Main,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
-34872,OS,,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
-34873,UCM,Up Chat Moss,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
-34874,UF,Up Fast,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34875,UM,Up Main,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
-34876,US,Up Slow,CGJ4,NW1001,14860.0,15036.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34877,DCM,Down Chat Moss,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34878,OF,,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
-34879,OM,Down Main,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34880,OS,,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34881,UCM,Up Chat Moss,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34882,UF,Up Fast,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
-34883,UM,Up Main,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34884,US,Up Slow,CGJ5,NW1001,52.0,180.0,London North Western (North) Sectional Appendix March 2026.pdf,168,2026-04-30T10:47:49.403070
 34885,DF,Down Fast,CGJ5,NW1001,180.0,400.0,London North Western (North) Sectional Appendix March 2026.pdf,169,2026-04-30T10:47:49.403070
 34886,DG,Down Goods,CGJ5,NW1001,180.0,400.0,London North Western (North) Sectional Appendix March 2026.pdf,169,2026-04-30T10:47:49.403070
@@ -4480,7 +3839,6 @@
 34938,DF,Down Fast,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34939,DG,Down Goods,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34940,DS,Down Slow,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
-34941,DT,Down Through line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34942,P1,Platform 1 line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34943,P2,Platform 2 line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34944,P3,Platform 3 line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
@@ -4489,15 +3847,12 @@
 34947,P4c,Platform 4c line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34948,P5,Platform 5 line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34949,P6,Platform 6 line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
-34950,SL,Shunting Line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34951,U&DGL,Up & Down Goods Loop,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34952,UF,Up Fast,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34953,UG,Up Goods,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34954,US,Up Slow,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
-34955,UT,Up Through line,CGJ5,NW1001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34956,D&UGL,Down & Up Goods Loop (Parcel Platform line),CGJ6,NW1001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34957,DF,Down Fast,CGJ6,NW1001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
-34958,DG,Down Goods,CGJ6,NW1001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34959,DS,Down Slow,CGJ6,NW1001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34960,DT,Down Through line,CGJ6,NW1001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
 34961,P1,Platform 1 line,CGJ6,NW1001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,175,2026-04-30T10:47:49.403070
@@ -4615,12 +3970,8 @@
 35073,U&DP,Up & Down Platform,BHI,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
 35074,ULI,Up Liverpool Independent,BHI,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
 35075,UMI,,BHI,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
-35076,DLI,Down Liverpool Independent,CMP1,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
-35077,DMI,,CMP1,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
 35078,FULL,,CMP1,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
 35079,U&DP,Up & Down Platform,CMP1,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
-35080,ULI,Up Liverpool Independent,CMP1,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
-35081,UMI,,CMP1,NW1009,12650.0,13010.0,London North Western (North) Sectional Appendix March 2026.pdf,194,2026-04-30T10:47:49.403070
 35082,Coal,,GSG,NW1011,0.0,37.0,London North Western (North) Sectional Appendix March 2026.pdf,195,2026-04-30T10:47:49.403070
 35083,DFI,Down Fast Independent,GSG,NW1011,0.0,37.0,London North Western (North) Sectional Appendix March 2026.pdf,195,2026-04-30T10:47:49.403070
 35084,DLI,Down Liverpool Independent,GSG,NW1011,0.0,37.0,London North Western (North) Sectional Appendix March 2026.pdf,195,2026-04-30T10:47:49.403070
@@ -4657,19 +4008,6 @@
 35115,USal,Up Salop,CIL,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
 35116,UU,Up Liverpool Independent,CIL,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
 35117,Yard,,CIL,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35118,DFI,Down Fast Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35119,DMI,Down Manchester Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35120,DSal,Down Salop,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35121,DU,Down Liverpool Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35122,Hall,,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35123,OED AID,D.E.D. Access / Departure,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35124,OSI,Down Slow Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35125,UFI,Up Fast Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35126,UMI,Up Manchester Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35127,USI,Up Slow Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35128,USal,Up Salop,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35129,UU,Up Liverpool Independent,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
-35130,Yard,,LEC5,NW1015,12623.0,12664.0,London North Western (North) Sectional Appendix March 2026.pdf,199,2026-04-30T10:47:49.403070
 35131,DFI,Down Fast Independent,LLI,NW1017,12631.0,12650.0,London North Western (North) Sectional Appendix March 2026.pdf,200,2026-04-30T10:47:49.403070
 35132,DMI,Down Manchester Independent,LLI,NW1017,12631.0,12650.0,London North Western (North) Sectional Appendix March 2026.pdf,200,2026-04-30T10:47:49.403070
 35133,DSI,Down Slow Independent,LLI,NW1017,12631.0,12650.0,London North Western (North) Sectional Appendix March 2026.pdf,200,2026-04-30T10:47:49.403070
@@ -4927,41 +4265,23 @@
 35385,U&DL,Up & Down Loop,LEC5,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
 35386,UCh,Up Chester,LEC5,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
 35387,UF,Up Fast,LEC5,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35388,CWks Sdg,Crewe Works Siding,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35389,Ch.lnd,Chester Independent line,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35390,DCh,Down Chester,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35391,DED ND,D.E.D. Access / Departure,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
 35392,DF,Down Fast,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
 35393,DS,Down Slow,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35394,HS,Holding Siding,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35395,P10,Platform 10 line,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35396,P11,Platform 11 line,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35397,P9,Platform 9 line,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
 35398,U&DL,Up & Down Loop,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
-35399,UCh,Up Chester,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
 35400,UF,Up Fast,CNH1,NW3001,12640.0,12740.0,London North Western (North) Sectional Appendix March 2026.pdf,302,2026-04-30T10:47:49.403070
 35401,DCh,Down Chester,CNH1,NW3001,12740.0,13520.0,London North Western (North) Sectional Appendix March 2026.pdf,303,2026-04-30T10:47:49.403070
 35402,DM,Down Main,CNH1,NW3001,12740.0,13520.0,London North Western (North) Sectional Appendix March 2026.pdf,303,2026-04-30T10:47:49.403070
 35403,UCh,Up Chester,CNH1,NW3001,12740.0,13520.0,London North Western (North) Sectional Appendix March 2026.pdf,303,2026-04-30T10:47:49.403070
 35404,UM,Up Main,CNH1,NW3001,12740.0,13520.0,London North Western (North) Sectional Appendix March 2026.pdf,303,2026-04-30T10:47:49.403070
-35405,D&,,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35406,D&UG,Down & Up Goods,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35407,D&UM,Down & Up Main,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35408,DM,Down Main,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35409,DT,Down Through,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35410,DW,Down Warrington,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35411,UF,Up Fast,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35412,UM,Up Main,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35413,US,Up Slow,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35414,UW,Up Warrington,CNH1,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35415,D&,,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35416,D&UG,Down & Up Goods,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35417,D&UM,Down & Up Main,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35418,DM,Down Main,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35419,DT,Down Through,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35420,DW,Down Warrington,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35421,UF,Up Fast,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
-35422,UM,Up Main,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35423,US,Up Slow,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35424,UW,Up Warrington,CNH2,NW3001,13520.0,14313.0,London North Western (North) Sectional Appendix March 2026.pdf,304,2026-04-30T10:47:49.403070
 35425,DOWN BH,Down Birkenhead,CNH2,NW3001,14315.0,14350.0,London North Western (North) Sectional Appendix March 2026.pdf,305,2026-04-30T10:47:49.403070
@@ -5083,9 +4403,6 @@
 35541,UM,Up Main,WSJ2,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
 35542,D&UW,Down & Up Wrexham,WDB1,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
 35543,OM,Down Main,WDB1,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
-35544,P1,Platform 1 line,WDB1,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
-35545,P2,Platform 2 line,WDB1,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
-35546,P3,Platform 3 line,WDB1,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
 35547,U&DL,Up & Down Loop,WDB1,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
 35548,UM,Up Main,WDB1,NW3005,16123.0,16220.0,London North Western (North) Sectional Appendix March 2026.pdf,333,2026-04-30T10:47:49.403070
 35549,D&UW,Down & Up Wrexham,WSJ2,NW3005,16240.0,16771.0,London North Western (North) Sectional Appendix March 2026.pdf,334,2026-04-30T10:47:49.403070
@@ -5223,7 +4540,6 @@
 35681,DF,Down Fast,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35682,DG,Down Goods,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35683,DS,Down Slow,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
-35684,DT,Down Through line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35685,P1,Platform 1 line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35686,P2,Platform 2 line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35687,P3,Platform 3 line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
@@ -5232,15 +4548,12 @@
 35690,P4c,Platform 4c line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35691,P5,Platform 5 line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35692,P6,Platform 6 line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
-35693,SL,Shunting Line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35694,U&DGL,Up & Down Goods Loop,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35695,UF,Up Fast,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35696,UG,Up Goods,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35697,US,Up Slow,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
-35698,UT,Up Through line,CGJ5,NW4001,1705.0,1737.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35699,D&UGL,Down & Up Goods Loop (Parcel Platform line),CGJ6,NW4001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35700,DF,Down Fast,CGJ6,NW4001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
-35701,DG,Down Goods,CGJ6,NW4001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35702,DS,Down Slow,CGJ6,NW4001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35703,DT,Down Through line,CGJ6,NW4001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
 35704,P1,Platform 1 line,CGJ6,NW4001,0.0,23.0,London North Western (North) Sectional Appendix March 2026.pdf,415,2026-04-30T10:47:49.403070
@@ -5272,19 +4585,12 @@
 35730,OM,Down Main,CGJ6,NW4001,740.0,1647.0,London North Western (North) Sectional Appendix March 2026.pdf,418,2026-04-30T10:47:49.403070
 35731,UM,Up Main,CGJ6,NW4001,740.0,1647.0,London North Western (North) Sectional Appendix March 2026.pdf,418,2026-04-30T10:47:49.403070
 35732,UPL2,Up Passenger Loop No.2,CGJ6,NW4001,740.0,1647.0,London North Western (North) Sectional Appendix March 2026.pdf,418,2026-04-30T10:47:49.403070
-35733,OM,Down Main,CGJ6,NW4001,1647.0,1680.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35734,P1,Platform 1 line,CGJ6,NW4001,1647.0,1680.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35735,P2,Platform 2 line,CGJ6,NW4001,1647.0,1680.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35736,P3,Platform 3 line,CGJ6,NW4001,1647.0,1680.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35737,P4,Platform 4 line,CGJ6,NW4001,1647.0,1680.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35738,P5,Platform 5 line,CGJ6,NW4001,1647.0,1680.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
-35739,UM,Up Main,CGJ6,NW4001,1647.0,1680.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35740,OM,Down Main,CGJ7,NW4001,0.0,40.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
-35741,P1,Platform 1 line,CGJ7,NW4001,0.0,40.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
-35742,P2,Platform 2 line,CGJ7,NW4001,0.0,40.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
-35743,P3,Platform 3 line,CGJ7,NW4001,0.0,40.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
-35744,P4,Platform 4 line,CGJ7,NW4001,0.0,40.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
-35745,P5,Platform 5 line,CGJ7,NW4001,0.0,40.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35746,UM,Up Main,CGJ7,NW4001,0.0,40.0,London North Western (North) Sectional Appendix March 2026.pdf,419,2026-04-30T10:47:49.403070
 35747,DM,Down Main,CGJ7,NW4001,40.0,467.0,London North Western (North) Sectional Appendix March 2026.pdf,420,2026-04-30T10:47:49.403070
 35748,F15,,CGJ7,NW4001,40.0,467.0,London North Western (North) Sectional Appendix March 2026.pdf,420,2026-04-30T10:47:49.403070
@@ -5317,9 +4623,7 @@
 35775,OM,Down Main,CGJ7,NW4001,4200.0,5120.0,London North Western (North) Sectional Appendix March 2026.pdf,428,2026-04-30T10:47:49.403070
 35776,UM,Up Main,CGJ7,NW4001,4200.0,5120.0,London North Western (North) Sectional Appendix March 2026.pdf,428,2026-04-30T10:47:49.403070
 35777,DM,Down Main,CGJ7,NW4001,5152.0,5430.0,London North Western (North) Sectional Appendix March 2026.pdf,429,2026-04-30T10:47:49.403070
-35778,DTG,Down Through Goods,CGJ7,NW4001,5152.0,5430.0,London North Western (North) Sectional Appendix March 2026.pdf,429,2026-04-30T10:47:49.403070
 35779,UM,Up Main,CGJ7,NW4001,5152.0,5430.0,London North Western (North) Sectional Appendix March 2026.pdf,429,2026-04-30T10:47:49.403070
-35780,UTG,Up Through Goods,CGJ7,NW4001,5152.0,5430.0,London North Western (North) Sectional Appendix March 2026.pdf,429,2026-04-30T10:47:49.403070
 35781,DM,Down Main,UCJ,NW4001,5152.0,5430.0,London North Western (North) Sectional Appendix March 2026.pdf,429,2026-04-30T10:47:49.403070
 35782,DTG,Down Through Goods,UCJ,NW4001,5152.0,5430.0,London North Western (North) Sectional Appendix March 2026.pdf,429,2026-04-30T10:47:49.403070
 35783,UM,Up Main,UCJ,NW4001,5152.0,5430.0,London North Western (North) Sectional Appendix March 2026.pdf,429,2026-04-30T10:47:49.403070
@@ -5457,17 +4761,11 @@
 35915,D&UM,Down & Up Morecambe,HBL,NW4013,0.0,110.0,London North Western (North) Sectional Appendix March 2026.pdf,452,2026-04-30T10:47:49.403070
 35916,P3,Platform 3 line,MHH,NW4017,0.0,321.0,London North Western (North) Sectional Appendix March 2026.pdf,453,2026-04-30T10:47:49.403070
 35917,U&D CEGB,Up & Down C.E.G.B,MHH,NW4017,0.0,321.0,London North Western (North) Sectional Appendix March 2026.pdf,453,2026-04-30T10:47:49.403070
-35918,DW,Down Windermere,CGJ7,NW4019,1507.0,1531.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
 35919,ELR,OXW applies to the Windermere Branch,CGJ7,NW4019,1507.0,1531.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
 35920,P1,Platform 1 line,CGJ7,NW4019,1507.0,1531.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
 35921,P2,Platform 2 line,CGJ7,NW4019,1507.0,1531.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
 35922,P3,Platform 3 line,CGJ7,NW4019,1507.0,1531.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
-35923,U&DW,Up & Down Windermere,CGJ7,NW4019,1507.0,1531.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
 35924,DW,Down Windermere,OXW,NW4019,0.0,42.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
-35925,ELR,OXW applies to the Windermere Branch,OXW,NW4019,0.0,42.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
-35926,P1,Platform 1 line,OXW,NW4019,0.0,42.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
-35927,P2,Platform 2 line,OXW,NW4019,0.0,42.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
-35928,P3,Platform 3 line,OXW,NW4019,0.0,42.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
 35929,U&DW,Up & Down Windermere,OXW,NW4019,0.0,42.0,London North Western (North) Sectional Appendix March 2026.pdf,454,2026-04-30T10:47:49.403070
 35930,U&DW,,OXW,NW4019,80.0,400.0,London North Western (North) Sectional Appendix March 2026.pdf,455,2026-04-30T10:47:49.403070
 35931,IS,,OXW,NW4019,400.0,815.0,London North Western (North) Sectional Appendix March 2026.pdf,456,2026-04-30T10:47:49.403070
@@ -5817,9 +5115,6 @@
 36275,DNB,Down Norton Bridge,NBS1,NW5008,312.0,11095.0,London North Western (North) Sectional Appendix March 2026.pdf,543,2026-04-30T10:47:49.403070
 36276,NBEC,Norton Bridge East Chord,NBS1,NW5008,312.0,11095.0,London North Western (North) Sectional Appendix March 2026.pdf,543,2026-04-30T10:47:49.403070
 36277,UNB,Up Norton Bridge,NBS1,NW5008,312.0,11095.0,London North Western (North) Sectional Appendix March 2026.pdf,543,2026-04-30T10:47:49.403070
-36278,DNB,Down Norton Bridge,LEC6,NW5008,312.0,11095.0,London North Western (North) Sectional Appendix March 2026.pdf,543,2026-04-30T10:47:49.403070
-36279,NBEC,Norton Bridge East Chord,LEC6,NW5008,312.0,11095.0,London North Western (North) Sectional Appendix March 2026.pdf,543,2026-04-30T10:47:49.403070
-36280,UNB,Up Norton Bridge,LEC6,NW5008,312.0,11095.0,London North Western (North) Sectional Appendix March 2026.pdf,543,2026-04-30T10:47:49.403070
 36281,DNB,Down Norton Bridge,NBS,NW5008,0.0,211.0,London North Western (North) Sectional Appendix March 2026.pdf,544,2026-04-30T10:47:49.403070
 36282,P1,Platform 1 line,NBS,NW5008,0.0,211.0,London North Western (North) Sectional Appendix March 2026.pdf,544,2026-04-30T10:47:49.403070
 36283,P2,Platform 2 line,NBS,NW5008,0.0,211.0,London North Western (North) Sectional Appendix March 2026.pdf,544,2026-04-30T10:47:49.403070
