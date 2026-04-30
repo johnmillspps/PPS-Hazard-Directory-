@@ -1409,6 +1409,32 @@ else:
             key="swp_paste"
         )
 
+        # ── Extra ELRs ──
+        if 'extra_elrs' not in st.session_state:
+            st.session_state['extra_elrs'] = []
+
+        if st.button("➕  Add another ELR", key="add_extra_elr_btn"):
+            st.session_state['extra_elrs'].append({'elr': '', 'from': '', 'to': ''})
+
+        for idx, extra in enumerate(st.session_state['extra_elrs']):
+            ecol1, ecol2, ecol3, ecol4 = st.columns([2, 3, 3, 1])
+            with ecol1:
+                st.session_state['extra_elrs'][idx]['elr'] = st.text_input(
+                    "ELR", value=extra['elr'], key=f"extra_elr_{idx}", label_visibility="collapsed",
+                    placeholder="ELR")
+            with ecol2:
+                st.session_state['extra_elrs'][idx]['from'] = st.text_input(
+                    "From", value=extra['from'], key=f"extra_from_{idx}", label_visibility="collapsed",
+                    placeholder="From e.g. 182m 10ch")
+            with ecol3:
+                st.session_state['extra_elrs'][idx]['to'] = st.text_input(
+                    "To", value=extra['to'], key=f"extra_to_{idx}", label_visibility="collapsed",
+                    placeholder="To e.g. 183m 05ch")
+            with ecol4:
+                if st.button("✕", key=f"remove_extra_elr_{idx}"):
+                    st.session_state['extra_elrs'].pop(idx)
+                    st.rerun()
+
         build_swp = st.button("📋  BUILD SWP", key="build_swp_btn")
 
         if build_swp and tracker_paste and tracker_paste.strip():
@@ -1595,6 +1621,43 @@ else:
                 swp_access_df = filter_access_points(query_by_elr_mileage(hazard_df, swp_elr_from, swp_elr_to, swp_from_dec, swp_to_dec))
                 if not swp_access_df.empty:
                     swp_access_df = enrich_access_points_with_coords(swp_access_df, ap_coords_df)
+
+            # ── Extra ELR lookups ──
+            for extra in st.session_state.get('extra_elrs', []):
+                ex_elr = extra.get('elr', '').strip().upper()
+                ex_from_str = extra.get('from', '').strip()
+                ex_to_str = extra.get('to', '').strip()
+                if not ex_elr or not ex_from_str or not ex_to_str:
+                    continue
+                ex_from_dec = mileage_to_decimal(ex_from_str)
+                ex_to_dec = mileage_to_decimal(ex_to_str)
+                if ex_from_dec is None or ex_to_dec is None:
+                    continue
+                ex_from_ch = int(ex_from_dec) * 80 + round((ex_from_dec - int(ex_from_dec)) * 10000 / 22)
+                ex_to_ch = int(ex_to_dec) * 80 + round((ex_to_dec - int(ex_to_dec)) * 10000 / 22)
+                # Line names
+                ex_lines = find_line_names_for_mileage(ex_elr, ex_elr, ex_from_ch, ex_to_ch, ln_df)
+                seen_keys = {f"{l['Abbreviation']}_{l['Line Name']}" for l in swp_lines}
+                for l in ex_lines:
+                    key = f"{l['Abbreviation']}_{l['Line Name']}"
+                    if key not in seen_keys:
+                        swp_lines.append(l)
+                        seen_keys.add(key)
+                # Signal boxes
+                ex_boxes = find_signal_boxes_for_mileage(ex_elr, ex_elr, ex_from_ch, ex_to_ch, sba_df, signalbox_df)
+                seen_sb = {b['Signal Box'] for b in swp_boxes}
+                for b in ex_boxes:
+                    if b['Signal Box'] not in seen_sb:
+                        swp_boxes.append(b)
+                        seen_sb.add(b['Signal Box'])
+                # Hazards and access points
+                ex_hz = filter_hazards_only(query_by_elr_mileage(hazard_df, ex_elr, ex_elr, ex_from_dec, ex_to_dec))
+                if not ex_hz.empty:
+                    swp_hazards_df = pd.concat([swp_hazards_df, ex_hz], ignore_index=True).drop_duplicates()
+                ex_ap = filter_access_points(query_by_elr_mileage(hazard_df, ex_elr, ex_elr, ex_from_dec, ex_to_dec))
+                if not ex_ap.empty:
+                    ex_ap = enrich_access_points_with_coords(ex_ap, ap_coords_df)
+                    swp_access_df = pd.concat([swp_access_df, ex_ap], ignore_index=True).drop_duplicates()
 
             # ── Shift Contacts (editable) ──
             st.markdown(f'<div class="section-header" style="font-size:0.95rem">👷  Shift Contact Numbers</div>', unsafe_allow_html=True)
