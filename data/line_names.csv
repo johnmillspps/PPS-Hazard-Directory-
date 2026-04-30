@@ -1,4 +1,4 @@
-id,abbreviation,full_name,elr,lor,mileage_from_ch,mileage_to_ch,source_doc,source_page,loaded_at
+﻿id,abbreviation,full_name,elr,lor,mileage_from_ch,mileage_to_ch,source_doc,source_page,loaded_at
 29807,UTM,Up Temple Mills,BDM,EA1010,228.0,234.0,Anglia - March 2026 Sectional Appendix.pdf,113,2026-04-28T02:35:57.193400
 29808,DTM,Down Temple Mills,BDM,EA1010,228.0,234.0,Anglia - March 2026 Sectional Appendix.pdf,113,2026-04-28T02:35:57.193400
 29809,UTM,Up Temple Mills,LTN1,EA1010,267.0,270.0,Anglia - March 2026 Sectional Appendix.pdf,114,2026-04-28T02:35:57.347111
