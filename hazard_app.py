@@ -1967,6 +1967,59 @@ else:
             gen_col1, gen_col2 = st.columns(2)
             with gen_col1:
                 generate_btn = st.button("📥  GENERATE SWP (Excel + PDF)", key="generate_swp_btn")
+            with gen_col2:
+                haz_pdf_btn = st.button("📋  Download Hazard Directory & Access Points PDF", key="swp_haz_pdf_btn")
+
+            if haz_pdf_btn:
+                swp_elr_label = swp_elr_from if swp_elr_from == swp_elr_to else f"{swp_elr_from} to {swp_elr_to}"
+                swp_mil_label_from = swp_dist_from1 or ''
+                swp_mil_label_to = swp_dist_to1 or ''
+                swp_ts = datetime.now().strftime("%Y%m%d_%H%M")
+
+                pdf_parts = []
+
+                # Hazards PDF
+                if not swp_hazards_df.empty:
+                    hz_pdf_df = swp_hazards_df.copy()
+                    if 'Mileage  From' in hz_pdf_df.columns:
+                        hz_pdf_df['Mileage  From'] = hz_pdf_df['Mileage  From'].apply(decimal_to_miles_chains)
+                    if 'Mileage To' in hz_pdf_df.columns:
+                        hz_pdf_df['Mileage To'] = hz_pdf_df['Mileage To'].apply(decimal_to_miles_chains)
+                    display_cols = [c for c in ['ELR', 'ELR Name', 'Mileage  From', 'Mileage To',
+                                                'Hazard Description', 'Local Name', 'Track', 'Free Text']
+                                    if c in hz_pdf_df.columns]
+                    hz_pdf_df = hz_pdf_df[display_cols].fillna('')
+                    pdf_parts.append(generate_pdf(hz_pdf_df, swp_elr_label,
+                                                  swp_mil_label_from, swp_mil_label_to,
+                                                  HAZARD_COLS, 'NWR Hazard Directory'))
+
+                # Access Points PDF
+                if not swp_access_df.empty:
+                    ap_pdf_df = swp_access_df.copy()
+                    if 'Mileage  From' in ap_pdf_df.columns:
+                        ap_pdf_df['Mileage  From'] = ap_pdf_df['Mileage  From'].apply(decimal_to_miles_chains)
+                    display_cols = [c for c in ['ELR', 'ELR Name', 'Mileage  From',
+                                                'Hazard Description', 'Local Name', 'Track',
+                                                'Free Text', 'Google Maps']
+                                    if c in ap_pdf_df.columns]
+                    ap_pdf_df = ap_pdf_df[display_cols].fillna('')
+                    pdf_parts.append(generate_pdf(ap_pdf_df, swp_elr_label,
+                                                  swp_mil_label_from, swp_mil_label_to,
+                                                  ACCESS_COLS, 'Access Points'))
+
+                if pdf_parts:
+                    import fitz as _fitz
+                    merged_pdf = _fitz.open()
+                    for part in pdf_parts:
+                        merged_pdf.insert_pdf(_fitz.open(stream=part.read(), filetype="pdf"))
+                    combined = io.BytesIO(merged_pdf.tobytes())
+                    merged_pdf.close()
+                    st.download_button(
+                        "⬇  Download Combined PDF", data=combined.getvalue(),
+                        file_name=f"Hazard_Directory_{swp_elr_from}_{swp_ts}.pdf",
+                        mime="application/pdf", key="swp_haz_ap_pdf")
+                else:
+                    st.info("No hazards or access points found for this mileage range.")
 
             if generate_btn:
                 import io
