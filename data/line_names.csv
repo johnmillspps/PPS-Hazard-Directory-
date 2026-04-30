@@ -6289,3 +6289,7 @@
 36159,WPL,Washing Plant Line,LMD6,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
 36159,ARR,Arrival Road,LMD8,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
 36159,DEP,Departure Road,LMD8,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,DF,Down Fast,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,US,Up Slow,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,DS,Down Slow,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
+36159,DG,Down Goods,CMP2,NW5001,14980.0,15021.0,London North Western (North) Sectional Appendix March 2026.pdf,535,2026-04-30T10:47:49.403070
