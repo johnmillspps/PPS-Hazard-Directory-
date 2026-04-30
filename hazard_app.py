@@ -440,6 +440,20 @@ def load_line_names():
         return None
 
 
+@st.cache_data
+def load_signal_diagram_index():
+    """Load signal diagram index CSV from the data subfolder."""
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    csv_path = os.path.join(data_dir, 'signal_diagram_index.csv')
+    if not os.path.exists(csv_path):
+        return None
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8-sig')
+        return df
+    except Exception:
+        return None
+
+
 def find_nearest_ae(lat, lon, ae_df, n=3):
     """Find the n nearest Type 1 A&E departments to a given lat/lon using haversine."""
     import math
@@ -934,6 +948,7 @@ ae_df = load_ae_departments()
 ap_coords_df = load_access_points_coords()
 sba_df = load_signal_box_areas()
 ln_df = load_line_names()
+sd_idx_df = load_signal_diagram_index()
 
 # ── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -2152,7 +2167,81 @@ else:
             with gen_col4:
                 sd_btn = st.button("🚦  Signal Diagram", key="swp_sd_btn")
                 if sd_btn:
-                    st.info("Coming soon")
+                    sd_pages = []  # list of (diagram_doc, diagram_page)
+                    if sd_idx_df is not None and not sd_idx_df.empty and swp_from_dec is not None and swp_to_dec is not None:
+                        sd_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
+                        sd_to_ch = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22)
+
+                        sd_elrs = [swp_elr_from]
+                        if swp_elr_to and swp_elr_to != swp_elr_from:
+                            sd_elrs.append(swp_elr_to)
+                        for extra in st.session_state.get('extra_elrs', []):
+                            ex_elr = extra.get('elr', '').strip().upper()
+                            if ex_elr and ex_elr not in sd_elrs:
+                                sd_elrs.append(ex_elr)
+
+                        for elr_q in sd_elrs:
+                            q_from_ch, q_to_ch = sd_from_ch, sd_to_ch
+                            for extra in st.session_state.get('extra_elrs', []):
+                                if extra.get('elr', '').strip().upper() == elr_q:
+                                    ex_from = mileage_to_decimal(extra.get('from', ''))
+                                    ex_to = mileage_to_decimal(extra.get('to', ''))
+                                    if ex_from is not None and ex_to is not None:
+                                        q_from_ch = int(ex_from) * 80 + round((ex_from - int(ex_from)) * 10000 / 22)
+                                        q_to_ch = int(ex_to) * 80 + round((ex_to - int(ex_to)) * 10000 / 22)
+                                    break
+                            matches = sd_idx_df[
+                                (sd_idx_df['elr'] == elr_q) &
+                                (sd_idx_df['mileage_from_ch'] <= q_to_ch) &
+                                (sd_idx_df['mileage_to_ch'] >= q_from_ch)
+                            ]
+                            for _, row in matches.iterrows():
+                                sd_pages.append((str(row['diagram_doc']), int(row['diagram_page'])))
+
+                    sd_pages = sorted(set(sd_pages))
+
+                    if not sd_pages:
+                        st.info("No Signal Diagram pages found for this worksite.")
+                    else:
+                        import fitz as _fitz
+                        sd_dir = os.path.join(os.path.dirname(__file__), 'data', 'signal_diagrams')
+                        # Build filename-to-path lookup
+                        sd_file_map = {}
+                        for dirpath, _, filenames in os.walk(sd_dir):
+                            for fn in filenames:
+                                sd_file_map[fn] = os.path.join(dirpath, fn)
+
+                        sd_out = _fitz.open()
+                        sd_missing = set()
+                        sd_extracted = 0
+                        for doc_name, pg in sd_pages:
+                            if doc_name not in sd_file_map:
+                                sd_missing.add(doc_name)
+                                continue
+                            try:
+                                src = _fitz.open(sd_file_map[doc_name])
+                                if 0 < pg <= len(src):
+                                    sd_out.insert_pdf(src, from_page=pg-1, to_page=pg-1)
+                                    sd_extracted += 1
+                                src.close()
+                            except Exception:
+                                sd_missing.add(doc_name)
+
+                        if sd_missing:
+                            st.warning(f"Missing signal diagram PDFs: {', '.join(sorted(sd_missing))}")
+
+                        if sd_extracted > 0:
+                            sd_bytes = sd_out.tobytes()
+                            sd_out.close()
+                            sd_ts = datetime.now().strftime("%Y%m%d_%H%M")
+                            st.download_button(
+                                f"⬇  Download {sd_extracted} SD pages",
+                                data=sd_bytes,
+                                file_name=f"Signal_Diagrams_{swp_elr_from}_{sd_ts}.pdf",
+                                mime="application/pdf",
+                                key="swp_sd_dl")
+                        else:
+                            sd_out.close()
 
             if generate_btn:
                 import io
