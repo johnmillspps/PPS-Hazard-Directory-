@@ -160,6 +160,35 @@ st.markdown(f"""
     margin: 1.5rem 0 0.8rem 0;
   }}
 
+  /* File uploader dark theme */
+  [data-testid="stFileUploader"] {{
+    background-color: {COLOURS['surface']} !important;
+    border: 1px solid {COLOURS['border']} !important;
+    border-radius: 4px !important;
+    padding: 0.5rem !important;
+  }}
+  [data-testid="stFileUploader"] label {{
+    color: {COLOURS['white']} !important;
+  }}
+  [data-testid="stFileUploader"] section {{
+    background-color: {COLOURS['surface2']} !important;
+    border: 1px dashed {COLOURS['border']} !important;
+    border-radius: 3px !important;
+  }}
+  [data-testid="stFileUploader"] section > div {{
+    color: {COLOURS['muted']} !important;
+  }}
+  [data-testid="stFileUploader"] small {{
+    color: {COLOURS['muted']} !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    visibility: hidden !important;
+  }}
+  [data-testid="stFileUploader"] button {{
+    background-color: {COLOURS['nwr_blue']} !important;
+    color: white !important;
+  }}
+
   .stTextInput input {{
     background-color: {COLOURS['surface2']} !important;
     color: {COLOURS['white']} !important;
@@ -2088,6 +2117,14 @@ else:
             gen_col1, gen_col2, gen_col3, gen_col4 = st.columns(4)
             with gen_col1:
                 generate_btn = st.button("📥  GENERATE SWP (Excel + PDF)", key="generate_swp_btn")
+
+            # Complete Pack button (below the row)
+            st.markdown("")
+            pack_btn = st.button("📦  Download Complete Pack", key="swp_pack_btn")
+
+            # If Complete Pack is clicked, also trigger SWP generation
+            if pack_btn:
+                generate_btn = True
             with gen_col2:
                 haz_pdf_btn = st.button("📋  Hazard Directory & Access Points", key="swp_haz_pdf_btn")
                 if haz_pdf_btn:
@@ -2304,164 +2341,6 @@ else:
                                 key="swp_sd_dl")
                         else:
                             sd_out.close()
-
-            # ══════════════════════════════════════════════════════
-            # DOWNLOAD COMPLETE PACK
-            # ══════════════════════════════════════════════════════
-            st.markdown("")
-            pack_btn = st.button("📦  Download Complete Pack", key="swp_pack_btn")
-            if pack_btn:
-                if not st.session_state.get('swp_pdf_bytes'):
-                    st.warning("Generate the SWP first before downloading the complete pack.")
-                else:
-                    import fitz as _fitz
-                    pack_pdf = _fitz.open()
-                    pack_ts = datetime.now().strftime("%Y%m%d_%H%M")
-
-                    # 1. SWP PDF
-                    swp_src = _fitz.open(stream=st.session_state['swp_pdf_bytes'], filetype="pdf")
-                    pack_pdf.insert_pdf(swp_src)
-                    swp_src.close()
-
-                    # 2. Daily List PDF
-                    dl_pdf_bytes = st.session_state.get('daily_list_pdf')
-                    if dl_pdf_bytes:
-                        dl_src = _fitz.open(stream=dl_pdf_bytes, filetype="pdf")
-                        pack_pdf.insert_pdf(dl_src)
-                        dl_src.close()
-
-                    # 3. Sectional Appendix pages
-                    if ln_df is not None and not ln_df.empty and swp_from_dec is not None and swp_to_dec is not None:
-                        pk_sa_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
-                        pk_sa_to_ch = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22)
-                        pk_sa_elrs = [swp_elr_from]
-                        if swp_elr_to and swp_elr_to != swp_elr_from:
-                            pk_sa_elrs.append(swp_elr_to)
-                        for extra in st.session_state.get('extra_elrs', []):
-                            ex_elr = extra.get('elr', '').strip().upper()
-                            if ex_elr and ex_elr not in pk_sa_elrs:
-                                pk_sa_elrs.append(ex_elr)
-                        pk_sa_pages = set()
-                        pk_sa_docs = set()
-                        for elr_q in pk_sa_elrs:
-                            q_from_ch, q_to_ch = pk_sa_from_ch, pk_sa_to_ch
-                            for extra in st.session_state.get('extra_elrs', []):
-                                if extra.get('elr', '').strip().upper() == elr_q:
-                                    ex_f = mileage_to_decimal(extra.get('from', ''))
-                                    ex_t = mileage_to_decimal(extra.get('to', ''))
-                                    if ex_f is not None and ex_t is not None:
-                                        q_from_ch = int(ex_f) * 80 + round((ex_f - int(ex_f)) * 10000 / 22)
-                                        q_to_ch = int(ex_t) * 80 + round((ex_t - int(ex_t)) * 10000 / 22)
-                                    break
-                            for _, row in ln_df[(ln_df['elr']==elr_q) & (ln_df['mileage_from_ch']<=q_to_ch) & (ln_df['mileage_to_ch']>=q_from_ch)].iterrows():
-                                if pd.notna(row.get('source_page')):
-                                    pk_sa_pages.add(int(row['source_page']))
-                                if pd.notna(row.get('source_doc')):
-                                    pk_sa_docs.add(str(row['source_doc']))
-                        if pk_sa_pages:
-                            pk_sa_path = None
-                            pk_sa_dir = os.path.join(os.path.dirname(__file__), 'data', 'sectional_appendix')
-                            for dn in pk_sa_docs:
-                                if 'London North Western (North)' in dn:
-                                    pk_sa_path = os.path.join(pk_sa_dir, 'London North Western (North) Sectional Appendix March 2026.pdf')
-                                    break
-                            if pk_sa_path and os.path.exists(pk_sa_path):
-                                sa_src = _fitz.open(pk_sa_path)
-                                for pg in sorted(pk_sa_pages):
-                                    if 0 < pg <= len(sa_src):
-                                        pack_pdf.insert_pdf(sa_src, from_page=pg-1, to_page=pg-1)
-                                sa_src.close()
-
-                    # 4. Signal Diagram pages (daily list signals if available, else ELR+mileage)
-                    pk_sd_pages = []
-                    pk_dl_signals = st.session_state.get('daily_list_signals')
-                    if pk_dl_signals and sig_ref_df is not None and not sig_ref_df.empty:
-                        for sig in pk_dl_signals:
-                            for _, row in sig_ref_df[sig_ref_df['signal_ref']==sig].iterrows():
-                                if pd.notna(row.get('diagram_doc')) and pd.notna(row.get('diagram_page')):
-                                    pk_sd_pages.append((str(row['diagram_doc']), int(row['diagram_page'])))
-                        if pk_sd_pages:
-                            from collections import defaultdict
-                            doc_pgs = defaultdict(set)
-                            for doc, pg in pk_sd_pages:
-                                doc_pgs[doc].add(pg)
-                            pk_sd_pages = []
-                            for doc, pgs in doc_pgs.items():
-                                for pg in range(min(pgs), max(pgs)+1):
-                                    pk_sd_pages.append((doc, pg))
-                    elif sd_idx_df is not None and not sd_idx_df.empty and swp_from_dec is not None and swp_to_dec is not None:
-                        pk_sd_from = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
-                        pk_sd_to = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22)
-                        pk_sd_elrs = [swp_elr_from]
-                        if swp_elr_to and swp_elr_to != swp_elr_from:
-                            pk_sd_elrs.append(swp_elr_to)
-                        for extra in st.session_state.get('extra_elrs', []):
-                            ex_elr = extra.get('elr', '').strip().upper()
-                            if ex_elr and ex_elr not in pk_sd_elrs:
-                                pk_sd_elrs.append(ex_elr)
-                        for elr_q in pk_sd_elrs:
-                            q_from_ch, q_to_ch = pk_sd_from, pk_sd_to
-                            for extra in st.session_state.get('extra_elrs', []):
-                                if extra.get('elr', '').strip().upper() == elr_q:
-                                    ex_f = mileage_to_decimal(extra.get('from', ''))
-                                    ex_t = mileage_to_decimal(extra.get('to', ''))
-                                    if ex_f is not None and ex_t is not None:
-                                        q_from_ch = int(ex_f) * 80 + round((ex_f - int(ex_f)) * 10000 / 22)
-                                        q_to_ch = int(ex_t) * 80 + round((ex_t - int(ex_t)) * 10000 / 22)
-                                    break
-                            for _, row in sd_idx_df[(sd_idx_df['elr']==elr_q) & (sd_idx_df['mileage_from_ch']<=q_to_ch) & (sd_idx_df['mileage_to_ch']>=q_from_ch)].iterrows():
-                                pk_sd_pages.append((str(row['diagram_doc']), int(row['diagram_page'])))
-                    pk_sd_pages = sorted(set(pk_sd_pages))
-                    if pk_sd_pages:
-                        sd_dir = os.path.join(os.path.dirname(__file__), 'data', 'signal_diagrams')
-                        sd_fm = {}
-                        for dp, _, fns in os.walk(sd_dir):
-                            for fn in fns:
-                                sd_fm[fn] = os.path.join(dp, fn)
-                        for doc_name, pg in pk_sd_pages:
-                            if doc_name in sd_fm:
-                                try:
-                                    src = _fitz.open(sd_fm[doc_name])
-                                    if 0 < pg <= len(src):
-                                        pack_pdf.insert_pdf(src, from_page=pg-1, to_page=pg-1)
-                                    src.close()
-                                except Exception:
-                                    pass
-
-                    # 5. Hazard Directory & Access Points
-                    pk_elr_label = swp_elr_from if swp_elr_from == swp_elr_to else f"{swp_elr_from} to {swp_elr_to}"
-                    pk_mil_from = swp_dist_from1 or ''
-                    pk_mil_to = swp_dist_to1 or ''
-                    if not swp_hazards_df.empty:
-                        hz_pk = swp_hazards_df.copy()
-                        if 'Mileage  From' in hz_pk.columns:
-                            hz_pk['Mileage  From'] = hz_pk['Mileage  From'].apply(decimal_to_miles_chains)
-                        if 'Mileage To' in hz_pk.columns:
-                            hz_pk['Mileage To'] = hz_pk['Mileage To'].apply(decimal_to_miles_chains)
-                        dc = [c for c in ['ELR','ELR Name','Mileage  From','Mileage To','Hazard Description','Local Name','Track','Free Text'] if c in hz_pk.columns]
-                        hz_buf = generate_pdf(hz_pk[dc].fillna(''), pk_elr_label, pk_mil_from, pk_mil_to, HAZARD_COLS, 'NWR Hazard Directory')
-                        hz_src = _fitz.open(stream=hz_buf.read(), filetype="pdf")
-                        pack_pdf.insert_pdf(hz_src)
-                        hz_src.close()
-                    if not swp_access_df.empty:
-                        ap_pk = swp_access_df.copy()
-                        if 'Mileage  From' in ap_pk.columns:
-                            ap_pk['Mileage  From'] = ap_pk['Mileage  From'].apply(decimal_to_miles_chains)
-                        dc = [c for c in ['ELR','ELR Name','Mileage  From','Hazard Description','Local Name','Track','Free Text','Google Maps'] if c in ap_pk.columns]
-                        ap_buf = generate_pdf(ap_pk[dc].fillna(''), pk_elr_label, pk_mil_from, pk_mil_to, ACCESS_COLS, 'Access Points')
-                        ap_src = _fitz.open(stream=ap_buf.read(), filetype="pdf")
-                        pack_pdf.insert_pdf(ap_src)
-                        ap_src.close()
-
-                    pack_page_count = len(pack_pdf)
-                    pack_bytes = pack_pdf.tobytes()
-                    pack_pdf.close()
-                    st.download_button(
-                        f"⬇  Download Complete Pack ({pack_page_count} pages)",
-                        data=pack_bytes,
-                        file_name=f"Complete_SWP_Pack_{swp_elr_from}_{pack_ts}.pdf",
-                        mime="application/pdf",
-                        key="swp_pack_dl")
 
             if generate_btn:
                 import io
@@ -3395,6 +3274,153 @@ else:
                 except Exception:
                     pass
 
+                # ── Complete Pack assembly (runs when pack_btn triggered generate_btn) ──
+                if pack_btn and st.session_state.get('swp_pdf_bytes'):
+                    import fitz as _fitz
+                    pack_pdf = _fitz.open()
+                    pack_ts = datetime.now().strftime("%Y%m%d_%H%M")
+
+                    # 1. SWP PDF
+                    swp_src = _fitz.open(stream=st.session_state['swp_pdf_bytes'], filetype="pdf")
+                    pack_pdf.insert_pdf(swp_src)
+                    swp_src.close()
+
+                    # 2. Daily List PDF
+                    dl_pdf_bytes = st.session_state.get('daily_list_pdf')
+                    if dl_pdf_bytes:
+                        dl_src = _fitz.open(stream=dl_pdf_bytes, filetype="pdf")
+                        pack_pdf.insert_pdf(dl_src)
+                        dl_src.close()
+
+                    # 3. Sectional Appendix pages
+                    if ln_df is not None and not ln_df.empty and swp_from_dec is not None and swp_to_dec is not None:
+                        pk_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
+                        pk_to_ch = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22)
+                        pk_elrs = [swp_elr_from]
+                        if swp_elr_to and swp_elr_to != swp_elr_from:
+                            pk_elrs.append(swp_elr_to)
+                        for extra in st.session_state.get('extra_elrs', []):
+                            ex_elr = extra.get('elr', '').strip().upper()
+                            if ex_elr and ex_elr not in pk_elrs:
+                                pk_elrs.append(ex_elr)
+                        pk_sa_pages = set()
+                        pk_sa_docs = set()
+                        for elr_q in pk_elrs:
+                            q_f, q_t = pk_from_ch, pk_to_ch
+                            for extra in st.session_state.get('extra_elrs', []):
+                                if extra.get('elr', '').strip().upper() == elr_q:
+                                    ef = mileage_to_decimal(extra.get('from', ''))
+                                    et = mileage_to_decimal(extra.get('to', ''))
+                                    if ef is not None and et is not None:
+                                        q_f = int(ef)*80 + round((ef-int(ef))*10000/22)
+                                        q_t = int(et)*80 + round((et-int(et))*10000/22)
+                                    break
+                            for _, row in ln_df[(ln_df['elr']==elr_q)&(ln_df['mileage_from_ch']<=q_t)&(ln_df['mileage_to_ch']>=q_f)].iterrows():
+                                if pd.notna(row.get('source_page')):
+                                    pk_sa_pages.add(int(row['source_page']))
+                                if pd.notna(row.get('source_doc')):
+                                    pk_sa_docs.add(str(row['source_doc']))
+                        if pk_sa_pages:
+                            pk_sa_path = None
+                            pk_sa_dir = os.path.join(os.path.dirname(__file__), 'data', 'sectional_appendix')
+                            for dn in pk_sa_docs:
+                                if 'London North Western (North)' in dn:
+                                    pk_sa_path = os.path.join(pk_sa_dir, 'London North Western (North) Sectional Appendix March 2026.pdf')
+                                    break
+                            if pk_sa_path and os.path.exists(pk_sa_path):
+                                sa_src = _fitz.open(pk_sa_path)
+                                for pg in sorted(pk_sa_pages):
+                                    if 0 < pg <= len(sa_src):
+                                        pack_pdf.insert_pdf(sa_src, from_page=pg-1, to_page=pg-1)
+                                sa_src.close()
+
+                    # 4. Signal Diagram pages
+                    pk_sd_pages = []
+                    pk_dl_sigs = st.session_state.get('daily_list_signals')
+                    if pk_dl_sigs and sig_ref_df is not None and not sig_ref_df.empty:
+                        for sig in pk_dl_sigs:
+                            for _, row in sig_ref_df[sig_ref_df['signal_ref']==sig].iterrows():
+                                if pd.notna(row.get('diagram_doc')) and pd.notna(row.get('diagram_page')):
+                                    pk_sd_pages.append((str(row['diagram_doc']), int(row['diagram_page'])))
+                        if pk_sd_pages:
+                            from collections import defaultdict
+                            dpgs = defaultdict(set)
+                            for d, p in pk_sd_pages:
+                                dpgs[d].add(p)
+                            pk_sd_pages = [(d, p) for d, ps in dpgs.items() for p in range(min(ps), max(ps)+1)]
+                    elif sd_idx_df is not None and not sd_idx_df.empty and swp_from_dec is not None and swp_to_dec is not None:
+                        pk_sf = int(swp_from_dec)*80 + round((swp_from_dec-int(swp_from_dec))*10000/22)
+                        pk_st = int(swp_to_dec)*80 + round((swp_to_dec-int(swp_to_dec))*10000/22)
+                        pk_se = [swp_elr_from]
+                        if swp_elr_to and swp_elr_to != swp_elr_from:
+                            pk_se.append(swp_elr_to)
+                        for extra in st.session_state.get('extra_elrs', []):
+                            ex_elr = extra.get('elr', '').strip().upper()
+                            if ex_elr and ex_elr not in pk_se:
+                                pk_se.append(ex_elr)
+                        for elr_q in pk_se:
+                            qf, qt = pk_sf, pk_st
+                            for extra in st.session_state.get('extra_elrs', []):
+                                if extra.get('elr', '').strip().upper() == elr_q:
+                                    ef = mileage_to_decimal(extra.get('from', ''))
+                                    et = mileage_to_decimal(extra.get('to', ''))
+                                    if ef is not None and et is not None:
+                                        qf = int(ef)*80+round((ef-int(ef))*10000/22)
+                                        qt = int(et)*80+round((et-int(et))*10000/22)
+                                    break
+                            for _, row in sd_idx_df[(sd_idx_df['elr']==elr_q)&(sd_idx_df['mileage_from_ch']<=qt)&(sd_idx_df['mileage_to_ch']>=qf)].iterrows():
+                                pk_sd_pages.append((str(row['diagram_doc']), int(row['diagram_page'])))
+                    pk_sd_pages = sorted(set(pk_sd_pages))
+                    if pk_sd_pages:
+                        sd_dir = os.path.join(os.path.dirname(__file__), 'data', 'signal_diagrams')
+                        sd_fm = {}
+                        for dp, _, fns in os.walk(sd_dir):
+                            for fn in fns:
+                                sd_fm[fn] = os.path.join(dp, fn)
+                        for dn, pg in pk_sd_pages:
+                            if dn in sd_fm:
+                                try:
+                                    src = _fitz.open(sd_fm[dn])
+                                    if 0 < pg <= len(src):
+                                        pack_pdf.insert_pdf(src, from_page=pg-1, to_page=pg-1)
+                                    src.close()
+                                except Exception:
+                                    pass
+
+                    # 5. Hazard Directory & Access Points
+                    pk_elr_label = swp_elr_from if swp_elr_from == swp_elr_to else f"{swp_elr_from} to {swp_elr_to}"
+                    pk_mil_from = swp_dist_from1 or ''
+                    pk_mil_to = swp_dist_to1 or ''
+                    if not swp_hazards_df.empty:
+                        hz_pk = swp_hazards_df.copy()
+                        if 'Mileage  From' in hz_pk.columns:
+                            hz_pk['Mileage  From'] = hz_pk['Mileage  From'].apply(decimal_to_miles_chains)
+                        if 'Mileage To' in hz_pk.columns:
+                            hz_pk['Mileage To'] = hz_pk['Mileage To'].apply(decimal_to_miles_chains)
+                        dc = [c for c in ['ELR','ELR Name','Mileage  From','Mileage To','Hazard Description','Local Name','Track','Free Text'] if c in hz_pk.columns]
+                        hz_buf = generate_pdf(hz_pk[dc].fillna(''), pk_elr_label, pk_mil_from, pk_mil_to, HAZARD_COLS, 'NWR Hazard Directory')
+                        hz_src = _fitz.open(stream=hz_buf.read(), filetype="pdf")
+                        pack_pdf.insert_pdf(hz_src)
+                        hz_src.close()
+                    if not swp_access_df.empty:
+                        ap_pk = swp_access_df.copy()
+                        if 'Mileage  From' in ap_pk.columns:
+                            ap_pk['Mileage  From'] = ap_pk['Mileage  From'].apply(decimal_to_miles_chains)
+                        dc = [c for c in ['ELR','ELR Name','Mileage  From','Hazard Description','Local Name','Track','Free Text','Google Maps'] if c in ap_pk.columns]
+                        ap_buf = generate_pdf(ap_pk[dc].fillna(''), pk_elr_label, pk_mil_from, pk_mil_to, ACCESS_COLS, 'Access Points')
+                        ap_src = _fitz.open(stream=ap_buf.read(), filetype="pdf")
+                        pack_pdf.insert_pdf(ap_src)
+                        ap_src.close()
+
+                    pack_page_count = len(pack_pdf)
+                    pack_bytes = pack_pdf.tobytes()
+                    pack_pdf.close()
+                    st.download_button(
+                        f"⬇  Download Complete Pack ({pack_page_count} pages)",
+                        data=pack_bytes,
+                        file_name=f"Complete_SWP_Pack_{swp_elr_from}_{pack_ts}.pdf",
+                        mime="application/pdf",
+                        key="swp_pack_dl")
 
 
         else:
