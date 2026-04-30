@@ -2080,7 +2080,75 @@ else:
             with gen_col3:
                 sa_btn = st.button("📐  Sectional Appendix", key="swp_sa_btn")
                 if sa_btn:
-                    st.info("Coming soon")
+                    # Find matching line_names rows for worksite ELR(s) and mileage
+                    sa_pages = set()
+                    sa_source_docs = set()
+                    if ln_df is not None and not ln_df.empty and swp_from_dec is not None and swp_to_dec is not None:
+                        sa_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22)
+                        sa_to_ch = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22)
+
+                        # Build list of ELRs to query
+                        sa_elrs = [swp_elr_from]
+                        if swp_elr_to and swp_elr_to != swp_elr_from:
+                            sa_elrs.append(swp_elr_to)
+                        for extra in st.session_state.get('extra_elrs', []):
+                            ex_elr = extra.get('elr', '').strip().upper()
+                            if ex_elr and ex_elr not in sa_elrs:
+                                sa_elrs.append(ex_elr)
+
+                        for elr_q in sa_elrs:
+                            # Use extra ELR mileage if available, otherwise main mileage
+                            q_from_ch, q_to_ch = sa_from_ch, sa_to_ch
+                            for extra in st.session_state.get('extra_elrs', []):
+                                if extra.get('elr', '').strip().upper() == elr_q:
+                                    ex_from = mileage_to_decimal(extra.get('from', ''))
+                                    ex_to = mileage_to_decimal(extra.get('to', ''))
+                                    if ex_from is not None and ex_to is not None:
+                                        q_from_ch = int(ex_from) * 80 + round((ex_from - int(ex_from)) * 10000 / 22)
+                                        q_to_ch = int(ex_to) * 80 + round((ex_to - int(ex_to)) * 10000 / 22)
+                                    break
+
+                            matches = ln_df[
+                                (ln_df['elr'] == elr_q) &
+                                (ln_df['mileage_from_ch'] <= q_to_ch) &
+                                (ln_df['mileage_to_ch'] >= q_from_ch)
+                            ]
+                            for _, row in matches.iterrows():
+                                if pd.notna(row.get('source_page')):
+                                    sa_pages.add(int(row['source_page']))
+                                if pd.notna(row.get('source_doc')):
+                                    sa_source_docs.add(str(row['source_doc']))
+
+                    if not sa_pages:
+                        st.info("No Sectional Appendix pages found for this worksite.")
+                    else:
+                        # Map source_doc to local PDF path
+                        sa_pdf_path = None
+                        sa_pdf_dir = os.path.join(os.path.dirname(__file__), 'data', 'sectional_appendix')
+                        for doc_name in sa_source_docs:
+                            if 'London North Western (North)' in doc_name:
+                                sa_pdf_path = os.path.join(sa_pdf_dir, 'London North Western (North) Sectional Appendix March 2026.pdf')
+                                break
+
+                        if sa_pdf_path is None or not os.path.exists(sa_pdf_path):
+                            st.warning("Sectional Appendix PDF not available for this region.")
+                        else:
+                            import fitz as _fitz
+                            sa_doc = _fitz.open(sa_pdf_path)
+                            sa_out = _fitz.open()
+                            for pg in sorted(sa_pages):
+                                if 0 < pg <= len(sa_doc):
+                                    sa_out.insert_pdf(sa_doc, from_page=pg-1, to_page=pg-1)
+                            sa_bytes = sa_out.tobytes()
+                            sa_out.close()
+                            sa_doc.close()
+                            sa_ts = datetime.now().strftime("%Y%m%d_%H%M")
+                            st.download_button(
+                                f"⬇  Download {len(sa_pages)} SA pages",
+                                data=sa_bytes,
+                                file_name=f"Sectional_Appendix_{swp_elr_from}_{sa_ts}.pdf",
+                                mime="application/pdf",
+                                key="swp_sa_dl")
             with gen_col4:
                 sd_btn = st.button("🚦  Signal Diagram", key="swp_sd_btn")
                 if sd_btn:
