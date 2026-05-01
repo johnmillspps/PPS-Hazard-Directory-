@@ -471,7 +471,7 @@ def load_line_names():
 
 
 @st.cache_data
-def load_signal_diagram_index():
+def load_signal_diagram_index(_version=2):
     """Load signal diagram index CSV from the data subfolder."""
     data_dir = os.path.join(os.path.dirname(__file__), 'data')
     csv_path = os.path.join(data_dir, 'signal_diagram_index.csv')
