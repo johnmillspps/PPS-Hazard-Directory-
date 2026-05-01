@@ -2307,7 +2307,9 @@ else:
                     sd_pages = sorted(set(sd_pages))
 
                     if not sd_pages:
-                        st.info("No Signal Diagram pages found for this worksite.")
+                        _dbg_from_ch = int(swp_from_dec) * 80 + round((swp_from_dec - int(swp_from_dec)) * 10000 / 22) if swp_from_dec is not None else None
+                        _dbg_to_ch = int(swp_to_dec) * 80 + round((swp_to_dec - int(swp_to_dec)) * 10000 / 22) if swp_to_dec is not None else None
+                        st.info(f"No Signal Diagram pages found for this worksite. Debug: elr_from={swp_elr_from}, from_dec={swp_from_dec}, to_dec={swp_to_dec}, from_ch={_dbg_from_ch}, to_ch={_dbg_to_ch}, dl_signals={dl_signals}")
                     else:
                         import fitz as _fitz
                         sd_dir = os.path.join(os.path.dirname(__file__), 'data', 'signal_diagrams')
