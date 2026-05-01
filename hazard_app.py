@@ -2306,11 +2306,7 @@ else:
                     sd_pages = sorted(set(sd_pages))
 
                     if not sd_pages:
-                        rhy2_check = sd_idx_df[sd_idx_df['elr'] == 'RYH2'] if sd_idx_df is not None else None
-                        rhy2_overlap = sd_idx_df[(sd_idx_df['elr'] == 'RYH2') & (sd_idx_df['mileage_from_ch'] <= 714) & (sd_idx_df['mileage_to_ch'] >= 709)] if sd_idx_df is not None else None
-                        rhy2_info = rhy2_check[['mileage_from_ch','mileage_to_ch','diagram_page']].to_string() if rhy2_check is not None and len(rhy2_check) > 0 else 'none'
-                        st.info(f"No SD found. RYH2 rows={len(rhy2_check) if rhy2_check is not None else 0}, overlap={len(rhy2_overlap) if rhy2_overlap is not None else 0}, elr={swp_elr_from}, from_ch={int(swp_from_dec)*80+round((swp_from_dec-int(swp_from_dec))*10000/22)}, to_ch={int(swp_to_dec)*80+round((swp_to_dec-int(swp_to_dec))*10000/22)}")
-                        st.code(rhy2_info)
+                        st.info("No Signal Diagram pages found for this worksite.")
                     else:
                         import fitz as _fitz
                         sd_dir = os.path.join(os.path.dirname(__file__), 'data', 'signal_diagrams')
