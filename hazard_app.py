@@ -1921,6 +1921,7 @@ else:
 
             # ── Lines at Site ──
             st.markdown(f'<div class="section-header" style="font-size:0.95rem">🚂  Lines at Site</div>', unsafe_allow_html=True)
+            st.warning("⚠️ Verify lines against Sectional Appendix before issuing SWP")
 
             swp_line_data = []
             if swp_lines:
